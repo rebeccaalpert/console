@@ -32,7 +32,7 @@ export const createModalLauncher = (Component) => (props = {}) => {
           isOpen={true}
           contentLabel="Modal"
           onRequestClose={closeModal}
-          className="modal-dialog modal-content"
+          className="modal-dialog modal-content modal-content-scrollbar"
           overlayClassName="co-overlay"
           shouldCloseOnOverlayClick={!props.blocking}>
           <Component {...props} cancel={closeModal} close={closeModal} />
@@ -45,7 +45,7 @@ export const createModalLauncher = (Component) => (props = {}) => {
 
 export const ModalTitle = ({children, className='modal-header'}) => <div className={className}><h4 className="modal-title">{children}</h4></div>;
 
-export const ModalBody = ({children}) => <div className="modal-body">{children}</div>;
+export const ModalBody = ({children, className=''}) => <div className={`modal-body ${className}`}>{children}</div>;
 
 export const ModalFooter = ({message, errorMessage, inProgress, children}) => {
   return <ButtonBar className="modal-footer" errorMessage={errorMessage} infoMessage={message} inProgress={inProgress}>

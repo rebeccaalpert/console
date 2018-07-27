@@ -1,3 +1,10 @@
 .co-delete-modal-checkbox {
   padding-top: 30px;
 }
+
+.modal-body-scrollbar {
+  @include co-break-word;
+  overflow-y:auto;
+  height:auto;
+  max-height:400px;
+}

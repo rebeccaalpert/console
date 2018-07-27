@@ -78,6 +78,7 @@ $color-dark-border: #ddd;
   background-color: #fff; // prevent overlapping text if events overlap each other
   border: solid 1px $color-dark-border;
   border-bottom-color: $color-grey-border;
+  height: 107px;
   width: 100%;
   flex: none;
 }
@@ -87,8 +88,15 @@ $color-dark-border: #ddd;
   justify-content: space-between;
 }
 
+.co-sysevent_modal {
+  @include co-break-word;
+  max-height: 400px;
+  overflow: auto;
+}
+
 .co-sysevent__resourcelink {
   display: block;
+  margin-right: 13px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -97,6 +105,7 @@ $color-dark-border: #ddd;
 .co-sysevent__subheader {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 12px;
   white-space: pre;
 }
 
@@ -110,23 +119,24 @@ $color-dark-border: #ddd;
 .co-sysevent__message {
   @include co-break-word;
   cursor: help;
-  margin-top: 10px;
+  display: flex;
+  margin-top: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 40px;
+  height: 20px;
   position: relative;
+  .msg {
+    flex: 1 0;
+    height: 20px;
+    margin-right: 13px;
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .about {
+    display: inline-block;
+  }
 }
-.co-sysevent__message:after {
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
-  bottom: 0;
-  content: "";
-  height: 25px;
-  position: absolute;
-  right: 0;
-  width: 15%;
-  text-align: right;
-}
-
 
 .co-sysevent__icon-box {
   flex: 0 0 100px;
@@ -147,17 +157,6 @@ $color-dark-border: #ddd;
   top: 50%;
   left: 50%;
   width: 50%;
-}
-
-/* The AutoSizer/VirtualList height change kicks in here. This is meant to handle the remainder of the mobile view (which has a shorter row height). */
-@media(min-width: 508px) {
-  .co-sysevent {
-    height: 95px;
-  }
-
-  .co-sysevent__message {
-    height: 25px;
-  }
 }
 
 @media(min-width: $grid-float-breakpoint) {

@@ -5,6 +5,7 @@ export * from './confirm-modal';
 export * from './create-namespace-modal';
 export * from './delete-namespace-modal';
 export * from './error-modal';
+export * from './event-modal';
 export * from './kubectl-config';
 export * from './configure-unschedulable-modal';
 export * from './configure-ns-pull-secret-modal';
