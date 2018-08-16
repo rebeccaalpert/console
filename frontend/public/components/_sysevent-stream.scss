@@ -90,8 +90,8 @@ $color-dark-border: #ddd;
 
 .co-sysevent_modal {
   @include co-break-word;
-  max-height: 400px;
-  overflow: auto;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .co-sysevent__resourcelink {
