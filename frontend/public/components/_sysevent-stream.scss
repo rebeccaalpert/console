@@ -78,7 +78,6 @@ $color-dark-border: #ddd;
   background-color: #fff; // prevent overlapping text if events overlap each other
   border: solid 1px $color-dark-border;
   border-bottom-color: $color-grey-border;
-  height: 107px;
   width: 100%;
   flex: none;
 }
@@ -123,7 +122,7 @@ $color-dark-border: #ddd;
   margin-top: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 20px;
+  height: 40px;
   position: relative;
   .msg {
     flex: 1 0;
@@ -147,6 +146,16 @@ $color-dark-border: #ddd;
     top: 50%;
     left: 50%;
     transform: translate(calc(50% - 17px), calc(-50% + 1px));
+  }
+}
+
+/* The AutoSizer/VirtualList height change kicks in here. This is meant to handle the remainder of the mobile view (which has a shorter row height). */
+@media(min-width: 508px) {
+  .co-sysevent {
+    height: 95px;
+  }
+   .co-sysevent__message {
+    height: 25px;
   }
 }
 

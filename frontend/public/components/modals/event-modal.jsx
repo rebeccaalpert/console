@@ -26,6 +26,22 @@ export const eventModal = createModalLauncher(
         {message}
         {message}
         {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
+        {message}
 
         </ModalBody>
         <ModalFooter inProgress={false} errorMessage=""><button type="button" onClick={(e) => cancel(e)} className="btn btn-default">OK</button></ModalFooter>

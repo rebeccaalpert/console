@@ -40,12 +40,7 @@ const kindFilter = (kind, {involvedObject}) => {
 class Inner extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      overflow: false,
-    };
-    this.handleResize = this.handleResize.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.message = React.createRef();
   }
 
   onKeyDown(e) {
@@ -57,27 +52,8 @@ class Inner extends React.PureComponent {
     }
   }
 
-  calculateOverflow(e) {
-    return e.offsetWidth < e.scrollWidth;
-  }
-
-  handleResize() {
-    console.log("resize");
-    this.setState({overflow: this.calculateOverflow(this.message.current)});
-  }
-
-  componentDidMount() {
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
   render () {
     const {klass, status, tooltipMsg, obj, lastTimestamp, firstTimestamp, message, source, count} = this.props;
-    const {overflow} = this.state;
 
     return <div className={`${klass} slide-${status}`}>
       <div className="co-sysevent__icon-box">
@@ -111,7 +87,7 @@ class Inner extends React.PureComponent {
 
         <div className="co-sysevent__message" title={_.trim(message)}>
           <div className="msg" ref={this.message}>{message}</div>
-          {overflow && <div className="about"><a tabIndex="0" onClick={() => eventModal({message})} onKeyDown={this.onKeyDown}>Show more</a></div>}
+          <div className="about"><a tabIndex="0" onClick={() => eventModal({message})} onKeyDown={this.onKeyDown}>Show more</a></div>
         </div>
       </div>
     </div>;
@@ -454,8 +430,8 @@ class EventStream extends SafetyFirst {
                       width={width}
                       rowCount={count}
                       tabIndex={null}
-                      /* Width goes up to 675 and then goes down to 416 when the mobile/desktop breakpoint kicks in. It keeps increasing from there. You have to pick a number that won't overlap both ranges multiple times unless you want to write a ton of media queries. (i.e. rowHeight={width < 416 ? 140 : 110})*/
-                      rowHeight={120}
+                      /* Width goes up to 675 and then goes down to 416 when the mobile/desktop breakpoint kicks in. It keeps increasing from there. You have to pick a number that won't overlap both ranges multiple times unless you want to write a ton of media queries. */
+                      rowHeight={width < 416 ? 140 : 110}
                     />
                   </div>}
                 </AutoSizer> }
