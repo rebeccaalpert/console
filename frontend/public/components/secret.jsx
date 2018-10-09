@@ -3,20 +3,20 @@ import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage, ResourceRow } from './factory';
 import { SecretData } from './configmap-and-secret-data';
-import { Cog, SectionHeading, ResourceCog, ResourceLink, ResourceSummary, detailsPage, navFactory, resourceObjPath } from './utils';
+import { Kebab, SectionHeading, ResourceKebab, ResourceLink, ResourceSummary, detailsPage, navFactory, resourceObjPath } from './utils';
 import { fromNow } from './utils/datetime';
 import { SecretType } from './secrets/create-secret';
 
 export const WebHookSecretKey = 'WebHookSecretKey';
 
 const menuActions = [
-  Cog.factory.ModifyLabels,
-  Cog.factory.ModifyAnnotations,
+  Kebab.factory.ModifyLabels,
+  Kebab.factory.ModifyAnnotations,
   (kind, obj) => ({
     label: `Edit ${kind.label}`,
     href: `${resourceObjPath(obj, kind.kind)}/edit`,
   }),
-  Cog.factory.Delete,
+  Kebab.factory.Delete,
 ];
 
 const SecretHeader = props => <ListHeader>
@@ -33,7 +33,6 @@ const SecretRow = ({obj: secret}) => {
 
   return <ResourceRow obj={secret}>
     <div className="col-md-3 col-sm-4 col-xs-6 co-resource-link-wrapper">
-      <ResourceCog actions={menuActions} kind="Secret" resource={secret} />
       <ResourceLink kind="Secret" name={secret.metadata.name} namespace={secret.metadata.namespace} title={secret.metadata.uid} />
     </div>
     <div className="col-md-3 col-sm-4 col-xs-6 co-break-word">
@@ -42,6 +41,7 @@ const SecretRow = ({obj: secret}) => {
     <div className="col-md-3 col-sm-4 hidden-xs co-break-word">{secret.type}</div>
     <div className="col-md-1 hidden-sm hidden-xs">{data}</div>
     <div className="col-md-2 hidden-sm hidden-xs">{age}</div>
+    <div className="co-resource-kebab"><ResourceKebab actions={menuActions} kind="Secret" resource={secret} /></div>
   </ResourceRow>;
 };
 

@@ -11,7 +11,7 @@ import {
 } from './factory';
 import {
   AsyncComponent,
-  Cog,
+  Kebab,
   ContainerTable,
   ResourceOverviewHeading,
   ResourceSummary,
@@ -19,7 +19,7 @@ import {
   navFactory
 } from './utils';
 
-const menuActions = [Cog.factory.EditEnvironment, ...Cog.factory.common];
+const menuActions = [Kebab.factory.EditEnvironment, ...Kebab.factory.common];
 
 const kind = 'StatefulSet';
 const Row = props => <WorkloadListRow {...props} kind={kind} actions={menuActions} />;

@@ -6,7 +6,7 @@ import { match, Link } from 'react-router-dom';
 import { Map as ImmutableMap } from 'immutable';
 
 import { ListPage, List, ListHeader, ColHead, ResourceRow, DetailsPage } from '../factory';
-import { SectionHeading, MsgBox, ResourceLink, ResourceCog, Cog, ResourceIcon, navFactory, ResourceSummary } from '../utils';
+import { SectionHeading, MsgBox, ResourceLink, ResourceKebab, Kebab, ResourceIcon, navFactory, ResourceSummary } from '../utils';
 import { InstallPlanKind, InstallPlanApproval, olmNamespace, Step } from './index';
 import { referenceForModel, referenceForOwnerRef, k8sUpdate } from '../../module/k8s';
 import { SubscriptionModel, ClusterServiceVersionModel, InstallPlanModel, CatalogSourceModel } from '../../models';
@@ -27,7 +27,6 @@ export const InstallPlanRow: React.SFC<InstallPlanRowProps> = (props) => {
 
   return <ResourceRow obj={props.obj}>
     <div className="col-xs-6 col-sm-4 col-md-3 co-resource-link-wrapper">
-      <ResourceCog actions={Cog.factory.common} kind={referenceForModel(InstallPlanModel)} resource={props.obj} />
       <ResourceLink kind={referenceForModel(InstallPlanModel)} namespace={props.obj.metadata.namespace} name={props.obj.metadata.name} title={props.obj.metadata.uid} />
     </div>
     <div className="col-xs-6 col-sm-4 col-md-3">
@@ -49,6 +48,9 @@ export const InstallPlanRow: React.SFC<InstallPlanRowProps> = (props) => {
     </div>
     <div className="hidden-xs hidden-sm hidden-md col-lg-2">
       {phaseFor(_.get(props.obj.status, 'phase')) || 'Unknown'}
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={Kebab.factory.common} kind={referenceForModel(InstallPlanModel)} resource={props.obj} />
     </div>
   </ResourceRow>;
 };
@@ -189,7 +191,7 @@ export const InstallPlanDetailsPage: React.SFC<InstallPlanDetailsPageProps> = (p
     name: 'Install Plan Details',
     path: props.match.url,
   })}
-  menuActions={Cog.factory.common} />;
+  menuActions={Kebab.factory.common} />;
 
 export type InstallPlanHeaderProps = {
 

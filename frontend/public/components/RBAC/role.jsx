@@ -4,7 +4,7 @@ import * as fuzzy from 'fuzzysearch';
 // import { Link } from 'react-router-dom';
 
 import { ColHead, DetailsPage, List, ListHeader, MultiListPage, ResourceRow, TextFilter } from '../factory';
-import { Cog, SectionHeading, MsgBox, navFactory, ResourceCog, ResourceLink, Timestamp } from '../utils';
+import { Kebab, SectionHeading, MsgBox, navFactory, ResourceKebab, ResourceLink, Timestamp } from '../utils';
 import { BindingName, BindingsList, RulesList } from './index';
 import { flatten as bindingsFlatten } from './bindings';
 import { flagPending, connectToFlags, FLAGS } from '../../features';
@@ -25,8 +25,8 @@ const menuActions = [
     label: 'Add Role Binding...',
     href: `/k8s/cluster/rolebindings/new?rolekind=${roleKind(role)}&rolename=${role.metadata.name}`,
   }),
-  Cog.factory.Edit,
-  Cog.factory.Delete,
+  Kebab.factory.Edit,
+  Kebab.factory.Delete,
 ];
 
 const Header = props => <ListHeader>
@@ -36,11 +36,13 @@ const Header = props => <ListHeader>
 
 const Row = ({obj: role}) => <div className="row co-resource-list__item">
   <div className="col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={roleKind(role)} resource={role} />
     <ResourceLink kind={roleKind(role)} name={role.metadata.name} namespace={role.metadata.namespace} />
   </div>
   <div className="col-xs-6 co-break-word">
     {role.metadata.namespace ? <ResourceLink kind="Namespace" name={role.metadata.namespace} /> : 'all'}
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={roleKind(role)} resource={role} />
   </div>
 </div>;
 

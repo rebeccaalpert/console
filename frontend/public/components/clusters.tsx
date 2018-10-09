@@ -3,12 +3,12 @@ import * as _ from 'lodash-es';
 
 import { FLAGS, connectToFlags, flagPending } from '../features';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, detailsPage, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, LoadingBox, MsgBox } from './utils';
+import { Kebab, detailsPage, navFactory, ResourceKebab, SectionHeading, ResourceLink, ResourceSummary, LoadingBox, MsgBox } from './utils';
 // eslint-disable-next-line no-unused-vars
 import { referenceForModel } from '../module/k8s';
 import { ClusterModel } from '../models';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const ClustersHeader = props => <ListHeader>
@@ -23,7 +23,6 @@ const ClustersRow: React.SFC<ClustersRowProps> = ({obj}) => {
 
   return <div className="row co-resource-list__item">
     <div className="col-xs-4 co-resource-link-wrapper">
-      <ResourceCog actions={menuActions} kind={referenceForModel(ClusterModel)} resource={obj} />
       <ResourceLink kind={referenceForModel(ClusterModel)} name={obj.metadata.name} namespace={undefined} title={obj.metadata.name} />
     </div>
     <div className="col-xs-3">
@@ -36,6 +35,9 @@ const ClustersRow: React.SFC<ClustersRowProps> = ({obj}) => {
         </span>
         : '—'
       }
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={menuActions} kind={referenceForModel(ClusterModel)} resource={obj} />
     </div>
   </div>;
 };

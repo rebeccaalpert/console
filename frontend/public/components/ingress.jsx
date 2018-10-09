@@ -2,9 +2,9 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage, ResourceRow } from './factory';
-import { Cog, SectionHeading, LabelList, ResourceCog, ResourceIcon, detailsPage, EmptyBox, navFactory, ResourceLink, ResourceSummary } from './utils';
+import { Kebab, SectionHeading, LabelList, ResourceKebab, ResourceIcon, detailsPage, EmptyBox, navFactory, ResourceLink, ResourceSummary } from './utils';
 
-const menuActions = Cog.factory.common;
+const menuActions = Kebab.factory.common;
 
 export const ingressValidHosts = ingress => _.map(_.get(ingress, 'spec.rules', []), 'host').filter(_.isString);
 
@@ -40,7 +40,6 @@ const IngressListHeader = props => <ListHeader>
 
 const IngressListRow = ({obj: ingress}) => <ResourceRow obj={ingress}>
   <div className="col-md-3 col-sm-4 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind="Ingress" resource={ingress} />
     <ResourceLink kind="Ingress" name={ingress.metadata.name}
       namespace={ingress.metadata.namespace} title={ingress.metadata.uid} />
   </div>
@@ -51,6 +50,9 @@ const IngressListRow = ({obj: ingress}) => <ResourceRow obj={ingress}>
     <LabelList kind="Ingress" labels={ingress.metadata.labels} />
   </div>
   <div className="col-md-3 hidden-sm hidden-xs">{getHosts(ingress)}</div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind="Ingress" resource={ingress} />
+  </div>
 </ResourceRow>;
 
 const RulesHeader = () => <div className="row co-m-table-grid__head">

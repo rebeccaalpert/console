@@ -16,7 +16,7 @@ import {
 } from './factory';
 import {
   AsyncComponent,
-  Cog,
+  Kebab,
   ContainerTable,
   DeploymentPodCounts,
   LoadingInline,
@@ -27,7 +27,7 @@ import {
   SectionHeading
 } from './utils';
 
-const {ModifyCount, EditEnvironment, common} = Cog.factory;
+const {ModifyCount, EditEnvironment, common} = Kebab.factory;
 
 const UpdateStrategy = (kind, deployment) => ({
   label: 'Edit Update Strategy',

@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 
 import { FLAGS, connectToFlags } from '../features';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, Selector, helpLink, HELP_TOPICS } from './utils';
+import { Kebab, navFactory, ResourceKebab, SectionHeading, ResourceLink, ResourceSummary, Selector, helpLink, HELP_TOPICS } from './utils';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const Header = props => <ListHeader>
@@ -18,7 +18,6 @@ const Header = props => <ListHeader>
 const kind = 'NetworkPolicy';
 const Row = ({obj: np}) => <div className="row co-resource-list__item">
   <div className="col-xs-4 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={kind} resource={np} />
     <ResourceLink kind={kind} name={np.metadata.name} namespace={np.metadata.namespace} title={np.metadata.name} />
   </div>
   <div className="col-xs-3 co-break-word">
@@ -31,6 +30,9 @@ const Row = ({obj: np}) => <div className="row co-resource-list__item">
         <Link to={`/search/ns/${np.metadata.namespace}?kind=Pod`}>{`All pods within ${np.metadata.namespace}`}</Link> :
         <Selector selector={np.spec.podSelector} namespace={np.metadata.namespace} />
     }
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={kind} resource={np} />
   </div>
 </div>;
 

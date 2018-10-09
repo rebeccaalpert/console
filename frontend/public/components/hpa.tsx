@@ -5,12 +5,12 @@ import * as _ from 'lodash-es';
 import { K8sResourceKindReference } from '../module/k8s';
 import { Conditions } from './conditions';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, SectionHeading, LabelList, navFactory, ResourceCog, ResourceLink, ResourceSummary, Timestamp } from './utils';
+import { Kebab, SectionHeading, LabelList, navFactory, ResourceKebab, ResourceLink, ResourceSummary, Timestamp } from './utils';
 import { ResourceEventStream } from './events';
 
 const HorizontalPodAutoscalersReference: K8sResourceKindReference = 'HorizontalPodAutoscaler';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const MetricsRow: React.SFC<MetricsRowProps> = ({type, current, target}) => <div className="row">
@@ -182,7 +182,6 @@ const HorizontalPodAutoscalersHeader = props => <ListHeader>
 
 const HorizontalPodAutoscalersRow: React.SFC<HorizontalPodAutoscalersRowProps> = ({obj}) => <div className="row co-resource-list__item">
   <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={HorizontalPodAutoscalersReference} resource={obj} />
     <ResourceLink kind={HorizontalPodAutoscalersReference} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
   </div>
   <div className="col-lg-2 col-md-3 col-sm-4 col-xs-6 co-break-word">
@@ -199,6 +198,9 @@ const HorizontalPodAutoscalersRow: React.SFC<HorizontalPodAutoscalersRowProps> =
   </div>
   <div className="col-lg-1 hidden-md hidden-sm hidden-xs">
     {obj.spec.maxReplicas}
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={HorizontalPodAutoscalersReference} resource={obj} />
   </div>
 </div>;
 

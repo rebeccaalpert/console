@@ -4,7 +4,7 @@ import * as _ from 'lodash-es';
 // eslint-disable-next-line no-unused-vars
 import { K8sResourceKind, K8sResourceKindReference, planExternalName, serviceCatalogStatus } from '../module/k8s';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, history, navFactory, ResourceCog, ResourceLink, ResourceSummary, SectionHeading, StatusWithIcon, Timestamp } from './utils';
+import { Kebab, history, navFactory, ResourceKebab, ResourceLink, ResourceSummary, SectionHeading, StatusWithIcon, Timestamp } from './utils';
 import { ResourceEventStream } from './events';
 import { Conditions } from './conditions';
 import { ServiceCatalogParameters, ServiceCatalogParametersSecrets } from './service-catalog-parameters';
@@ -21,7 +21,7 @@ const createBinding = (kindObj, serviceInstance) => {
   };
 };
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 
 const menuActions = [
   createBinding,
@@ -96,7 +96,6 @@ const ServiceInstancesRow: React.SFC<ServiceInstancesRowProps> = ({obj}) => {
 
   return <div className="row co-resource-list__item">
     <div className="col-md-2 col-sm-4 col-xs-6 co-resource-link-wrapper">
-      <ResourceCog actions={menuActions} kind={ServiceInstancesReference} resource={obj} />
       <ResourceLink kind={ServiceInstancesReference} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
     </div>
     <div className="col-md-2 col-sm-3 col-xs-6 co-break-word">
@@ -115,6 +114,9 @@ const ServiceInstancesRow: React.SFC<ServiceInstancesRowProps> = ({obj}) => {
     </div>
     <div className="col-md-2 hidden-sm hidden-xs co-break-word">
       <Timestamp timestamp={obj.metadata.creationTimestamp} />
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={menuActions} kind={ServiceInstancesReference} resource={obj} />
     </div>
   </div>;
 };

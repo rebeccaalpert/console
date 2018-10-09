@@ -6,7 +6,7 @@ import { match, Link } from 'react-router-dom';
 import { safeLoad } from 'js-yaml';
 
 import { List, ListHeader, ColHead, DetailsPage, ListPage } from '../factory';
-import { MsgBox, ResourceLink, ResourceCog, navFactory, Cog, ResourceSummary, LoadingInline, SectionHeading } from '../utils';
+import { MsgBox, ResourceLink, ResourceKebab, navFactory, Kebab, ResourceSummary, LoadingInline, SectionHeading } from '../utils';
 import { SubscriptionKind, SubscriptionState, Package, InstallPlanApproval, ClusterServiceVersionKind, olmNamespace } from './index';
 import { referenceForModel, k8sKill, k8sUpdate, ConfigMapKind } from '../../module/k8s';
 import { SubscriptionModel, ClusterServiceVersionModel, CatalogSourceModel, ConfigMapModel, InstallPlanModel } from '../../models';
@@ -32,7 +32,7 @@ const subscriptionState = (state: SubscriptionState) => {
 };
 
 const menuActions = [
-  Cog.factory.Edit,
+  Kebab.factory.Edit,
   (kind, obj) => ({
     label: 'Remove Subscription...',
     callback: () => createDisableApplicationModal({k8sKill, subscription: obj}),
@@ -46,7 +46,6 @@ const menuActions = [
 export const SubscriptionRow: React.SFC<SubscriptionRowProps> = (props) => {
   return <div className="row co-resource-list__item">
     <div className="col-xs-6 col-sm-4 col-md-3 co-resource-link-wrapper">
-      <ResourceCog actions={_.get(props.obj.status, 'installedCSV') ? menuActions : menuActions.slice(0, -1)} kind={referenceForModel(SubscriptionModel)} resource={props.obj} />
       <ResourceLink kind={referenceForModel(SubscriptionModel)} name={props.obj.metadata.name} namespace={props.obj.metadata.namespace} title={props.obj.metadata.name} />
     </div>
     <div className="col-xs-6 col-sm-4 col-md-3">
@@ -60,6 +59,9 @@ export const SubscriptionRow: React.SFC<SubscriptionRowProps> = (props) => {
     </div>
     <div className="hidden-xs hidden-sm hidden-md col-lg-2">
       {props.obj.spec.installPlanApproval || 'Automatic'}
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={_.get(props.obj.status, 'installedCSV') ? menuActions : menuActions.slice(0, -1)} kind={referenceForModel(SubscriptionModel)} resource={props.obj} />
     </div>
   </div>;
 };

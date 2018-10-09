@@ -2,13 +2,13 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, MultiListPage } from './factory';
-import { Cog, SectionHeading, navFactory, ResourceCog, ResourceLink, ResourceSummary } from './utils';
+import { Kebab, SectionHeading, navFactory, ResourceKebab, ResourceLink, ResourceSummary } from './utils';
 import { FLAGS, connectToFlags, flagPending } from '../features';
 import { LoadingBox } from './utils/status-box';
 import { referenceForModel } from '../module/k8s';
 import { ResourceQuotaModel, ClusterResourceQuotaModel } from '../models';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const quotaKind = quota => quota.metadata.namespace ? referenceForModel(ResourceQuotaModel) : referenceForModel(ClusterResourceQuotaModel);
@@ -20,12 +20,12 @@ const Header = props => <ListHeader>
 
 const Row = ({obj: rq}) => <div className="row co-resource-list__item">
   <div className="col-md-5 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={quotaKind(rq)} resource={rq} />
     <ResourceLink kind={quotaKind(rq)} name={rq.metadata.name} namespace={rq.metadata.namespace} className="co-resource-link__resource-name" />
   </div>
   <div className="col-md-7 col-xs-6 co-break-word">
     {rq.metadata.namespace ? <ResourceLink kind="Namespace" name={rq.metadata.namespace} title={rq.metadata.namespace} /> : 'all'}
   </div>
+  <div className="co-resource-kebab"><ResourceKebab actions={menuActions} kind={quotaKind(rq)} resource={rq} /></div>
 </div>;
 
 const Details = ({obj: rq}) => <React.Fragment>

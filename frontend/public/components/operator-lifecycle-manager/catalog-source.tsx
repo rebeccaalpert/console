@@ -5,7 +5,7 @@ import * as _ from 'lodash-es';
 import { match, Link } from 'react-router-dom';
 import { safeLoad } from 'js-yaml';
 
-import { SectionHeading, Firehose, MsgBox, LoadingBox, ResourceCog, ResourceLink, Cog, navFactory, resourceObjPath, Timestamp, StatusBox } from '../utils';
+import { SectionHeading, Firehose, MsgBox, LoadingBox, ResourceKebab, ResourceLink, Kebab, navFactory, resourceObjPath, Timestamp, StatusBox } from '../utils';
 import { withFallback } from '../utils/error-boundary';
 import { CreateYAML } from '../create-yaml';
 import { ClusterServiceVersionLogo, CatalogSourceKind, ClusterServiceVersionKind, Package, SubscriptionKind, olmNamespace } from './index';
@@ -117,7 +117,6 @@ export const CatalogSourceHeader: React.SFC<CatalogSourceHeaderProps> = (props) 
 
 export const CatalogSourceRow: React.SFC<CatalogSourceRowProps> = (props) => <ResourceRow obj={props.obj}>
   <div className="col-md-3 co-resource-link-wrapper">
-    <ResourceCog actions={Cog.factory.common} kind={referenceForModel(CatalogSourceModel)} resource={props.obj} />
     <ResourceLink kind={referenceForModel(CatalogSourceModel)} namespace={props.obj.metadata.namespace} name={props.obj.metadata.name} title={props.obj.metadata.uid} />
   </div>
   <div className="col-md-2">
@@ -125,6 +124,9 @@ export const CatalogSourceRow: React.SFC<CatalogSourceRowProps> = (props) => <Re
   </div>
   <div className="col-md-2">{props.obj.spec.publisher}</div>
   <div className="col-md-2"><Timestamp timestamp={props.obj.metadata.creationTimestamp} /></div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={Kebab.factory.common} kind={referenceForModel(CatalogSourceModel)} resource={props.obj} />
+  </div>
 </ResourceRow>;
 
 export const CatalogSourceList = withFallback((props: CatalogSourceListProps) => {
@@ -185,7 +187,7 @@ export const CatalogSourceDetailsPage: React.SFC<CatalogSourceDetailsPageProps> 
     navFactory.details(CatalogSourceDetails),
     navFactory.editYaml(),
   ]}
-  menuActions={[...Cog.factory.common, (kind, obj) => ({label: 'View Contents...', href: resourceObjPath(obj, ConfigMapModel.kind)})]}
+  menuActions={[...Kebab.factory.common, (kind, obj) => ({label: 'View Contents...', href: resourceObjPath(obj, ConfigMapModel.kind)})]}
   resources={[{
     kind: ConfigMapModel.kind,
     isList: false,

@@ -7,7 +7,7 @@ import { K8sResourceKindReference, referenceFor } from '../module/k8s';
 import { cloneBuild, formatBuildDuration } from '../module/k8s/builds';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
 import { errorModal } from './modals';
-import { BuildHooks, BuildStrategy, Cog, SectionHeading, history, navFactory, ResourceCog, ResourceLink, resourceObjPath, ResourceSummary, Timestamp, AsyncComponent } from './utils';
+import { BuildHooks, BuildStrategy, Kebab, SectionHeading, history, navFactory, ResourceKebab, ResourceLink, resourceObjPath, ResourceSummary, Timestamp, AsyncComponent } from './utils';
 import { BuildPipeline } from './build-pipeline';
 import { breadcrumbsForOwnerRefs } from './utils/breadcrumbs';
 import { fromNow } from './utils/datetime';
@@ -17,7 +17,7 @@ import { Line, requirePrometheus } from './graphs';
 
 const BuildsReference: K8sResourceKindReference = 'Build';
 
-const { common, EditEnvironment } = Cog.factory;
+const { common, EditEnvironment } = Kebab.factory;
 
 const cloneBuildAction = (kind, build) => ({
   label: 'Rebuild',
@@ -176,7 +176,6 @@ const BuildsHeader = props => <ListHeader>
 
 const BuildsRow: React.SFC<BuildsRowProps> = ({ obj }) => <div className="row co-resource-list__item">
   <div className="col-sm-3 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={BuildsReference} resource={obj} />
     <ResourceLink kind={BuildsReference} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
   </div>
   <div className="col-sm-3 col-xs-6 co-break-word">
@@ -187,6 +186,9 @@ const BuildsRow: React.SFC<BuildsRowProps> = ({ obj }) => <div className="row co
   </div>
   <div className="col-sm-3 hidden-xs">
     {fromNow(obj.metadata.creationTimestamp)}
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={BuildsReference} resource={obj} />
   </div>
 </div>;
 

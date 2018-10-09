@@ -4,9 +4,9 @@ import * as _ from 'lodash-es';
 // eslint-disable-next-line no-unused-vars
 import {K8sResourceKindReference} from '../module/k8s';
 import {ColHead, DetailsPage, List, ListHeader, ListPage} from './factory';
-import {Cog, navFactory, SectionHeading, ResourceCog, ResourceLink, ResourceSummary, Timestamp} from './utils';
+import {Kebab, navFactory, SectionHeading, ResourceKebab, ResourceLink, ResourceSummary, Timestamp} from './utils';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const LimitRangeReference: K8sResourceKindReference = 'LimitRange';
@@ -14,7 +14,6 @@ const LimitRangeReference: K8sResourceKindReference = 'LimitRange';
 const LimitRangeRow: React.SFC<LimitRangeProps> = ({obj}) =>
   <div className="row co-resource-list__item">
     <div className="col-xs-4 co-resource-link-wrapper">
-      <ResourceCog actions={menuActions} kind={LimitRangeReference} resource={obj} />
       <ResourceLink kind={LimitRangeReference} name={obj.metadata.name} namespace={obj.metadata.namespace} />
     </div>
     <div className="col-xs-4">
@@ -22,6 +21,9 @@ const LimitRangeRow: React.SFC<LimitRangeProps> = ({obj}) =>
     </div>
     <div className="col-xs-4">
       <Timestamp timestamp={obj.metadata.creationTimestamp} />
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={menuActions} kind={LimitRangeReference} resource={obj} />
     </div>
   </div>;
 

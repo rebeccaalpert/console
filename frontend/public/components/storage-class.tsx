@@ -2,13 +2,13 @@ import * as React from 'react';
 import * as _ from 'lodash-es';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, detailsPage, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary } from './utils';
+import { Kebab, detailsPage, navFactory, ResourceKebab, SectionHeading, ResourceLink, ResourceSummary } from './utils';
 // eslint-disable-next-line no-unused-vars
 import { K8sResourceKind, K8sResourceKindReference } from '../module/k8s';
 
 export const StorageClassReference: K8sResourceKindReference = 'StorageClass';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const defaultClassAnnotation = 'storageclass.beta.kubernetes.io/is-default-class';
@@ -24,7 +24,6 @@ const StorageClassHeader = props => <ListHeader>
 const StorageClassRow: React.SFC<StorageClassRowProps> = ({obj}) => {
   return <div className="row co-resource-list__item">
     <div className="col-sm-4 col-xs-6 co-break-word co-resource-link-wrapper">
-      <ResourceCog actions={menuActions} kind={StorageClassReference} resource={obj} />
       <ResourceLink kind={StorageClassReference} name={obj.metadata.name} namespace={undefined} title={obj.metadata.name} />
     </div>
     <div className="col-sm-4 col-xs-6 co-break-word">
@@ -35,6 +34,9 @@ const StorageClassRow: React.SFC<StorageClassRowProps> = ({obj}) => {
     </div>
     <div className="col-sm-2 hidden-xs">
       {isDefaultClass(obj)}
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={menuActions} kind={StorageClassReference} resource={obj} />
     </div>
   </div>;
 };

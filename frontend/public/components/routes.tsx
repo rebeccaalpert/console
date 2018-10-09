@@ -2,7 +2,7 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage, ResourceRow } from './factory';
-import { Cog, CopyToClipboard, SectionHeading, ResourceCog, detailsPage, navFactory, ResourceLink, ResourceSummary } from './utils';
+import { Kebab, CopyToClipboard, SectionHeading, ResourceKebab, detailsPage, navFactory, ResourceLink, ResourceSummary } from './utils';
 import { MaskedData } from './configmap-and-secret-data';
 // eslint-disable-next-line no-unused-vars
 import { K8sResourceKind, K8sResourceKindReference } from '../module/k8s';
@@ -10,7 +10,7 @@ import { SafetyFirst } from './safety-first';
 import { Conditions, conditionProps } from './conditions';
 
 const RoutesReference: K8sResourceKindReference = 'Route';
-const menuActions = Cog.factory.common;
+const menuActions = Kebab.factory.common;
 
 const getRouteHost = (route, onlyAdmitted) => {
   let oldestAdmittedIngress = null;
@@ -127,7 +127,6 @@ const RouteListHeader: React.SFC<RouteHeaderProps> = props => <ListHeader>
 
 const RouteListRow: React.SFC<RoutesRowProps> = ({obj: route}) => <ResourceRow obj={route}>
   <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind="Route" resource={route} />
     <ResourceLink kind="Route" name={route.metadata.name}
       namespace={route.metadata.namespace} title={route.metadata.uid} />
   </div>
@@ -141,6 +140,7 @@ const RouteListRow: React.SFC<RoutesRowProps> = ({obj: route}) => <ResourceRow o
     <ResourceLink kind="Service" name={route.spec.to.name} namespace={route.metadata.namespace} title={route.spec.to.name} />
   </div>
   <div className="col-lg-2 hidden-md hidden-sm hidden-xs"><RouteStatus obj={route} /></div>
+  <div className="co-resource-kebab"><ResourceKebab actions={menuActions} kind="Route" resource={route} /></div>
 </ResourceRow>;
 
 class TLSSettings extends SafetyFirst<TLSDataProps, TLSDataState> {

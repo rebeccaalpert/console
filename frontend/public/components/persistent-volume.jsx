@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, LabelList, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, Timestamp } from './utils';
+import { Kebab, LabelList, navFactory, ResourceKebab, SectionHeading, ResourceLink, ResourceSummary, Timestamp } from './utils';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const Header = props => <ListHeader>
@@ -15,7 +15,6 @@ const Header = props => <ListHeader>
 const kind = 'PersistentVolume';
 const Row = ({obj}) => <div className="row co-resource-list__item">
   <div className="col-sm-4 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={kind} resource={obj} />
     <ResourceLink kind={kind} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
   </div>
   <div className="col-sm-4 col-xs-6">
@@ -23,6 +22,9 @@ const Row = ({obj}) => <div className="row co-resource-list__item">
   </div>
   <div className="col-sm-4 hidden-xs">
     <Timestamp timestamp={obj.metadata.creationTimestamp} />
+  </div>
+  <div class="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={kind} resource={obj} />
   </div>
 </div>;
 

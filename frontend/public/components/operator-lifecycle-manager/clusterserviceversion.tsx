@@ -20,7 +20,7 @@ import {
 } from './index';
 import {
   Box,
-  Cog,
+  Kebab,
   Dropdown,
   history,
   LoadingBox,
@@ -28,7 +28,7 @@ import {
   navFactory,
   OverflowLink,
   PageHeading,
-  ResourceCog,
+  ResourceKebab,
   ResourceLink,
   Timestamp
 } from '../utils';
@@ -43,7 +43,7 @@ export const ClusterServiceVersionHeader: React.SFC = () => <ListHeader>
   <ColHead className="col-xs-2" />
 </ListHeader>;
 
-const menuActions = [Cog.factory.Edit, Cog.factory.Delete];
+const menuActions = [Kebab.factory.Edit, Kebab.factory.Delete];
 
 export const ClusterServiceVersionRow = withFallback<ClusterServiceVersionRowProps>(({obj}) => {
   const route = `/k8s/ns/${obj.metadata.namespace}/${ClusterServiceVersionModel.plural}/${obj.metadata.name}`;
@@ -54,7 +54,6 @@ export const ClusterServiceVersionRow = withFallback<ClusterServiceVersionRowPro
 
   return <div className="row co-resource-list__item" style={{display: 'flex', alignItems: 'center'}}>
     <div className="col-xs-3" style={{display: 'flex', alignItems: 'center'}}>
-      <ResourceCog resource={obj} kind={referenceFor(obj)} actions={menuActions} />
       <Link to={route}>
         <ClusterServiceVersionLogo icon={_.get(obj, 'spec.icon', [])[0]} displayName={obj.spec.displayName} version={obj.spec.version} provider={obj.spec.provider} />
       </Link>
@@ -70,6 +69,9 @@ export const ClusterServiceVersionRow = withFallback<ClusterServiceVersionRowPro
       <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
         <Link to={`${route}/instances`} title="View instances">View instances</Link>
       </div>
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab resource={obj} kind={referenceFor(obj)} actions={menuActions} />
     </div>
   </div>;
 });

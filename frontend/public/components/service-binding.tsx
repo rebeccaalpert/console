@@ -4,14 +4,14 @@ import * as _ from 'lodash-es';
 // eslint-disable-next-line no-unused-vars
 import { K8sResourceKindReference, serviceCatalogStatus } from '../module/k8s';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, SectionHeading, navFactory, ResourceCog, ResourceLink, ResourceSummary, StatusWithIcon } from './utils';
+import { Kebab, SectionHeading, navFactory, ResourceKebab, ResourceLink, ResourceSummary, StatusWithIcon } from './utils';
 import { ResourceEventStream } from './events';
 import { Conditions } from './conditions';
 import { ServiceCatalogParameters, ServiceCatalogParametersSecrets } from './service-catalog-parameters';
 
 const ServiceBindingsReference: K8sResourceKindReference = 'ServiceBinding';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const secretLink = (obj) => serviceCatalogStatus(obj) === 'Ready'
@@ -68,7 +68,7 @@ const ServiceBindingsHeader = props => <ListHeader>
 
 const ServiceBindingsRow: React.SFC<ServiceBindingsRowProps> = ({obj}) => <div className="row co-resource-list__item">
   <div className="col-md-3 col-sm-4 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={ServiceBindingsReference} resource={obj} />
+    <ResourceKebab actions={menuActions} kind={ServiceBindingsReference} resource={obj} />
     <ResourceLink kind={ServiceBindingsReference} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
   </div>
   <div className="col-md-2 col-sm-4 col-xs-6 co-break-word">

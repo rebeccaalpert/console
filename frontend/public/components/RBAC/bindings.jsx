@@ -12,8 +12,8 @@ import { ColHead, List, ListHeader, MultiListPage, ResourceRow } from '../factor
 import { RadioGroup } from '../radio';
 import { confirmModal } from '../modals';
 import { SafetyFirst } from '../safety-first';
-import { ButtonBar, Cog, Dropdown, Firehose, history, kindObj, LoadingInline, MsgBox,
-  OverflowYFade, ResourceCog, ResourceName, ResourceLink,
+import { ButtonBar, Kebab, Dropdown, Firehose, history, kindObj, LoadingInline, MsgBox,
+  OverflowYFade, ResourceKebab, ResourceName, ResourceLink,
   resourceObjPath, StatusBox, getQueryArgument } from '../utils';
 import { isSystemRole } from './index';
 import { connectToFlags, FLAGS, flagPending } from '../../features';
@@ -56,7 +56,7 @@ const menuActions = ({subjectIndex, subjects}, startImpersonate) => {
       label: `Edit ${kind.label} Subject...`,
       href: `${resourceObjPath(obj, kind.kind)}/edit?subjectIndex=${subjectIndex}`,
     }),
-    subjects.length === 1 ? Cog.factory.Delete : (kind, binding) => ({
+    subjects.length === 1 ? Kebab.factory.Delete : (kind, binding) => ({
       label: `Delete ${kind.label} Subject...`,
       callback: () => confirmModal({
         title: `Delete ${kind.label} Subject`,
@@ -85,11 +85,15 @@ const Header = props => <ListHeader>
   <ColHead {...props} className="col-md-2 col-sm-4 col-xs-6" sortField="metadata.namespace">Namespace</ColHead>
 </ListHeader>;
 
-export const BindingName = connect(null, {startImpersonate: UIActions.startImpersonate})(
+
+export const BindingName = ({binding}) => {
+  return <ResourceLink kind={bindingKind(binding)} name={binding.metadata.name} namespace={binding.metadata.namespace} className="co-resource-link__resource-name" />;
+};
+
+export const BindingKebab = connect(null, {startImpersonate: UIActions.startImpersonate})(
   ({binding, startImpersonate}) => <React.Fragment>
     {binding.subjects &&
-      <ResourceCog actions={menuActions(binding, startImpersonate)} kind={bindingKind(binding)} resource={binding} />}
-    <ResourceLink kind={bindingKind(binding)} name={binding.metadata.name} namespace={binding.metadata.namespace} className="co-resource-link__resource-name" />
+      <ResourceKebab actions={menuActions(binding, startImpersonate)} kind={bindingKind(binding)} resource={binding} />}
   </React.Fragment>);
 
 export const RoleLink = ({binding}) => {
@@ -116,6 +120,9 @@ const Row = ({obj: binding}) => <ResourceRow obj={binding}>
   <OverflowYFade className="col-md-2 col-sm-4 col-xs-6 co-break-word">
     {binding.metadata.namespace ? <ResourceLink kind="Namespace" name={binding.metadata.namespace} /> : 'all'}
   </OverflowYFade>
+  <div className="co-resource-kebab">
+    <BindingKebab binding={binding} />
+  </div>
 </ResourceRow>;
 
 const EmptyMsg = () => <MsgBox title="No Role Bindings Found" detail="Roles grant access to types of objects in the cluster. Roles are applied to a group or user via a Role Binding." />;

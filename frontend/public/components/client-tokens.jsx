@@ -4,7 +4,7 @@ import * as React from 'react';
 import { coFetch, coFetchJSON } from '../co-fetch';
 import { SafetyFirst } from './safety-first';
 import { confirmModal } from './modals';
-import { Cog, Timestamp, EmptyBox, LoadingInline, LoadError } from './utils';
+import { Kebab, Timestamp, EmptyBox, LoadingInline, LoadError } from './utils';
 
 export class ClientTokensContainer extends SafetyFirst {
   constructor(props){
@@ -62,7 +62,7 @@ const ClientRow = ({client, onTokenRevocation}) => {
   const options = [RevokeToken(client.client_id, onTokenRevocation)];
   return <div className="row co-resource-list__item">
     <div className="col-xs-4">
-      <Cog options={options} />&nbsp;{client.client_id}
+      <Kebab options={options} />&nbsp;{client.client_id}
     </div>
     <div className="col-xs-4">
       <Timestamp timestamp={client.created_at} isUnix={true} />

@@ -6,14 +6,14 @@ import { K8sResourceKindReference, referenceFor } from '../module/k8s';
 import { startBuild } from '../module/k8s/builds';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
 import { errorModal } from './modals';
-import { BuildHooks, BuildStrategy, Cog, SectionHeading, LabelList, history, navFactory, ResourceCog, ResourceLink, resourceObjPath, ResourceSummary, WebhookTriggers } from './utils';
+import { BuildHooks, BuildStrategy, Kebab, SectionHeading, LabelList, history, navFactory, ResourceKebab, ResourceLink, resourceObjPath, ResourceSummary, WebhookTriggers } from './utils';
 import { BuildsPage, BuildEnvironmentComponent, BuildStrategyType } from './build';
 import { fromNow } from './utils/datetime';
 import { ResourceEventStream } from './events';
 
 const BuildConfigsReference: K8sResourceKindReference = 'BuildConfig';
 
-const { EditEnvironment, common } = Cog.factory;
+const { EditEnvironment, common } = Kebab.factory;
 
 const startBuildAction = (kind, buildConfig) => ({
   label: 'Start Build',
@@ -73,8 +73,7 @@ const BuildConfigsHeader = props => <ListHeader>
 </ListHeader>;
 
 const BuildConfigsRow: React.SFC<BuildConfigsRowProps> = ({obj}) => <div className="row co-resource-list__item">
-  <div className="col-sm-3 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={BuildConfigsReference} resource={obj} />
+  <div className="col-sm-3 col-xs-6">
     <ResourceLink kind={BuildConfigsReference} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
   </div>
   <div className="col-sm-3 col-xs-6 co-break-word">
@@ -85,6 +84,9 @@ const BuildConfigsRow: React.SFC<BuildConfigsRowProps> = ({obj}) => <div classNa
   </div>
   <div className="col-sm-3 hidden-xs">
     { fromNow(obj.metadata.creationTimestamp) }
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={BuildConfigsReference} resource={obj} />
   </div>
 </div>;
 

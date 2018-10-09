@@ -12,12 +12,12 @@ import {
 } from './factory';
 import {
   AsyncComponent,
-  Cog,
+  Kebab,
   ContainerTable,
   detailsPage,
   LabelList,
   navFactory,
-  ResourceCog,
+  ResourceKebab,
   ResourceLink,
   ResourceOverviewHeading,
   ResourceSummary,
@@ -25,7 +25,7 @@ import {
   Selector
 } from './utils';
 
-const menuActions = [Cog.factory.EditEnvironment, ...Cog.factory.common];
+const menuActions = [Kebab.factory.EditEnvironment, ...Kebab.factory.common];
 
 const DaemonSetHeader = props => <ListHeader>
   <ColHead {...props} className="col-lg-2 col-md-3 col-sm-4 col-xs-6" sortField="metadata.name">Name</ColHead>
@@ -37,7 +37,6 @@ const DaemonSetHeader = props => <ListHeader>
 
 const DaemonSetRow = ({obj: daemonset}) => <ResourceRow obj={daemonset}>
   <div className="col-lg-2 col-md-3 col-sm-4 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind="DaemonSet" resource={daemonset} />
     <ResourceLink kind="DaemonSet" name={daemonset.metadata.name} namespace={daemonset.metadata.namespace} title={daemonset.metadata.uid} />
   </div>
   <div className="col-lg-2 col-md-3 col-sm-4 col-xs-6 co-break-word">
@@ -53,6 +52,9 @@ const DaemonSetRow = ({obj: daemonset}) => <ResourceRow obj={daemonset}>
   </div>
   <div className="col-lg-3 hidden-md hidden-sm hidden-xs">
     <Selector selector={daemonset.spec.selector} namespace={daemonset.metadata.namespace} />
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind="DaemonSet" resource={daemonset} />
   </div>
 </ResourceRow>;
 

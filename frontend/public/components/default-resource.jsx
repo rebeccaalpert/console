@@ -6,17 +6,17 @@ import { fromNow } from './utils/datetime';
 import { referenceFor, kindForReference } from '../module/k8s';
 import { connectToModel } from '../kinds';
 import {
-  Cog,
+  Kebab,
   kindObj,
   navFactory,
-  ResourceCog,
+  ResourceKebab,
   ResourceLink,
   ResourceOverviewHeading,
   ResourceSummary,
   SectionHeading
 } from './utils';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const Header = props => <ListHeader>
@@ -28,7 +28,6 @@ const Header = props => <ListHeader>
 const RowForKind = kind => function RowForKind_ ({obj}) {
   return <div className="row co-resource-list__item">
     <div className="col-xs-6 col-sm-4 co-resource-link-wrapper">
-      <ResourceCog actions={menuActions} kind={referenceFor(obj) || kind} resource={obj} />
       <ResourceLink kind={kind} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
     </div>
     <div className="col-xs-6 col-sm-4 co-break-word">
@@ -39,6 +38,9 @@ const RowForKind = kind => function RowForKind_ ({obj}) {
     </div>
     <div className="col-xs-6 col-sm-4 hidden-xs">
       { fromNow(obj.metadata.creationTimestamp) }
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={menuActions} kind={referenceFor(obj) || kind} resource={obj} />
     </div>
   </div>;
 };

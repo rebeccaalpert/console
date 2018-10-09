@@ -12,7 +12,7 @@ import { SpecDescriptor } from './descriptors/spec';
 import { StatusCapability, Descriptor } from './descriptors/types';
 import { Resources } from './k8s-resource';
 import { List, MultiListPage, ListHeader, ColHead, DetailsPage, CompactExpandButtons } from '../factory';
-import { ResourceLink, ResourceSummary, StatusBox, navFactory, Timestamp, LabelList, ResourceIcon, MsgBox, ResourceCog, Cog } from '../utils';
+import { ResourceLink, ResourceSummary, StatusBox, navFactory, Timestamp, LabelList, ResourceIcon, MsgBox, ResourceKebab, Kebab } from '../utils';
 import { connectToModel } from '../../kinds';
 import { kindForReference, K8sResourceKind, OwnerReference, K8sKind, referenceFor, GroupVersionKind, referenceForModel } from '../../module/k8s';
 import { ClusterServiceVersionModel } from '../../models';
@@ -42,7 +42,6 @@ export const ClusterServiceVersionResourceRow: React.SFC<ClusterServiceVersionRe
 
   return <div className="row co-resource-list__item">
     <div className="col-xs-2 co-resource-link-wrapper">
-      <ResourceCog actions={Cog.factory.common} kind={referenceFor(obj)} resource={obj} />
       <ClusterServiceVersionResourceLink obj={obj} />
     </div>
     <div className="col-xs-2">
@@ -59,6 +58,9 @@ export const ClusterServiceVersionResourceRow: React.SFC<ClusterServiceVersionRe
     </div>
     <div className="col-xs-2">
       <Timestamp timestamp={obj.metadata.creationTimestamp} />
+    </div>
+    <div className="co-resource-kebab">
+      <ResourceKebab actions={Kebab.factory.common} kind={referenceFor(obj)} resource={obj} />
     </div>
   </div>;
 };
@@ -204,7 +206,7 @@ export const ClusterServiceVersionResourcesDetailsPage: React.SFC<ClusterService
   resources={[
     {kind: referenceForModel(ClusterServiceVersionModel), name: props.match.params.appName, namespace: props.namespace, isList: false, prop: 'csv'},
   ]}
-  menuActions={Cog.factory.common}
+  menuActions={Kebab.factory.common}
   breadcrumbsFor={() => [
     {name: props.match.params.appName, path: `${props.match.url.split('/').filter((v, i) => i <= props.match.path.split('/').indexOf(':appName')).join('/')}/instances`},
     {name: `${kindForReference(props.kind)} Details`, path: `${props.match.url}`},

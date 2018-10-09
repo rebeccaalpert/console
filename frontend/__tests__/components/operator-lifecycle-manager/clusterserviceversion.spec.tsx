@@ -9,7 +9,7 @@ import { ClusterServiceVersionsDetailsPage, ClusterServiceVersionsDetailsPagePro
 import { ClusterServiceVersionKind, ClusterServiceVersionLogo, ClusterServiceVersionLogoProps, referenceForCRDDesc } from '../../../public/components/operator-lifecycle-manager';
 import { DetailsPage, ListPage, ListHeader, ColHead, List } from '../../../public/components/factory';
 import { testClusterServiceVersion } from '../../../__mocks__/k8sResourcesMocks';
-import { Timestamp, OverflowLink, Dropdown, MsgBox, ResourceLink, ResourceCog, ErrorBoundary, LoadingBox } from '../../../public/components/utils';
+import { Timestamp, OverflowLink, Dropdown, MsgBox, ResourceLink, ResourceKebab, ErrorBoundary, LoadingBox } from '../../../public/components/utils';
 import { referenceForModel } from '../../../public/module/k8s';
 import { ClusterServiceVersionModel } from '../../../public/models';
 
@@ -57,12 +57,12 @@ describe(ClusterServiceVersionRow.displayName, () => {
     expect(wrapper.find(ErrorBoundary).exists()).toBe(true);
   });
 
-  it('renders `ResourceCog` with actions', () => {
-    const col = wrapper.find('.row').childAt(0);
+  it('renders `ResourceKebab` with actions', () => {
+    const col = wrapper.find('.row');
 
-    expect(col.find(ResourceCog).props().resource).toEqual(testClusterServiceVersion);
-    expect(col.find(ResourceCog).props().kind).toEqual(referenceForModel(ClusterServiceVersionModel));
-    expect(col.find(ResourceCog).props().actions.length).toEqual(2);
+    expect(col.find(ResourceKebab).props().resource).toEqual(testClusterServiceVersion);
+    expect(col.find(ResourceKebab).props().kind).toEqual(referenceForModel(ClusterServiceVersionModel));
+    expect(col.find(ResourceKebab).props().actions.length).toEqual(2);
   });
 
   it('renders clickable column for app logo and name', () => {

@@ -5,7 +5,7 @@ import * as semver from 'semver';
 // eslint-disable-next-line no-unused-vars
 import { K8sResourceKind, K8sResourceKindReference } from '../module/k8s';
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, SectionHeading, LabelList, navFactory, Overflow, ResourceCog, ResourceLink, ResourceSummary, history, Timestamp } from './utils';
+import { Kebab, SectionHeading, LabelList, navFactory, Overflow, ResourceKebab, ResourceLink, ResourceSummary, history, Timestamp } from './utils';
 import { fromNow } from './utils/datetime';
 
 const ImageStreamsReference: K8sResourceKindReference = 'ImageStream';
@@ -78,7 +78,7 @@ const actionButtons = [
   createApplication,
 ];
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const ImageStreamTagsRow: React.SFC<ImageStreamTagsRowProps> = ({imageStream, specTag, statusTag}) => {
@@ -170,7 +170,6 @@ const ImageStreamsHeader = props => <ListHeader>
 
 const ImageStreamsRow: React.SFC<ImageStreamsRowProps> = ({obj}) => <div className="row co-resource-list__item">
   <div className="col-sm-3 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={ImageStreamsReference} resource={obj} />
     <ResourceLink kind={ImageStreamsReference} name={obj.metadata.name} namespace={obj.metadata.namespace} title={obj.metadata.name} />
   </div>
   <div className="col-sm-3 col-xs-6 co-break-word">
@@ -181,6 +180,9 @@ const ImageStreamsRow: React.SFC<ImageStreamsRowProps> = ({obj}) => <div classNa
   </div>
   <div className="col-sm-3 hidden-xs">
     { fromNow(obj.metadata.creationTimestamp) }
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={ImageStreamsReference} resource={obj} />
   </div>
 </div>;
 

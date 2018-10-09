@@ -3,7 +3,7 @@ import * as React from 'react';
 import { safeDump } from 'js-yaml';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage, ResourceRow } from './factory';
-import { Cog, SectionHeading, navFactory, ResourceCog, ResourceLink, ResourceSummary } from './utils';
+import { Kebab, SectionHeading, navFactory, ResourceKebab, ResourceLink, ResourceSummary } from './utils';
 import { fromNow } from './utils/datetime';
 import { k8sGet } from '../module/k8s';
 import { SecretModel } from '../models';
@@ -61,7 +61,7 @@ const KubeConfigify = (kind, sa) => ({
     });
   },
 });
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [KubeConfigify, ...common];
 
 const Header = props => <ListHeader>
@@ -77,7 +77,6 @@ const ServiceAccountRow = ({obj: serviceaccount}) => {
   return (
     <ResourceRow obj={serviceaccount}>
       <div className="col-sm-4 col-xs-6 co-resource-link-wrapper">
-        <ResourceCog actions={menuActions} kind="ServiceAccount" resource={serviceaccount} />
         <ResourceLink kind="ServiceAccount" name={name} namespace={namespace} title={uid} />
       </div>
       <div className="col-sm-4 col-xs-6 co-break-word">
@@ -88,6 +87,9 @@ const ServiceAccountRow = ({obj: serviceaccount}) => {
       </div>
       <div className="col-sm-2 hidden-xs">
         {fromNow(creationTimestamp)}
+      </div>
+      <div className="co-resource-kebab">
+        <ResourceKebab actions={menuActions} kind="ServiceAccount" resource={serviceaccount} />
       </div>
     </ResourceRow>
   );

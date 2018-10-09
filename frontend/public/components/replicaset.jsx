@@ -4,11 +4,11 @@ import * as React from 'react';
 import * as _ from 'lodash-es';
 
 import { DetailsPage, List, ListPage, WorkloadListHeader, WorkloadListRow } from './factory';
-import { Cog, ContainerTable, navFactory, SectionHeading, ResourceSummary, ResourcePodCount, AsyncComponent } from './utils';
+import { Kebab, ContainerTable, navFactory, SectionHeading, ResourceSummary, ResourcePodCount, AsyncComponent } from './utils';
 import { breadcrumbsForOwnerRefs } from './utils/breadcrumbs';
 import { ResourceEventStream } from './events';
 
-const {ModifyCount, EditEnvironment, common} = Cog.factory;
+const {ModifyCount, EditEnvironment, common} = Kebab.factory;
 export const replicaSetMenuActions = [ModifyCount, EditEnvironment, ...common];
 
 const Details = ({obj: replicaSet}) => {

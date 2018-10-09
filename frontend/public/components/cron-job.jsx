@@ -2,10 +2,10 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 
 import { ColHead, DetailsPage, List, ListHeader, ListPage } from './factory';
-import { Cog, ContainerTable, navFactory, ResourceCog, SectionHeading, ResourceLink, ResourceSummary, Timestamp } from './utils';
+import { Kebab, ContainerTable, navFactory, ResourceKebab, SectionHeading, ResourceLink, ResourceSummary, Timestamp } from './utils';
 import { ResourceEventStream } from './events';
 
-const { common } = Cog.factory;
+const { common } = Kebab.factory;
 const menuActions = [...common];
 
 const Header = props => <ListHeader>
@@ -19,7 +19,6 @@ const Header = props => <ListHeader>
 const kind = 'CronJob';
 const Row = ({obj: cronjob}) => <div className="row co-resource-list__item">
   <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6 co-resource-link-wrapper">
-    <ResourceCog actions={menuActions} kind={kind} resource={cronjob} />
     <ResourceLink kind={kind} name={cronjob.metadata.name} title={cronjob.metadata.name} namespace={cronjob.metadata.namespace} />
   </div>
   <div className="col-lg-3 col-md-3 col-sm-4 col-xs-6 co-break-word">
@@ -33,6 +32,9 @@ const Row = ({obj: cronjob}) => <div className="row co-resource-list__item">
   </div>
   <div className="col-lg-2 hidden-md hidden-sm hidden-xs">
     {_.get(cronjob.spec, 'startingDeadlineSeconds', '-')}
+  </div>
+  <div className="co-resource-kebab">
+    <ResourceKebab actions={menuActions} kind={kind} resource={cronjob} />
   </div>
 </div>;
 
