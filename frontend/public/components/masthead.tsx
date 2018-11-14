@@ -16,12 +16,29 @@ import { Dropdown, ActionsMenu } from './utils';
 import { openshiftHelpBase } from './utils/documentation';
 import { k8sVersion } from '../module/status';
 //import { AsyncComponent } from './utils';
-import { createModalLauncher } from './factory/modal';
+//import { createPFModalLauncher } from './factory/modal';
+import * as ReactDOM from 'react-dom';
 
 import { coFetchJSON } from '../co-fetch';
 import { SafetyFirst } from './safety-first';
 
 const developerConsoleURL = (window as any).SERVER_FLAGS.developerConsoleURL;
+
+
+export type CreateModalLauncherProps = {
+};
+
+export type CreateModalLauncher = <P extends FlagsProps>(C: React.ComponentClass<P>) =>
+  (props: Omit<P, keyof FlagsProps> & CreateModalLauncherProps) => {result: Promise<{}>};
+
+export const createModalLauncher: CreateModalLauncher = (Component) => (props) => {
+  const modalContainer = document.getElementById('modal-container');
+
+  const result = new Promise(resolve => {
+    ReactDOM.render(<AboutModal />, modalContainer);
+  });
+  return {result};
+};
 
 const BrandingDetails = () => {
   let backgroundImg, logoImg, logoAlt, modalLogoImg, modalLogoAlt, productTitle;
@@ -77,9 +94,6 @@ class AboutModal_ extends React.Component<AboutModalProps, AboutModalState> {
 
     componentDidMount() {
       this._checkKubernetesVersion();
-      if (this.props.openshiftFlag) {
-        this._checkOpenShiftVersion();
-      }
       this.setState({ showAboutModal: true });
     }
 
@@ -103,6 +117,9 @@ class AboutModal_ extends React.Component<AboutModalProps, AboutModalState> {
     render() {
       const {openshiftVersion, kubernetesVersion, showAboutModal} = this.state;
       const details = BrandingDetails();
+      if (props.flags[FLAGS.OPENSHIFT]) {
+        this._checkOpenShiftVersion();
+      }
 
       return <PFAboutModal className={classNames('co-masthead__modal', {'co-masthead__modal--upstream': details.backgroundImg})} logo={details.logoImg} altLogo={details.logoAlt} productTitle={details.productTitle} show={showAboutModal} onHide={this.closeAboutModal}>
         <strong>About</strong>
@@ -119,15 +136,7 @@ class AboutModal_ extends React.Component<AboutModalProps, AboutModalState> {
     }
   }
 
-const AboutModal = connectToFlags(FLAGS.OPENSHIFT)((props: FlagsProps) => {
-  if (flagPending(props.flags[FLAGS.OPENSHIFT]) || flagPending(props.flags[FLAGS.AUTH_ENABLED])) {
-    return null;
-  }
-
-  if (props.flags[FLAGS.OPENSHIFT]) {
-    return <AboutModal_ openshiftFlag={props.flags[FLAGS.OPENSHIFT]} />;
-  }
-});
+const AboutModal = connectToFlags(FLAGS.OPENSHIFT)(AboutModal_);
 
 const AB = createModalLauncher(AboutModal);
 
@@ -293,7 +302,7 @@ export type HelpMenuState = {
 };
 
 export type AboutModalProps = {
-  openshiftFlag: boolean,
+  flags: {[name: string]: boolean},
 };
 
 export type AboutModalState = {
