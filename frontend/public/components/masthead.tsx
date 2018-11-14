@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AboutModal } from 'patternfly-react';
+import { AboutModal as PFAboutModal } from 'patternfly-react';
 import * as classNames from 'classnames';
 
 import * as _ from 'lodash-es';
@@ -15,83 +15,13 @@ import { authSvc } from '../module/auth';
 import { Dropdown, ActionsMenu } from './utils';
 import { openshiftHelpBase } from './utils/documentation';
 import { k8sVersion } from '../module/status';
+//import { AsyncComponent } from './utils';
+import { createModalLauncher } from './factory/modal';
 
 import { coFetchJSON } from '../co-fetch';
 import { SafetyFirst } from './safety-first';
 
 const developerConsoleURL = (window as any).SERVER_FLAGS.developerConsoleURL;
-
-class HelpMenu extends React.Component<HelpMenuProps, HelpMenuState> {
-  constructor (props) {
-    super(props);
-    this.state = {
-      showAboutModal: false,
-      openshiftVersion: null,
-      kubernetesVersion: null,
-    };
-    this.closeAboutModal = this.closeAboutModal.bind(this);
-    this.openAboutModal = this.openAboutModal.bind(this);
-    this.openDocumentation = this.openDocumentation.bind(this);
-  }
-
-  _checkOpenShiftVersion() {
-    const openshiftFlag = this.props.openshiftFlag;
-    if (openshiftFlag) {
-      coFetchJSON('api/kubernetes/version/openshift')
-        .then((data) => {
-          this.setState({openshiftVersion: data.gitVersion});
-        }).catch(() => this.setState({openshiftVersion: 'unknown'}));
-    }
-  }
-
-  _checkKubernetesVersion() {
-    k8sVersion()
-      .then((data) => this.setState({kubernetesVersion: data.gitVersion}))
-      .catch(() => this.setState({kubernetesVersion: 'unknown'}));
-  }
-
-  closeAboutModal() {
-    this.setState({ showAboutModal: false });
-  }
-
-  openAboutModal() {
-    this._checkKubernetesVersion();
-    this._checkOpenShiftVersion();
-    this.setState({ showAboutModal: true });
-  }
-
-  openDocumentation() {
-    window.open(openshiftHelpBase, '_blank').opener = null;
-  }
-
-  render() {
-    const {backgroundImg, logoAlt, logoImg, title} = this.props;
-    const {openshiftVersion, kubernetesVersion} = this.state;
-    const {showAboutModal} = this.state;
-    return <React.Fragment>
-      <ActionsMenu
-        actions={[
-          {label: 'Documentation', callback: this.openDocumentation},
-          {label: 'About', callback: this.openAboutModal}]}
-        buttonClassName="nav-item-iconic"
-        noButton
-        noCaret
-        title={<i className="fa fa-question-circle-o co-masthead__help-icon" />} />
-      <AboutModal className={classNames('co-masthead__modal', {'co-masthead__modal--upstream': backgroundImg})} logo={logoImg} altLogo={logoAlt} productTitle={title} show={showAboutModal} onHide={this.closeAboutModal}>
-        <strong>About</strong>
-        <p>{title === 'OKD' ? 'OKD' : 'OpenShift'} is Red Hat&apos;s container application platform that allows developers to quickly develop, host, and scale applications in a cloud environment.</p>
-        {(openshiftVersion || kubernetesVersion) &&
-          <React.Fragment>
-            <strong>Version</strong>
-            <AboutModal.Versions className="co-masthead__modal--version">
-              {openshiftVersion && <AboutModal.VersionItem label={`${title === 'OKD' ? 'OKD' : 'OpenShift'} Master`} versionText={openshiftVersion} />}
-              {kubernetesVersion && <AboutModal.VersionItem label="Kubernetes Master" versionText={kubernetesVersion} />}
-            </AboutModal.Versions>
-          </React.Fragment>}
-      </AboutModal>
-    </React.Fragment>;
-  }
-}
 
 const BrandingDetails = () => {
   let backgroundImg, logoImg, logoAlt, modalLogoImg, modalLogoAlt, productTitle;
@@ -133,6 +63,97 @@ const BrandingDetails = () => {
 
   return ({'backgroundImg': backgroundImg, 'logoImg': logoImg, 'logoAlt': logoAlt, 'modalLogo': modalLogoImg, 'modalLogoAlt': modalLogoAlt, 'productTitle': productTitle});
 };
+
+class AboutModal_ extends React.Component<AboutModalProps, AboutModalState> {
+    constructor (props) {
+      super(props);
+      this.state = {
+        showAboutModal: true,
+        openshiftVersion: null,
+        kubernetesVersion: null,
+      };
+      this.closeAboutModal = this.closeAboutModal.bind(this);
+    }
+
+    componentDidMount() {
+      this._checkKubernetesVersion();
+      if (this.props.openshiftFlag) {
+        this._checkOpenShiftVersion();
+      }
+      this.setState({ showAboutModal: true });
+    }
+
+    _checkOpenShiftVersion() {
+      coFetchJSON('api/kubernetes/version/openshift')
+        .then((data) => {
+          this.setState({openshiftVersion: data.gitVersion});
+        }).catch(() => this.setState({openshiftVersion: 'unknown'}));
+    }
+
+    _checkKubernetesVersion() {
+      k8sVersion()
+        .then((data) => this.setState({kubernetesVersion: data.gitVersion}))
+        .catch(() => this.setState({kubernetesVersion: 'unknown'}));
+    }
+
+    closeAboutModal() {
+      this.setState({ showAboutModal: false });
+    }
+
+    render() {
+      const {openshiftVersion, kubernetesVersion, showAboutModal} = this.state;
+      const details = BrandingDetails();
+
+      return <PFAboutModal className={classNames('co-masthead__modal', {'co-masthead__modal--upstream': details.backgroundImg})} logo={details.logoImg} altLogo={details.logoAlt} productTitle={details.productTitle} show={showAboutModal} onHide={this.closeAboutModal}>
+        <strong>About</strong>
+        <p>{details.productTitle === 'OKD' ? 'OKD' : 'OpenShift'} is Red Hat&apos;s container application platform that allows developers to quickly develop, host, and scale applications in a cloud environment.</p>
+        {(openshiftVersion || kubernetesVersion) &&
+          <React.Fragment>
+            <strong>Version</strong>
+            <PFAboutModal.Versions className="co-masthead__modal--version">
+              {openshiftVersion && <PFAboutModal.VersionItem label={`${details.productTitle === 'OKD' ? 'OKD' : 'OpenShift'} Master`} versionText={openshiftVersion} />}
+              {kubernetesVersion && <PFAboutModal.VersionItem label="Kubernetes Master" versionText={kubernetesVersion} />}
+            </PFAboutModal.Versions>
+          </React.Fragment>}
+      </PFAboutModal>;
+    }
+  }
+
+const AboutModal = connectToFlags(FLAGS.OPENSHIFT)((props: FlagsProps) => {
+  if (flagPending(props.flags[FLAGS.OPENSHIFT]) || flagPending(props.flags[FLAGS.AUTH_ENABLED])) {
+    return null;
+  }
+
+  if (props.flags[FLAGS.OPENSHIFT]) {
+    return <AboutModal_ openshiftFlag={props.flags[FLAGS.OPENSHIFT]} />;
+  }
+});
+
+const AB = createModalLauncher(AboutModal);
+
+class HelpMenu extends React.Component<HelpMenuProps, HelpMenuState> {
+  constructor (props) {
+    super(props);
+    this.openDocumentation = this.openDocumentation.bind(this);
+  }
+
+  openDocumentation() {
+    window.open(openshiftHelpBase, '_blank').opener = null;
+  }
+
+  render() {
+    return <React.Fragment>
+      <ActionsMenu
+        actions={[
+          {label: 'Documentation', callback: this.openDocumentation},
+          {label: 'About', callback: AB}]}
+        buttonClassName="nav-item-iconic"
+        noButton
+        noCaret
+        title={<i className="fa fa-question-circle-o co-masthead__help-icon" />} />
+    </React.Fragment>;
+  }
+}
 
 const HelpMenuWrapper = connectToFlags(FLAGS.OPENSHIFT)((props: FlagsProps) => {
   const details = BrandingDetails();
@@ -268,6 +289,14 @@ export type HelpMenuProps = {
 };
 
 export type HelpMenuState = {
+  showAboutModal: boolean,
+};
+
+export type AboutModalProps = {
+  openshiftFlag: boolean,
+};
+
+export type AboutModalState = {
   kubernetesVersion: string,
   openshiftVersion: string,
   showAboutModal: boolean,
