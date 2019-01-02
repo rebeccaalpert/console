@@ -20,6 +20,7 @@ import {
   kindObj,
   PageHeading,
 } from '../utils';
+import { UIActions } from '../../ui/ui-actions';
 
 export const CompactExpandButtons = ({expand = false, onExpandChange = _.noop}) => <div className="btn-group btn-group-sm" data-toggle="buttons">
   <label className={classNames('btn compaction-btn', expand ? 'btn-default' : 'btn-primary')}>
@@ -56,9 +57,64 @@ export const TextFilter = ({label, onChange, defaultValue, style, className, aut
 
 TextFilter.displayName = 'TextFilter';
 
+const getFilteredRows = (_filters, objects) => {
+  if (_.isEmpty(_filters)) {
+    console.log("filtered rows - empty");
+    console.log(objects);
+    return objects;
+  }
+
+  _.each(_filters, (value, name) => {
+    const filter = listFilters[name];
+    if (_.isFunction(filter)) {
+      objects = _.filter(objects, o => filter(value, o));
+    }
+  });
+
+  console.log("filtered rows");
+  console.log(objects);
+
+  return objects;
+};
+
+const stateToProps = ({UI}, {data = [], defaultSortField = 'metadata.name', defaultSortFunc = undefined, filters = {}, loaded = false, reduxID = null, reduxIDs = null, staticFilters = [{}]}) => {
+  const allFilters = staticFilters ? Object.assign({}, filters, ...staticFilters) : filters;
+  let newData = getFilteredRows(allFilters, data);
+  console.log("stateToProps");
+  console.log(newData);
+
+  const listId = reduxIDs ? reduxIDs.join(',') : reduxID;
+  // Only default to 'metadata.name' if no `defaultSortFunc`
+  const currentSortField = UI.getIn(['listSorts', listId, 'field'], defaultSortFunc ? undefined : defaultSortField);
+  const currentSortFunc = UI.getIn(['listSorts', listId, 'func'], defaultSortFunc);
+  const currentSortOrder = UI.getIn(['listSorts', listId, 'orderBy'], 'asc');
+
+  if (loaded) {
+    let sortBy = 'metadata.name';
+    if (currentSortField) {
+      // Sort resources by one of their fields as a string
+      sortBy = resource => sorts.string(_.get(resource, currentSortField, ''));
+    } else if (currentSortFunc && sorts[currentSortFunc]) {
+      // Sort resources by a function in the 'sorts' object
+      sortBy = sorts[currentSortFunc];
+    }
+
+    // Always set the secondary sort criteria to ascending by name
+    newData = _.orderBy(newData, [sortBy, 'metadata.name'], [currentSortOrder, 'asc']);
+  }
+
+  return {
+    currentSortField,
+    currentSortFunc,
+    currentSortOrder,
+    data: newData,
+    listId,
+  };
+};
+
 // TODO (jon) make this into "withListPageFilters" HOC
 /** @augments {React.PureComponent<{ListComponent: React.ComponentType<any>, kinds: string[], flatten?: function, data?: any[], rowFilters?: any[]}>} */
-export class ListPageWrapper_ extends React.PureComponent {
+class ListPageWrapper_ extends React.PureComponent {
   getFilteredRows(filter, objects) {
     return _.filter(objects, o => o.metadata.name.includes(filter));
   }
@@ -110,6 +166,8 @@ ListPageWrapper_.propTypes = {
   rowFilters: PropTypes.array,
   staticFilters: PropTypes.array,
 };
+
+export default connect(stateToProps, {sortList: UIActions.sortList})(ListPageWrapper_);
 
 export const FireMan_ = connect(null, {filterList: k8sActions.filterList})(
   class ConnectedFireMan extends React.PureComponent {
