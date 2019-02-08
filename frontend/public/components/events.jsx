@@ -13,13 +13,13 @@ import {
   CellMeasurer,
 } from 'react-virtualized';
 
+import { Firehose } from './utils';
 import { namespaceProptype } from '../propTypes';
 import { ResourceListDropdown } from './resource-dropdown';
 import { SafetyFirst } from './safety-first';
 import { TextFilter } from './factory';
 import { watchURL } from '../module/k8s';
 import { withStartGuide } from './start-guide';
-import { WSFactory } from '../module/ws-factory';
 import { EventModel, NodeModel } from '../models';
 import { connectToFlags, FLAGS } from '../features';
 import {
@@ -208,18 +208,20 @@ const measurementCache = new CellMeasurerCache({
   minHeight: 109, /* height of event with a one-line event message on desktop */
 });
 
-class EventStream extends SafetyFirst {
+class EventStream_ extends React.Component {
   constructor(props) {
     super(props);
     this.messages = {};
+    this.unprocessedMessages = {};
     this.state = {
       active: true,
-      sortedMessages: [],
-      filteredEvents: [],
       error: null,
+      filteredEvents: [],
       loading: true,
       oldestTimestamp: new Date(),
-    };
+      sortedMessages: [],
+      hasEventList: false,
+    }
     this.toggleStream = this.toggleStream_.bind(this);
     this.rowRenderer = function rowRenderer({index, style, key, parent}) {
       const event = this.state.filteredEvents[index];
@@ -236,75 +238,11 @@ class EventStream extends SafetyFirst {
     }.bind(this);
   }
 
-  wsInit(ns) {
-    const params = {
-      ns,
-      fieldSelector: this.props.fieldSelector,
-    };
-
-    this.ws = new WSFactory(`${ns || 'all'}-sysevents`, {
-      host: 'auto',
-      reconnect: true,
-      path: watchURL(EventModel, params),
-      jsonParse: true,
-      bufferFlushInterval: flushInterval,
-      bufferMax: maxMessages,
-    })
-      .onbulkmessage(events => {
-        events.forEach(({object, type}) => {
-          const uid = object.metadata.uid;
-
-          switch (type) {
-            case 'ADDED':
-            case 'MODIFIED':
-              if (this.messages[uid] && this.messages[uid].count > object.count) {
-                // We already have a more recent version of this message stored, so skip this one
-                return;
-              }
-              this.messages[uid] = object;
-              break;
-            case 'DELETED':
-              delete this.messages[uid];
-              break;
-            default:
-              // eslint-disable-next-line no-console
-              console.error(`UNHANDLED EVENT: ${type}`);
-              return;
-          }
-        });
-        this.flushMessages();
-        this.resizeEvents();
-      })
-      .onopen(() => {
-        this.messages = {};
-        this.setState({error: false, loading: false, sortedMessages: [], filteredEvents: []});
-      })
-      .onclose(evt => {
-        if (evt && evt.wasClean === false) {
-          this.setState({error: evt.reason || 'Connection did not close cleanly.'});
-        }
-        this.messages = {};
-        this.setState({sortedMessages: [], filteredEvents: []});
-      })
-      .onerror(() => {
-        this.messages = {};
-        this.setState({error: true, sortedMessages: [], filteredEvents: []});
-      });
+  toggleStream_() {
+    this.setState({active: !this.state.active});
   }
 
-  componentDidMount() {
-    super.componentDidMount();
-    if (!this.props.mock) {
-      this.wsInit(this.props.namespace);
-    }
-  }
-
-  componentWillUnmount() {
-    super.componentWillUnmount();
-    this.ws && this.ws.destroy();
-  }
-
-  static filterEvents(messages, {kind, category, filter, textFilter}) {
+  static filterEvents(messages, {kind, category, filter, textFilter}, filterByNamespace) {
     // Don't use `fuzzy` because it results in some surprising matches in long event messages.
     // Instead perform an exact substring match on each word in the text filter.
     const words = _.uniq(_.toLower(textFilter).match(/\S+/g)).sort((a, b) => {
@@ -340,6 +278,76 @@ class EventStream extends SafetyFirst {
     return _.filter(messages, f);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.namespace !== this.props.namespace) {
+      this.messages = {};
+      this.setState({
+        filteredEvents: [],
+        sortedMessages: [],
+        hasEventList: false,
+        loading: true
+      });
+    }
+    if (prevProps.obj.data.loadError !== this.props.obj.data.loadError) {
+      this.setState({error: this.props.data.loadError});
+    }
+    if (prevProps.obj.data.kind !== this.props.obj.data.kind) {
+      if (this.state.active) {
+        if (!_.isEmpty(this.unprocessedMessages)) {
+          console.log('integrate messages');
+          this.messages = Object.assign(this.messages, this.unprocessedMessages);
+          this.unprocessedMessages = {};
+        }
+        if (this.props.obj.data.kind === 'Event') {
+          const uid = this.props.obj.data.metadata.uid;
+
+          if (this.messages[uid] && this.messages[uid].count > this.props.obj.data.count) {
+            // We already have a more recent version of this message stored, so skip this one
+            return;
+          } else {
+            this.messages[uid] = this.props.obj.data;
+          }
+          this.flushMessages();
+          this.resizeEvents();
+        }
+        if (this.props.obj.data.kind === 'EventList' && !this.state.hasEventList) {
+          // map through events and remove duplicates
+          if (this.props.obj.data.items.length === 0) {
+            this.setState({sortedMessages: [], filteredMessages: [], loading: false, hasEventList: true});
+          } else {
+            for (let i = 0; i < this.props.obj.data.items.length; i++) {
+              const uid = this.props.obj.data.items[i].metadata.uid;
+              if (this.messages[uid] && this.messages[uid].count > this.props.obj.data.items[i].count) {
+                // We already have a more recent version of this message stored, so skip this one
+                return;
+              } else {
+                this.messages[uid] = this.props.obj.data.items[i];
+                this.setState({hasEventList: true, loading: false});
+              }
+            }
+            this.flushMessages();
+            this.resizeEvents();
+          }
+        }
+      } else {
+        if (this.props.obj.data.kind === 'Event') {
+          const uid = this.props.obj.data.metadata.uid;
+          if (this.unprocessedMessages[uid] && this.unprocessedMessages[uid].count > this.props.obj.data.count) {
+            // We already have a more recent version of this message stored, so skip this one
+            return;
+          } else {
+            this.unprocessedMessages[uid] = this.props.obj.data;
+          }
+        }
+        console.log('UNPROCESSED: ');
+        console.log(this.unprocessedMessages);
+      }
+    }
+    if ((prevProps.textFilter !== this.props.textFilter) || (prevProps.kind !== this.props.kind) || (prevProps.category !== this.props.category)) {
+      this.resizeEvents();
+    }
+  }
+
   static getDerivedStateFromProps(nextProps, prevState) {
     const {filter, kind, category, textFilter, loading} = prevState;
 
@@ -354,7 +362,7 @@ class EventStream extends SafetyFirst {
       active: !nextProps.mock,
       loading: !nextProps.mock && loading,
       // update the filteredEvents
-      filteredEvents: EventStream.filterEvents(prevState.sortedMessages, nextProps),
+      filteredEvents: EventStream_.filterEvents(prevState.sortedMessages, nextProps),
       // we need these for bookkeeping because getDerivedStateFromProps doesn't get prevProps
       textFilter: nextProps.textFilter,
       kind: nextProps.kind,
@@ -363,15 +371,24 @@ class EventStream extends SafetyFirst {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    // If the namespace has changed, created a new WebSocket with the new namespace
-    if (prevProps.namespace !== this.props.namespace) {
-      this.ws && this.ws.destroy();
-      this.wsInit(this.props.namespace);
-    }
-    if ((prevProps.textFilter !== this.props.textFilter) || (prevProps.kind !== this.props.kind) || (prevProps.category !== this.props.category)) {
-      this.resizeEvents();
-    }
+  // Messages can come in extremely fast when the buffer flushes.
+  // Instead of calling setState() on every single message, let onmessage()
+  // update an instance variable, and throttle the actual UI update (see constructor)
+  flushMessages() {
+    console.log('FLUSH');
+    // In addition to sorting by timestamp, secondarily sort by name so that the order is consistent when events have
+    // the same timestamp
+    const sorted = _.orderBy(this.messages, ['lastTimestamp', 'name'], ['desc', 'asc']);
+    const oldestTimestamp = _.min([this.state.oldestTimestamp, new Date(_.last(sorted).lastTimestamp)]);
+    sorted.splice(maxMessages);
+    this.setState({
+      oldestTimestamp,
+      sortedMessages: sorted,
+      filteredEvents: EventStream_.filterEvents(sorted, this.props),
+    });
+
+    // Shrink this.messages back to maxMessages messages, to stop it growing indefinitely
+    this.messages = _.keyBy(sorted, 'metadata.uid');
   }
 
   onResize() {
@@ -385,43 +402,15 @@ class EventStream extends SafetyFirst {
     }
   }
 
-  // Messages can come in extremely fast when the buffer flushes.
-  // Instead of calling setState() on every single message, let onmessage()
-  // update an instance variable, and throttle the actual UI update (see constructor)
-  flushMessages() {
-    // In addition to sorting by timestamp, secondarily sort by name so that the order is consistent when events have
-    // the same timestamp
-    const sorted = _.orderBy(this.messages, ['lastTimestamp', 'name'], ['desc', 'asc']);
-    const oldestTimestamp = _.min([this.state.oldestTimestamp, new Date(_.last(sorted).lastTimestamp)]);
-    sorted.splice(maxMessages);
-    this.setState({
-      oldestTimestamp,
-      sortedMessages: sorted,
-      filteredEvents: EventStream.filterEvents(sorted, this.props),
-    });
-
-    // Shrink this.messages back to maxMessages messages, to stop it growing indefinitely
-    this.messages = _.keyBy(sorted, 'metadata.uid');
-  }
-
-  toggleStream_() {
-    this.setState({active: !this.state.active}, () => {
-      if (this.state.active) {
-        this.ws && this.ws.unpause();
-      } else {
-        this.ws && this.ws.pause();
-      }
-    });
-  }
-
   render() {
+    let sysEventStatus, statusBtnTxt;
     const { mock, resourceEventStream } = this.props;
     const {active, error, loading, filteredEvents, sortedMessages} = this.state;
+
     const count = filteredEvents.length;
     const allCount = sortedMessages.length;
-    const noEvents = allCount === 0 && this.ws && this.ws.bufferSize() === 0;
+    const noEvents = allCount === 0
     const noMatches = allCount > 0 && count === 0;
-    let sysEventStatus, statusBtnTxt;
 
     if (noEvents || mock || (noMatches && resourceEventStream)) {
       sysEventStatus = (
@@ -443,6 +432,10 @@ class EventStream extends SafetyFirst {
       );
     }
 
+    const klass = classNames('co-sysevent-stream__timeline', {
+      'co-sysevent-stream__timeline--empty': !allCount || !count,
+    });
+
     if (error) {
       statusBtnTxt = <span className="co-sysevent-stream__connection-error">Error connecting to event stream{_.isString(error) && `: ${error}`}</span>;
       sysEventStatus = (
@@ -451,7 +444,7 @@ class EventStream extends SafetyFirst {
           <div className="cos-status-box__detail text-center">An error occurred during event retrieval. Attempting to reconnect...</div>
         </Box>
       );
-    } else if (loading) {
+    } else if (this.state.loading) {
       statusBtnTxt = <span>Loading events...</span>;
       sysEventStatus = <Loading />;
     } else if (active) {
@@ -460,9 +453,6 @@ class EventStream extends SafetyFirst {
       statusBtnTxt = <span>Event stream is paused.</span>;
     }
 
-    const klass = classNames('co-sysevent-stream__timeline', {
-      'co-sysevent-stream__timeline--empty': !allCount || !count,
-    });
     const messageCount = count < maxMessages ? `Showing ${pluralize(count, 'event')}` : `Showing ${count} of ${allCount}+ events`;
 
     return <div className="co-m-pane__body co-m-pane__body--alt">
@@ -475,14 +465,13 @@ class EventStream extends SafetyFirst {
             { messageCount }
           </div>
         </div>
-
         <div className={klass}>
           <TogglePlay active={active} onClick={this.toggleStream} className="co-sysevent-stream__timeline__btn" />
           <div className="co-sysevent-stream__timeline__end-message">
           There are no events before <Timestamp timestamp={this.state.oldestTimestamp} />
           </div>
         </div>
-        { /* Default `height` to 0 to avoid console errors from https://github.com/bvaughn/react-virtualized/issues/1158 */}
+      { /* Default `height` to 0 to avoid console errors from https://github.com/bvaughn/react-virtualized/issues/1158 */}
         { count > 0 &&
             <WindowScroller scrollElement={document.getElementById('content-scrollable')}>
               {({height, isScrolling, registerChild, onChildScroll, scrollTop}) =>
@@ -510,6 +499,19 @@ class EventStream extends SafetyFirst {
         { sysEventStatus }
       </div>
     </div>;
+  }
+}
+
+class EventStream extends React.Component {
+  render() {
+    return <Firehose resources={[{
+      kind: 'Event',
+      namespace: this.props.namespace,
+      fieldSelector: this.props.fieldSelector,
+      prop: 'obj',
+    }]}>
+      <EventStream_ namespace={this.props.namespace} {...this.props} />
+    </Firehose>;
   }
 }
 
