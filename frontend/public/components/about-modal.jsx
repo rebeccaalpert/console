@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { AboutModal as PfAboutModal, TextContent, TextList, TextListItem } from '@patternfly/react-core';
+import { AboutModal as PfAboutModal, Alert, TextContent, TextList, TextListItem } from '@patternfly/react-core';
 import { k8sVersion } from '../module/status';
+import { Link } from 'react-router-dom';
 
 import { getBrandingDetails } from './masthead';
 import { connect } from 'react-redux';
 import { clusterIDStateToProps } from '../ui/ui-reducers';
+import { ClusterUpdateStatus, getClusterUpdateStatus } from '../module/k8s';
 
 
 class AboutModal_ extends React.Component {
@@ -26,9 +28,11 @@ class AboutModal_ extends React.Component {
   }
 
   render() {
-    const {isOpen, closeAboutModal} = this.props;
+    const {isOpen, clusterID, closeAboutModal, obj} = this.props;
     const {kubernetesVersion} = this.state;
     const details = getBrandingDetails();
+    const status = getClusterUpdateStatus(obj);
+    console.log(status);
 
     return (
       <PfAboutModal
@@ -40,13 +44,14 @@ class AboutModal_ extends React.Component {
       >
         <p>OpenShift is Red Hat&apos;s container application platform that allows developers to quickly develop, host,
           and scale applications in a cloud environment.</p>
+        {status === ClusterUpdateStatus.UpdatesAvailable && <Alert variant="info" title={<React.Fragment>Update Available. <Link onClick={closeAboutModal} to="/settings/cluster">View Cluster Settings</Link></React.Fragment>} />}
         <br />
         <TextContent>
           <TextList component="dl">
-            {this.props.clusterID &&
+            {clusterID &&
             <TextListItem component="dt">Cluster ID</TextListItem>}
-            {this.props.clusterID &&
-            <TextListItem component="dd">{this.props.clusterID}</TextListItem>}
+            {clusterID &&
+            <TextListItem component="dd">{clusterID}</TextListItem>}
             <TextListItem component="dt">Kubernetes Master Version</TextListItem>
             <TextListItem component="dd">{kubernetesVersion}</TextListItem>
           </TextList>
