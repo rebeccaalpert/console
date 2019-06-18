@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 import { Helmet } from 'react-helmet';
-import { Alert } from 'patternfly-react';
 import { match } from 'react-router';
+import { Alert } from '@patternfly/react-core';
 
 import { Firehose, history, NsDropdown, resourcePathFromModel, BreadCrumbs, StatusBox } from '../utils';
 import { referenceForModel, k8sCreate, apiVersionForModel, kindForReference, apiVersionForReference, k8sListPartialMetadata } from '../../module/k8s';
@@ -135,13 +135,15 @@ export const OperatorHubSubscribeForm: React.FC<OperatorHubSubscribeFormProps> =
     || !_.isEmpty(conflictingProvidedAPIs(selectedTargetNamespace));
 
   const formError = () => {
-    return !namespaceSupports(selectedTargetNamespace)(selectedInstallMode) && <Alert type="error">Namespace does not support install modes for this Operator.</Alert>
-      || subscriptionExists(selectedTargetNamespace) && <Alert type="error">Operator subscription for namespace &quot;{selectedTargetNamespace}&quot; already exists.</Alert>
-      || !_.isEmpty(conflictingProvidedAPIs(selectedTargetNamespace)) && <Alert type="error">
-        Installing Operator in selected namespace would cause conflicts with another Operator providing these APIs:
-        <ul>{conflictingProvidedAPIs(selectedTargetNamespace).map(gvk => <li key={gvk}><strong>{kindForReference(gvk)}</strong> <i>({apiVersionForReference(gvk)})</i></li>)}</ul>
-      </Alert>
-      || (selectedTargetNamespace && cannotResolve) && <Alert type="error">Operator not available for selected namespace(s).</Alert>;
+    return !namespaceSupports(selectedTargetNamespace)(selectedInstallMode) && <Alert className="co-alert" variant="danger" title="Namespace does not support install modes for this Operator." />
+      || subscriptionExists(selectedTargetNamespace) && <Alert className="co-alert" variant="danger" title={`Operator subscription for namespace &quot;${selectedTargetNamespace}&quot; already exists.`} />
+      || !_.isEmpty(conflictingProvidedAPIs(selectedTargetNamespace)) && <Alert className="co-alert" variant="danger" title={
+        <React.Fragment>
+          Installing Operator in selected namespace would cause conflicts with another Operator providing these APIs:
+          <ul>{conflictingProvidedAPIs(selectedTargetNamespace).map(gvk => <li key={gvk}><strong>{kindForReference(gvk)}</strong> <i>({apiVersionForReference(gvk)})</i></li>)}</ul>
+        </React.Fragment>}
+      />
+      || (selectedTargetNamespace && cannotResolve) && <Alert className="co-alert" variant="danger" title="Operator not available for selected namespace(s)" />;
   };
 
   return <React.Fragment>

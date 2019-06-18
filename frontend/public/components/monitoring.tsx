@@ -8,6 +8,8 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link, Redirect, Route, Switch as RouteSwitch } from 'react-router-dom';
+import { sortable } from '@patternfly/react-table';
+import { Alert } from '@patternfly/react-core';
 
 import * as k8sActions from '../actions/k8s';
 import * as UIActions from '../actions/ui';
@@ -999,10 +1001,7 @@ class SilenceForm_ extends React.Component<SilenceFormProps, SilenceFormState> {
 }
 const SilenceForm = withFallback(SilenceForm_);
 
-const EditInfo = () => <div className="alert alert-info">
-  <span className="pficon pficon-info"></span>
-  When changes are saved, the currently existing silence will be expired and a new silence with the new configuration will take its place.
-</div>;
+const EditInfo = () => <Alert className="co-alert" variant="info" title="When changes are saved, the currently existing silence will be expired and a new silence with the new configuration will take its place." />;
 
 const EditSilence = connect(silenceParamToProps)(({loaded, loadError, silence}) => {
   const isExpired = silenceState(silence) === SilenceStates.Expired;
