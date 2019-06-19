@@ -16,7 +16,8 @@ export const togglePaused = (model: K8sKind, obj: K8sResourceKind) => {
 
 export const WorkloadPausedAlert = ({model, obj}) => {
   return <Alert
-    className="co-alert co-workload-paused__alert"
+    isInline
+    className="co-alert"
     variant="info"
     title={<React.Fragment><b>{obj.metadata.name} is paused.</b> This will stop any new rollouts or triggers from running until resumed.</React.Fragment>}
     action={<AlertActionLink onClick={() => togglePaused(model, obj).catch((err) => errorModal({error: err.message}))}>Resume Rollouts</AlertActionLink>}

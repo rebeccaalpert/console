@@ -228,7 +228,7 @@ export const ClusterServiceVersionDetails: React.SFC<ClusterServiceVersionDetail
             </dl>
           </div>
           <div className="col-sm-9">
-            {status.phase === ClusterServiceVersionPhase.CSVPhaseFailed && <Alert className="co-alert" variant="danger" title={`${status.phase}: ${status.message}`} />}
+            {status.phase === ClusterServiceVersionPhase.CSVPhaseFailed && <Alert isInline className="co-alert" variant="danger" title={`${status.phase}: ${status.message}`} />}
             <SectionHeading text="Provided APIs" />
             <CRDCardRow csv={props.obj} crdDescs={providedAPIsFor(props.obj)} />
             <SectionHeading text="Description" />

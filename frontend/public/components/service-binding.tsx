@@ -32,7 +32,7 @@ const ServiceBindingDetails: React.SFC<ServiceBindingDetailsProps> = ({obj: sb})
 
   return <React.Fragment>
     <div className="co-m-pane__body">
-      {notReady && <Alert className="co-alert" variant="warning" title="This binding is not ready yet. Once it is ready, bind its secret to a workload." />}
+      {notReady && <Alert isInline className="co-alert" variant="warning" title="This binding is not ready yet. Once it is ready, bind its secret to a workload." />}
       <ServiceBindingDescription instanceName={sb.spec.instanceRef.name} className="co-m-pane__explanation" />
       <SectionHeading text="Service Binding Overview" />
       <div className="row">

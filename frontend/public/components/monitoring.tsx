@@ -1001,7 +1001,7 @@ class SilenceForm_ extends React.Component<SilenceFormProps, SilenceFormState> {
 }
 const SilenceForm = withFallback(SilenceForm_);
 
-const EditInfo = () => <Alert className="co-alert" variant="info" title="When changes are saved, the currently existing silence will be expired and a new silence with the new configuration will take its place." />;
+const EditInfo = () => <Alert isInline className="co-alert" variant="info" title="When changes are saved, the currently existing silence will be expired and a new silence with the new configuration will take its place." />;
 
 const EditSilence = connect(silenceParamToProps)(({loaded, loadError, silence}) => {
   const isExpired = silenceState(silence) === SilenceStates.Expired;

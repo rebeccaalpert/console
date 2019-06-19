@@ -53,7 +53,7 @@ class GlobalConfigPage_ extends React.Component<GlobalConfigPageProps, GlobalCon
     const { errorMessage, items, loading } = this.state;
 
     return <div className="co-m-pane__body">
-      {errorMessage && <Alert className="co-alert" variant="danger" title={errorMessage} />}
+      {errorMessage && <Alert isInline className="co-alert" variant="danger" title={errorMessage} />}
       {loading && <LoadingBox />}
       {!loading && <React.Fragment>
         <p className="co-m-pane__explanation">

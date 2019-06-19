@@ -10,6 +10,7 @@ import {
   getCustomTheme,
 } from '@patternfly/react-charts';
 import {
+  Alert,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
@@ -17,7 +18,6 @@ import {
 } from '@patternfly/react-core';
 import { ChartLineIcon } from '@patternfly/react-icons';
 import { connect } from 'react-redux';
-import { Alert } from '@patternfly/react-core';
 
 // This is not yet available as part of PatternFly
 import { VictorySelectionContainer } from 'victory-selection-container';
@@ -40,7 +40,7 @@ export const graphColors = [
 
 const NoQueryMessage = () => <div className="text-center text-muted">Enter a query in the box below to explore the metrics gathered for this cluster</div>;
 
-const Error = ({error}) => <Alert className="co-alert" variant="danger" title={_.get(error, 'json.error', error.message)} />;
+const Error = ({error}) => <Alert isInline className="co-alert" variant="danger" title={_.get(error, 'json.error', error.message)} />;
 
 const SpanControls: React.FC<SpanControlsProps> = React.memo(({defaultSpanText, onChange, span}) => {
   const [isValid, setIsValid] = React.useState(true);

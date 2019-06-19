@@ -247,15 +247,16 @@ export class ResourceLog extends React.Component {
     const {error, lines, linesBehind, stale, status, isFullscreen} = this.state;
     const bufferFull = lines.length === bufferSize;
 
-    // TODO create alert component or use pf-react alerts here.
     return <React.Fragment>
       {error && <Alert
+        isInline
         className="co-alert"
         variant="danger"
         title="An error occured while retrieving the requested logs."
         action={<AlertActionLink onClick={this._restartStream}>Retry</AlertActionLink>}
       />}
       {stale && <Alert
+        isInline
         className="co-alert"
         variant="info"
         title={`The logs for this ${kind} may be stale.`}

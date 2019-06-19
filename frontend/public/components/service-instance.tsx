@@ -90,6 +90,7 @@ class ServiceInstanceMessage_ extends React.Component<ServiceInstanceMessageProp
     if (deletionTimestamp && hasBindings) {
       const basePath = url.replace(/\/$/, '');
       return <Alert
+        isInline
         className="co-alert co-service-instance-delete-bindings-warning"
         variant="warning"
         title={<React.Fragment>

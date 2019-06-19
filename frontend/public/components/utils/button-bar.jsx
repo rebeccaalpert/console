@@ -16,8 +16,8 @@ const injectDisabled = (children, disabled) => {
   });
 };
 
-const ErrorMessage = ({message}) => <Alert className="co-alert" variant="danger" title={message} />;
-const InfoMessage = ({message}) => <Alert className="co-alert" variant="info" title={message} />;
+const ErrorMessage = ({message}) => <Alert isInline className="co-alert" variant="danger" title={message} />;
+const InfoMessage = ({message}) => <Alert isInline className="co-alert" variant="info" title={message} />;
 
 // NOTE: DO NOT use <a> elements within a ButtonBar.
 // They don't support the disabled attribute, and therefore

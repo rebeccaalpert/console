@@ -45,7 +45,7 @@ MsgBox.displayName = 'MsgBox';
 export const AccessDenied: React.FC<AccessDeniedProps> = ({message}) => <Box className="text-center">
   <img className="cos-status-box__access-denied-icon" src={restrictedSignImg} />
   <MsgBox title="Restricted Access" detail="You don't have access to this section due to cluster policy." />
-  { _.isString(message) && <Alert className="co-alert" variant="danger" title={message} />}
+  { _.isString(message) && <Alert isInline className="co-alert" variant="danger" title={message} />}
 </Box>;
 AccessDenied.displayName = 'AccessDenied';
 
