@@ -2,14 +2,12 @@ import * as classNames from 'classnames';
 import * as fuzzy from 'fuzzysearch';
 import * as _ from 'lodash-es';
 import { murmur3 } from 'murmurhash-js';
-import { Switch } from '@patternfly/react-core';
+import { Alert, Switch } from '@patternfly/react-core';
 import { sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link, Redirect, Route, Switch as RouteSwitch } from 'react-router-dom';
-import { sortable } from '@patternfly/react-table';
-import { Alert } from '@patternfly/react-core';
 
 import * as k8sActions from '../actions/k8s';
 import * as UIActions from '../actions/ui';
