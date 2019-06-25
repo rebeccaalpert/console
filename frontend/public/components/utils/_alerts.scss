@@ -1,9 +1,7 @@
 .co-alert {
-  max-height: 75px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  @media (min-height: $screen-sm-min) {
-    max-height: 150px;
+  margin-bottom: var(--pf-global--spacer--lg);
+  h4 {
+    line-height: var(--pf-global--LineHeight--md);
   }
 }
 
