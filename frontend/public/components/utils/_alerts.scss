@@ -3,6 +3,9 @@
   h4 {
     line-height: var(--pf-global--LineHeight--md);
   }
+  p {
+    margin-block-end: 0em;
+  }
 }
 
 .co-scrollable-alert {

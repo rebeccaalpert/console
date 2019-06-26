@@ -366,7 +366,10 @@ export class DeployImage extends React.Component<DeployImageProps, DeployImageSt
                     <span className="fa fa-cube text-muted" style={{fontSize: '100px'}} aria-hidden="true"></span>
                   </div>
                   <div className="col-sm-9 col-md-10">
-                    {runsAsRoot(isi.image) && <Alert isInline className="co-alert" variant="warning" title={<React.Fragment>Image <strong>{isi.name}</strong> runs as the <strong>root</strong> user which might not be permitted by your cluster administrator.</React.Fragment>} />}
+                    {runsAsRoot(isi.image) && <Alert isInline className="co-alert" variant="warning" title="Image runs as the root user">
+                      <React.Fragment>Image <strong>{isi.name}</strong> runs as the <strong>root</strong> user which might not be permitted by your cluster administrator.
+                      </React.Fragment>}
+                    </Alert>}
                     <h2 className="co-image-name-results__heading co-break-word">
                       {isi.name}
                       <small>

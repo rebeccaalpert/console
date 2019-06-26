@@ -178,7 +178,7 @@ class ConfigureNamespacePullSecret extends PromiseComponent {
           Specify default credentials to be used to authenticate and download containers within this namespace. These credentials will be the default unless a pod references a specific pull secret.
         </p>
 
-        {existingData.invalidData && <Alert isInline className="co-alert" variant="danger" title="A default pull secret exists, but can&rsquo;t be parsed. Saving this will overwrite it." />}
+        {existingData.invalidData && <Alert isInline className="co-alert" variant="danger" title="Overwriting default pull secret">A default pull secret exists, but can&rsquo;t be parsed. Saving this will overwrite it.</Alert>}
 
         <div className="row co-m-form-row">
           <div className="col-xs-3">
@@ -277,7 +277,7 @@ class ConfigureNamespacePullSecret extends PromiseComponent {
           </div>
           { this.state.invalidJson || existingData.invalidJson && <div className="row co-m-form-row">
             <div className="col-xs-9 col-sm-offset-3">
-              <Alert isInline className="co-alert" variant="danger" title="Invalid format. Uploaded file is not properly formatted json." />
+              <Alert isInline className="co-alert" variant="danger" title="Invalid format.">Uploaded file is not properly formatted json.</Alert>
             </div>
           </div> }
           { this.state.fileData &&<div className="row co-m-form-row">

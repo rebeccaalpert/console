@@ -93,11 +93,9 @@ class ServiceInstanceMessage_ extends React.Component<ServiceInstanceMessageProp
         isInline
         className="co-alert co-service-instance-delete-bindings-warning"
         variant="warning"
-        title={<React.Fragment>
-          This service instance is marked for deletion, but still has bindings. You must delete the bindings before the instance will be deleted.&nbsp;&nbsp;
-          <Link to={`${basePath}/servicebindings`}>View Service Bindings</Link>
-        </React.Fragment>}
-      />;
+        title="Service instance still has bindings">
+          This service instance is marked for deletion, but still has bindings. You must delete the bindings before the instance will be deleted. <Link to={`${basePath}/servicebindings`}>View Service Bindings</Link>
+      </Alert>;
     }
 
     // Show help for creating a binding when there are none for this instance.

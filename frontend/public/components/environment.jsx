@@ -468,7 +468,7 @@ export const EnvironmentPage = connect(stateToProps)(
         <React.Fragment>
           { (readOnly && !_.isEmpty(owners)) &&
             <div className="co-toolbar__group co-toolbar__group--left">
-              <Alert isInline className="co-alert col-md-11 col-xs-10" variant="info" title={<React.Fragment>Environment variables for {resourceName} were set from the resource {owners.length > 1 ? 'owners' : 'owner'}: <span className="environment-resource-link">{owners}</span></React.Fragment>} />
+              <Alert isInline className="co-alert col-md-11 col-xs-10" variant="info" title="Environment variables already set">Environment variables for {resourceName} were set from the resource {owners.length > 1 ? 'owners' : 'owner'}: <span className="environment-resource-link">{owners}</span></Alert>
             </div>
           }
           { currentEnvVars.isContainerArray && <div className="co-toolbar__group co-toolbar__group--left">
@@ -501,7 +501,7 @@ export const EnvironmentPage = connect(stateToProps)(
         { !currentEnvVars.isCreate && <div className="co-m-pane__body-group">
           <div className="environment-buttons">
             {errorMessage && <Alert isInline className="co-alert" variant="danger" title={errorMessage} />}
-            {stale && <Alert isInline className="co-alert" variant="info" title="The information on this page is no longer current. Click Reload to update and lose edits, or Save Changes to overwrite." />}
+            {stale && <Alert isInline className="co-alert" variant="info" title="The information on this page is no longer current.">Click Reload to update and lose edits, or Save Changes to overwrite.</Alert>}
             {success && <Alert isInline className="co-alert" variant="success" title={success} />}
             {!readOnly &&
             <button disabled={inProgress} type="submit" className="btn btn-primary" onClick={this.saveChanges}>Save</button>}
