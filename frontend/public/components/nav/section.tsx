@@ -40,12 +40,6 @@ export const NavSection = connect(navSectionStateToProps)(
     constructor(props) {
       super(props);
       this.state = { isOpen: false, activeChild: null };
-
-      const activeChild = this.getActiveChild();
-      if (activeChild) {
-        this.state.activeChild = activeChild;
-        this.state.isOpen = true;
-      }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -171,9 +165,16 @@ export const NavSection = connect(navSectionStateToProps)(
       }
 
       const { title } = this.props;
-      const { isOpen, activeChild } = this.state;
-      const isActive = !!activeChild;
+      const { isOpen } = this.state;
+
       const children = this.getChildren();
+      const activeChild = this.getActiveChild();
+      if (activeChild && activeChild !== this.state.activeChild) {
+        this.state.activeChild = activeChild;
+        this.state.isOpen = true;
+      }
+
+      const isActive = !!activeChild;
 
       return children.length > 0 ? (
         <NavExpandable title={title} isActive={isActive} isExpanded={isOpen} onExpand={this.toggle}>
