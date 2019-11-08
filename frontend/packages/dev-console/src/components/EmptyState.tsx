@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CatalogTile } from 'patternfly-react-extensions';
+import { CatalogTile } from '@patternfly/react-catalog-view-extension';
 import { connect } from 'react-redux';
 import { history, PageHeading, useAccessReview } from '@console/internal/components/utils';
 import { formatNamespacedRouteForResource } from '@console/internal/actions/ui';
@@ -83,7 +83,7 @@ const ODCEmptyState: React.FC<Props> = ({
       <div className="odc-empty-state__content">
         {allImportResourceAccess && (
           <CatalogTile
-            onClick={(e: Event) => navigateTo(e, '/import?importType=git')}
+            onClick={(e: any) => navigateTo(e, '/import?importType=git')}
             href="/import?importType=git"
             title="From Git"
             iconImg={importGitIcon}
@@ -93,7 +93,7 @@ const ODCEmptyState: React.FC<Props> = ({
         )}
         {allCatalogImageResourceAccess && (
           <CatalogTile
-            onClick={(e: Event) => navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)}
+            onClick={(e: any) => navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)}
             href={`/deploy-image?preselected-ns=${activeNamespace}`}
             title="Container Image"
             iconClass="pficon-image"
@@ -101,7 +101,7 @@ const ODCEmptyState: React.FC<Props> = ({
           />
         )}
         <CatalogTile
-          onClick={(e: Event) => navigateTo(e, '/catalog')}
+          onClick={(e: any) => navigateTo(e, '/catalog')}
           href="/catalog"
           title="From Catalog"
           iconClass="pficon-catalog"
@@ -109,7 +109,7 @@ const ODCEmptyState: React.FC<Props> = ({
         />
         {allImportResourceAccess && (
           <CatalogTile
-            onClick={(e: Event) => navigateTo(e, '/import?importType=docker')}
+            onClick={(e: any) => navigateTo(e, '/import?importType=git')}
             href="/import?importType=docker"
             title="From Dockerfile"
             iconImg={dockerfileIcon}
@@ -117,16 +117,14 @@ const ODCEmptyState: React.FC<Props> = ({
           />
         )}
         <CatalogTile
-          onClick={(e: Event) =>
-            navigateTo(e, formatNamespacedRouteForResource('import', activeNamespace))
-          }
+          onClick={(e: any) => navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)}
           href={formatNamespacedRouteForResource('import', activeNamespace)}
           title="YAML"
           iconImg={yamlIcon}
           description="Create resources from their YAML or JSON definitions"
         />
         <CatalogTile
-          onClick={(e: Event) => navigateTo(e, '/catalog?category=databases')}
+          onClick={(e: any) => navigateTo(e, '/catalog?category=databases')}
           href="/catalog?category=databases"
           title="Database"
           iconClass="fas fa-database"

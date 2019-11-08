@@ -1,7 +1,13 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 import * as PropTypes from 'prop-types';
-import { FilterSidePanel, VerticalTabs } from 'patternfly-react-extensions';
+import {
+  FilterSidePanel,
+  FilterSidePanelCategory,
+  FilterSidePanelCategoryItem,
+  VerticalTabs,
+  VerticalTabsTab,
+} from '@patternfly/react-catalog-view-extension';
 import { FormControl } from 'patternfly-react';
 import {
   Button,
@@ -640,7 +646,7 @@ export class TileViewPage extends React.Component {
 
     const tabClasses = `text-capitalize${!numItems ? ' co-catalog-tab__empty' : ''}`;
     return (
-      <VerticalTabs.Tab
+      <VerticalTabsTab
         key={id}
         title={label}
         active={active}
@@ -656,7 +662,7 @@ export class TileViewPage extends React.Component {
             )}
           </VerticalTabs>
         )}
-      </VerticalTabs.Tab>
+      </VerticalTabsTab>
     );
   }
 
@@ -684,7 +690,7 @@ export class TileViewPage extends React.Component {
     const { filterGroupsShowAll } = this.state;
 
     return (
-      <FilterSidePanel.Category
+      <FilterSidePanelCategory
         key={groupName}
         title={filterGroupNameMap[groupName] || groupName}
         onShowAllToggle={() => this.onShowAllToggle(groupName)}
@@ -694,19 +700,19 @@ export class TileViewPage extends React.Component {
         {_.map(filterGroup, (filter, filterName) => {
           const { label, active } = filter;
           return (
-            <FilterSidePanel.CategoryItem
+            <FilterSidePanelCategoryItem
               key={filterName}
               count={_.get(filterCounts, [groupName, filterName], 0)}
               checked={active}
-              onChange={(e) => onFilterChange(groupName, filterName, e.target.checked)}
+              onClick={(e) => onFilterChange(groupName, filterName, e.target.checked)}
               title={label}
               data-test={`${groupName}-${_.kebabCase(filterName)}`}
             >
               {label}
-            </FilterSidePanel.CategoryItem>
+            </FilterSidePanelCategoryItem>
           );
         })}
-      </FilterSidePanel.Category>
+      </FilterSidePanelCategory>
     );
   }
 
