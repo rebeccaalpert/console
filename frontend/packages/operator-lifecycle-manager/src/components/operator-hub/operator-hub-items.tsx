@@ -287,6 +287,7 @@ export const OperatorHubTileView: React.FC<OperatorHubTileViewProps> = (props) =
     );
     return (
       <CatalogTile
+        className="co-catalog-tile"
         key={uid}
         title={name}
         badges={badges}
@@ -294,6 +295,7 @@ export const OperatorHubTileView: React.FC<OperatorHubTileViewProps> = (props) =
         vendor={vendor}
         description={description}
         onClick={() => openOverlay(item)}
+        maxDescriptionLength={installed ? 80 : 120}
         footer={
           installed ? (
             <span>

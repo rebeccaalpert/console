@@ -15,6 +15,8 @@ import {
   EmptyStateBody,
   EmptyStateSecondaryActions,
   EmptyStateVariant,
+  Gallery,
+  GalleryItem,
   Title,
 } from '@patternfly/react-core';
 
@@ -793,9 +795,14 @@ export class TileViewPage extends React.Component {
             </div>
           </div>
           {activeCategory.numItems > 0 && (
-            <div className="catalog-tile-view-pf catalog-tile-view-pf-no-categories">
-              {_.map(activeCategory.items, (item) => renderTile(item))}
-            </div>
+            <Gallery
+              gutter="sm"
+              className="catalog-tile-view-pf catalog-tile-view-pf-no-categories co-catalog-page__grid"
+            >
+              {_.map(activeCategory.items, (item) => (
+                <GalleryItem key={`gallery-${item.uid}`}>{renderTile(item)}</GalleryItem>
+              ))}
+            </Gallery>
           )}
           {activeCategory.numItems === 0 && this.renderEmptyState()}
         </div>

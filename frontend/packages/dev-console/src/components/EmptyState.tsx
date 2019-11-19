@@ -29,7 +29,7 @@ export interface EmptySProps {
 
 type Props = EmptySProps & StateProps;
 
-const navigateTo = (e: Event, url: string) => {
+const navigateTo = (e: React.SyntheticEvent, url: string) => {
   history.push(url);
   e.preventDefault();
 };
@@ -83,7 +83,7 @@ const ODCEmptyState: React.FC<Props> = ({
       <div className="odc-empty-state__content">
         {allImportResourceAccess && (
           <CatalogTile
-            onClick={(e: any) => navigateTo(e, '/import?importType=git')}
+            onClick={(e: React.SyntheticEvent) => navigateTo(e, '/import?importType=git')}
             href="/import?importType=git"
             title="From Git"
             iconImg={importGitIcon}
@@ -93,7 +93,7 @@ const ODCEmptyState: React.FC<Props> = ({
         )}
         {allCatalogImageResourceAccess && (
           <CatalogTile
-            onClick={(e: any) => navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)}
+            onClick={(e: React.SyntheticEvent) => navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)}
             href={`/deploy-image?preselected-ns=${activeNamespace}`}
             title="Container Image"
             iconClass="pficon-image"
@@ -101,7 +101,7 @@ const ODCEmptyState: React.FC<Props> = ({
           />
         )}
         <CatalogTile
-          onClick={(e: any) => navigateTo(e, '/catalog')}
+          onClick={(e: React.SyntheticEvent) => navigateTo(e, '/catalog')}
           href="/catalog"
           title="From Catalog"
           iconClass="pficon-catalog"
@@ -109,7 +109,7 @@ const ODCEmptyState: React.FC<Props> = ({
         />
         {allImportResourceAccess && (
           <CatalogTile
-            onClick={(e: any) => navigateTo(e, '/import?importType=git')}
+            onClick={(e: React.SyntheticEvent) => navigateTo(e, '/import?importType=docker')}
             href="/import?importType=docker"
             title="From Dockerfile"
             iconImg={dockerfileIcon}
@@ -117,14 +117,16 @@ const ODCEmptyState: React.FC<Props> = ({
           />
         )}
         <CatalogTile
-          onClick={(e: any) => navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)}
+          onClick={(e: React.SyntheticEvent) =>
+            navigateTo(e, formatNamespacedRouteForResource('import', activeNamespace))
+          }
           href={formatNamespacedRouteForResource('import', activeNamespace)}
           title="YAML"
           iconImg={yamlIcon}
           description="Create resources from their YAML or JSON definitions"
         />
         <CatalogTile
-          onClick={(e: any) => navigateTo(e, '/catalog?category=databases')}
+          onClick={(e: React.SyntheticEvent) => navigateTo(e, '/catalog?category=databases')}
           href="/catalog?category=databases"
           title="Database"
           iconClass="fas fa-database"
