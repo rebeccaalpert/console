@@ -2,7 +2,11 @@ import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { shallow, mount, ShallowWrapper, ReactWrapper } from 'enzyme';
 import * as _ from 'lodash';
-import { CatalogTile, VerticalTabsTab, FilterSidePanelCategoryItem } from '@patternfly/react-catalog-view-extension';
+import {
+  CatalogTile,
+  VerticalTabsTab,
+  FilterSidePanelCategoryItem,
+} from '@patternfly/react-catalog-view-extension';
 import { Modal } from 'patternfly-react';
 import { MarkdownView } from '../clusterserviceversion';
 import {
