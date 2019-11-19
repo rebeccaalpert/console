@@ -4,7 +4,7 @@ import { mount, ReactWrapper } from 'enzyme';
 
 import { CatalogTile } from '@patternfly/react-catalog-view-extension/dist/js/components/CatalogTile';
 import { VerticalTabsTab } from '@patternfly/react-catalog-view-extension/dist/js/components/VerticalTabs';
-import { FilterSidePanel } from '@patternfly/react-catalog-view-extension/dist/js/components/FilterSidePanel';
+import { FilterSidePanelCategoryItem } from '@patternfly/react-catalog-view-extension/dist/js/components/FilterSidePanel/FilterSidePanelCategoryItem';
 
 import {
   CatalogListPage,
@@ -37,7 +37,7 @@ describe(CatalogTileViewPage.displayName, () => {
   });
 
   it('renders category filter controls', () => {
-    const filterItems = wrapper.find<any>(FilterSidePanel);
+    const filterItems = wrapper.find<any>(FilterSidePanelCategoryItem);
 
     expect(filterItems.exists()).toBe(true);
     expect(filterItems.length).toEqual(4); // Filter by Types
