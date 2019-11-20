@@ -93,7 +93,9 @@ const ODCEmptyState: React.FC<Props> = ({
         )}
         {allCatalogImageResourceAccess && (
           <CatalogTile
-            onClick={(e: React.SyntheticEvent) => navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)}
+            onClick={(e: React.SyntheticEvent) =>
+              navigateTo(e, `/deploy-image?preselected-ns=${activeNamespace}`)
+            }
             href={`/deploy-image?preselected-ns=${activeNamespace}`}
             title="Container Image"
             iconClass="pficon-image"
