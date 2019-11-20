@@ -2,9 +2,9 @@ import * as React from 'react';
 import * as _ from 'lodash-es';
 import { mount, ReactWrapper } from 'enzyme';
 
-import { CatalogTile } from '@patternfly/react-catalog-view-extension/dist/js/components/CatalogTile';
-import { VerticalTabsTab } from '@patternfly/react-catalog-view-extension/dist/js/components/VerticalTabs';
-import { FilterSidePanel } from '@patternfly/react-catalog-view-extension/dist/js/components/FilterSidePanel';
+import { CatalogTile } from '@patternfly/react-catalog-view-extension';
+import { VerticalTabsTab } from '@patternfly/react-catalog-view-extension';
+import { FilterSidePanelCategoryItem } from '@patternfly/react-catalog-view-extension';
 
 import {
   CatalogListPage,
