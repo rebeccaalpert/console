@@ -1186,24 +1186,24 @@
   resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-2.33.5.tgz#e8abad22510d32de4933a42d7f567b152ccc0e6d"
   integrity sha512-/4S19Ln2BY62nUP/Ow+j4gzCKm4e3HYehW92R+iaREaBgatfq55G50QdPsXDvTvLeTp9lS6YfXJlLz7OTIHnhw==
 
-"@patternfly/patternfly@2.40.13":
-  version "2.40.13"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-2.40.13.tgz#d1aa7de123dd63972951a67ecc0a6e04117f85db"
-  integrity sha512-2s9mHRQ117u+6XZJnodtaYpc/dcknWT+7ZRRtmAQ2Qx25iIYG4KT43/SYu0+8KlTEB/UP9e97ZG8WkuhNlK/7Q==
+"@patternfly/patternfly@2.43.0":
+  version "2.43.0"
+  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-2.43.0.tgz#786ef2b7b9aee41afc12c51bcbe891d2ab9722b7"
+  integrity sha512-ufCKcq838wspXwC60CT0Ib9j84Cf84G5XJr9UOYdz0Mtkl1/eCtlGqf1jbMogJRxZuGPcKT0th56VDbcw6u4+g==
 
-"@patternfly/react-catalog-view-extension@1.1.16":
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-catalog-view-extension/-/react-catalog-view-extension-1.1.16.tgz#abc52d42dc1982f4c688070e2f4bf1fb46d34ad4"
-  integrity sha512-wVMCk0FFL923p7uZkyN59NOLfRs5iV75Gu3cpmg/pTpXFEFovVa/f2qHwFEVb1xuYFJEkYETGkmHmYlUHdhJJg==
+"@patternfly/react-catalog-view-extension@1.1.31":
+  version "1.1.31"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-catalog-view-extension/-/react-catalog-view-extension-1.1.31.tgz#635b34535b4b315f1f39b6790d0febae30315b26"
+  integrity sha512-jF9Zs6WLqX69VEnliM2KcPSgh6r5s44i3rb5ZLjKfQGPlGpHVyz3FlWaPp6iy063pD8XXNpP9XmlpNxivUdM1Q==
   dependencies:
-    "@patternfly/patternfly" "2.40.13"
-    "@patternfly/react-core" "^3.120.8"
-    "@patternfly/react-styles" "^3.6.6"
+    "@patternfly/patternfly" "2.43.0"
+    "@patternfly/react-core" "^3.122.2"
+    "@patternfly/react-styles" "^3.6.10"
     breakjs "^1.0.0"
     classnames "^2.2.5"
     css-element-queries "^1.0.1"
     patternfly "^3.59.4"
-    patternfly-react "^2.39.7"
+    patternfly-react "^2.39.9"
     react-bootstrap "^0.33.0"
     react-click-outside "^3.0.1"
     react-diff-view "^1.8.1"
@@ -1250,23 +1250,23 @@
     focus-trap-react "^4.0.1"
     tippy.js "3.4.1"
 
-"@patternfly/react-core@^3.120.8":
-  version "3.120.8"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-3.120.8.tgz#116cc1a4c03c3dbea889295e36b6d6bf86d40e9c"
-  integrity sha512-YXyi1v7bXscjz8kDby8Qp8OSa1v83Pbre8Ow/Nzr7LuWi1IM/J1jOcTuOhDRH9+OHNAz9AUBnyxZNvE7ZL6ebQ==
+"@patternfly/react-core@^3.122.2":
+  version "3.122.2"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-3.122.2.tgz#00386e8bc20a4426101cf1ec405ffc9b3a72347b"
+  integrity sha512-yACReVboL3M80T52X5UDZtpTfwAmnjuHRbAKZwYHGzrJgJrWqM4YsXR9V1cRW4Vqupc4gbK0g8CAdcLb0P85rw==
   dependencies:
-    "@patternfly/react-icons" "^3.14.19"
-    "@patternfly/react-styles" "^3.6.6"
-    "@patternfly/react-tokens" "^2.7.6"
+    "@patternfly/react-icons" "^3.14.22"
+    "@patternfly/react-styles" "^3.6.10"
+    "@patternfly/react-tokens" "^2.7.9"
     emotion "^9.2.9"
     exenv "^1.2.2"
     focus-trap-react "^4.0.1"
     tippy.js "3.4.1"
 
-"@patternfly/react-icons@^3.14.19":
-  version "3.14.21"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.14.21.tgz#0bd25c1d67c08e27fd0f2c1487de6cf9452eca61"
-  integrity sha512-8WNTop8Iuw8a4iInhPfcOTNC194vXI3PjulnkVUHZOxqqU7xC5OOa+Jo563J+aIYXPb4P/EH1GlpS4CvviKzXA==
+"@patternfly/react-icons@^3.14.22":
+  version "3.14.22"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-3.14.22.tgz#2ffa86af76b2b7e1aab33de36d6b1f366cb1676b"
+  integrity sha512-Z6Ak5CN9G9wyP4DAH5KefEmCv8t+RrG7evcWi8ihaVYEn6M50qp1yigBD0jC9GeRFg8iv/lJHZNbnM2n2ZHHOg==
   dependencies:
     "@fortawesome/free-brands-svg-icons" "^5.8.1"
 
@@ -1296,10 +1296,10 @@
     resolve-from "^4.0.0"
     typescript "3.4.5"
 
-"@patternfly/react-styles@^3.6.6":
-  version "3.6.6"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-3.6.6.tgz#d4b481fbd34adc28b3129842aea4834c384d4382"
-  integrity sha512-BOn6s9kuwsWRVHeTvA9D55JMYMwoNaQn9eB+MBzX2zIbZxy0TGOTgNifU99lJct+6TFxSUxx81gzpby+xBcDSQ==
+"@patternfly/react-styles@^3.6.10":
+  version "3.6.10"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-3.6.10.tgz#660a1e0074922ff737f041d45fb691ef317b3493"
+  integrity sha512-FO+5J7qSsNTI2DOi8Nh2D0nHY1hHNY5NftUr+zVLKAt1KeJVJKUGaXNmidUfrFojVsrRZ1OJG9UMoPGlH/YREw==
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0-beta.48"
     camel-case "^3.0.0"
@@ -1334,10 +1334,10 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-2.6.31.tgz#3fab62e9ccf4d81f6c10edbcf66836264362b3d3"
   integrity sha512-K9semfLIdf2vECefAbheXPVwZqq8nXY0Hf/VkWh6OBCL6R4FekxajpSBgobeoTQUotmvz5boMngqhkUjE7yChA==
 
-"@patternfly/react-tokens@^2.7.6":
-  version "2.7.6"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-2.7.6.tgz#8a8f4422aca1ead3cf4f024f323d33a793953aaa"
-  integrity sha512-fNrzE+XAFunYLs/djNDf/qVqzGT09yzwW898NwjyeWuZCf/tqHOIN+kRU+goq2eaRjSKCnM0XrUAFGPQIelarQ==
+"@patternfly/react-tokens@^2.7.9":
+  version "2.7.9"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-2.7.9.tgz#70cb3b1d3025414aa52998c150d1ab325444c872"
+  integrity sha512-3sp2eDe6RT41szmogrW2ZmVjPsFnm683IUvA0MPTjqVOzmhTruJ+MYbKR00o7SLCJBlgwUmLjJ+D+Vvk+yGNOw==
 
 "@patternfly/react-topology@2.8.63":
   version "2.8.63"
@@ -12195,10 +12195,10 @@ patternfly-react@2.32.3:
     sortabular "^1.5.1"
     table-resolver "^3.2.0"
 
-patternfly-react@^2.39.7:
-  version "2.39.8"
-  resolved "https://registry.yarnpkg.com/patternfly-react/-/patternfly-react-2.39.8.tgz#fb2288224e9bddf08f5f232d1bd5c4dbcabab198"
-  integrity sha512-wMUocaoZ9opdyiahhG0TOIGL5HcCTsmVt0oCzGHSLgH0Ly3tut7Ja43LNsK8mXnj6BZjH0qLBojHvHdb5gl4UQ==
+patternfly-react@^2.39.9:
+  version "2.39.9"
+  resolved "https://registry.yarnpkg.com/patternfly-react/-/patternfly-react-2.39.9.tgz#e3d11a52bdcf30aba5f179fb8af107658cdbddd4"
+  integrity sha512-kaDa9JVw3m5oV0hbARfOYPomBoKUrQ8vUGu/fLgh7O3w/NFEK7C7bbP9JzOjTY5MljDQVM24/lnO35RQQ1aPTQ==
   dependencies:
     bootstrap-slider-without-jquery "^10.0.0"
     breakjs "^1.0.0"
