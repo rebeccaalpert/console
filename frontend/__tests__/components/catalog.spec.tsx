@@ -5,7 +5,7 @@ import { mount, ReactWrapper } from 'enzyme';
 import {
   CatalogTile,
   FilterSidePanelCategoryItem,
-  VerticalTabsTab
+  VerticalTabsTab,
 } from '@patternfly/react-catalog-view-extension';
 
 import {
