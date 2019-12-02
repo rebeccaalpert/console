@@ -709,13 +709,15 @@ const EditYAML_ = connect(stateToProps)(
                           aria-label="Shortcuts"
                           bodyContent={
                             <ShortcutTable>
-                              <Shortcut ctrl keyName="space">
-                                Activate auto complete
-                              </Shortcut>
+                              {showSchema && (
+                                <Shortcut ctrl keyName="space">
+                                  Activate auto complete
+                                </Shortcut>
+                              )}
                               <Shortcut ctrlCmd shift keyName="o">
                                 View document outline
                               </Shortcut>
-                              <Shortcut hover>View property descriptions</Shortcut>
+                              {showSchema && <Shortcut hover>View property descriptions</Shortcut>}
                               <Shortcut ctrlCmd keyName="s">
                                 Save
                               </Shortcut>
