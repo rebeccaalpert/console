@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import * as Modal from 'react-modal';
 import { Router } from 'react-router-dom';
 import * as classNames from 'classnames';
 import * as _ from 'lodash-es';
@@ -21,7 +20,6 @@ export const createModal: CreateModal = (getModalContainer) => {
       ReactDOM.unmountComponentAtNode(modalContainer);
       resolve();
     };
-    Modal.setAppElement(modalContainer);
     ReactDOM.render(getModalContainer(closeModal), modalContainer);
   });
   return { result };
@@ -41,20 +39,16 @@ export const createModalLauncher: CreateModalLauncher = (Component) => (props) =
     return (
       <Provider store={store}>
         <Router {...{ history, basename: window.SERVER_FLAGS.basePath }}>
-          <Modal
+          <Component
+            {..._.omit(props, 'blocking', 'modalClassName') as any}
+            cancel={_handleCancel}
+            close={_handleClose}
             isOpen={true}
             contentLabel="Modal"
             onRequestClose={_handleClose}
             className={classNames('modal-dialog', props.modalClassName)}
-            overlayClassName="co-overlay"
             shouldCloseOnOverlayClick={!props.blocking}
-          >
-            <Component
-              {..._.omit(props, 'blocking', 'modalClassName') as any}
-              cancel={_handleCancel}
-              close={_handleClose}
-            />
-          </Modal>
+          />
         </Router>
       </Provider>
     );

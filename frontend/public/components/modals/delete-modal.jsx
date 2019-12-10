@@ -1,7 +1,8 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
+import { Modal } from '@patternfly/react-core';
 
-import { createModalLauncher, ModalTitle, ModalBody, ModalSubmitFooter } from '../factory/modal';
+import { createModalLauncher, ModalSubmitFooter } from '../factory/modal';
 import { PromiseComponent, history, resourceListPathFromModel } from '../utils';
 import { k8sKill } from '../../module/k8s/';
 import { YellowExclamationTriangleIcon } from '@console/shared';
@@ -46,51 +47,57 @@ class DeleteModal extends PromiseComponent {
   }
 
   render() {
-    const { kind, resource } = this.props;
+    const { close, kind, resource } = this.props;
     return (
-      <form onSubmit={this._submit} name="form" className="modal-content ">
-        <ModalTitle>Delete {kind.label}</ModalTitle>
-        <ModalBody className="modal-body">
-          <div className="co-delete-modal">
-            <YellowExclamationTriangleIcon className="co-delete-modal__icon" />
+      <Modal
+        footer={
+          <form onSubmit={this._submit} name="form">
+            <ModalSubmitFooter
+              errorMessage={this.state.errorMessage}
+              inProgress={this.state.inProgress}
+              submitDanger
+              submitText={this.props.btnText || 'Delete'}
+              cancel={this._cancel}
+            />
+          </form>
+        }
+        isOpen
+        isSmall
+        onClose={close}
+        title={`Delete ${kind.label}`}
+      >
+        <div className="co-delete-modal">
+          <YellowExclamationTriangleIcon className="co-delete-modal__icon" />
+          <div>
+            <p className="lead">
+              Delete <span className="co-break-word">{resource.metadata.name}</span>?
+            </p>
             <div>
-              <p className="lead">
-                Delete <span className="co-break-word">{resource.metadata.name}</span>?
-              </p>
-              <div>
-                Are you sure you want to delete{' '}
-                <strong className="co-break-word">{resource.metadata.name}</strong>
-                {_.has(resource.metadata, 'namespace') && (
-                  <span>
-                    {' '}
-                    in namespace <strong>{resource.metadata.namespace}</strong>
-                  </span>
-                )}
-                ?
-                {_.has(kind, 'propagationPolicy') && (
-                  <div className="checkbox">
-                    <label className="control-label">
-                      <input
-                        type="checkbox"
-                        onChange={() => this.setState({ isChecked: !this.state.isChecked })}
-                        checked={!!this.state.isChecked}
-                      />
-                      Delete dependent objects of this resource
-                    </label>
-                  </div>
-                )}
-              </div>
+              Are you sure you want to delete{' '}
+              <strong className="co-break-word">{resource.metadata.name}</strong>
+              {_.has(resource.metadata, 'namespace') && (
+                <span>
+                  {' '}
+                  in namespace <strong>{resource.metadata.namespace}</strong>
+                </span>
+              )}
+              ?
+              {_.has(kind, 'propagationPolicy') && (
+                <div className="checkbox">
+                  <label className="control-label">
+                    <input
+                      type="checkbox"
+                      onChange={() => this.setState({ isChecked: !this.state.isChecked })}
+                      checked={!!this.state.isChecked}
+                    />
+                    Delete dependent objects of this resource
+                  </label>
+                </div>
+              )}
             </div>
           </div>
-        </ModalBody>
-        <ModalSubmitFooter
-          errorMessage={this.state.errorMessage}
-          inProgress={this.state.inProgress}
-          submitDanger
-          submitText={this.props.btnText || 'Delete'}
-          cancel={this._cancel}
-        />
-      </form>
+        </div>
+      </Modal>
     );
   }
 }

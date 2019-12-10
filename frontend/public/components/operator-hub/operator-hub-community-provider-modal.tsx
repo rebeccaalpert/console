@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Checkbox } from '@patternfly/react-core';
+import { Checkbox, Modal } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 
 import { RH_OPERATOR_SUPPORT_POLICY_LINK } from '../../const';
-import { createModalLauncher, ModalTitle, ModalBody, ModalSubmitFooter } from '../factory/modal';
+import { createModalLauncher, ModalSubmitFooter } from '../factory/modal';
 import { ExternalLink } from '../utils';
 
 export class OperatorHubCommunityProviderModal extends React.Component<
@@ -32,8 +32,17 @@ export class OperatorHubCommunityProviderModal extends React.Component<
     const submitButtonContent = <>Continue</>;
     return (
       <form onSubmit={this.submit} className="modal-content co-modal-ignore-warning">
-        <ModalTitle>Show Community Operator</ModalTitle>
-        <ModalBody>
+        <Modal
+          title="Show Community Operator"
+          footer={
+            <ModalSubmitFooter
+              submitText={submitButtonContent}
+              inProgress={false}
+              errorMessage=""
+              cancel={this.props.close}
+            />
+          }
+        >
           <div className="co-modal-ignore-warning__content">
             <div className="co-modal-ignore-warning__icon">
               <InfoCircleIcon />
@@ -61,13 +70,7 @@ export class OperatorHubCommunityProviderModal extends React.Component<
               />
             </div>
           </div>
-        </ModalBody>
-        <ModalSubmitFooter
-          submitText={submitButtonContent}
-          inProgress={false}
-          errorMessage=""
-          cancel={this.props.close}
-        />
+        </Modal>
       </form>
     );
   }
