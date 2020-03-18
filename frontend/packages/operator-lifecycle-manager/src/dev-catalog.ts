@@ -60,7 +60,8 @@ export const normalizeClusterServiceVersions = (
         .toLowerCase()
         .replace(/\s/g, ''),
       tileImgUrl: imgFor(desc),
-      tileDescription: formatTileDescription(desc.description, desc.csv.spec.description),
+      tileDescription: desc.description,
+      modalDescription: formatTileDescription(desc.description, desc.csv.spec.description),
       tileProvider: desc.csv.spec.provider.name,
       tags: desc.csv.spec.keywords,
       createLabel: 'Create',
