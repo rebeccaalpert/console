@@ -1,0 +1,18 @@
+{
+  "{{title}} breakdown": "{{title}} breakdown",
+  "Total capacity": "Total capacity",
+  "Total limit": "Total limit",
+  "Current utilization": "Current utilization",
+  "Current available capacity": "Current available capacity",
+  "Total requested": "Total requested",
+  "By {{label}}": "By {{label}}",
+  "Top consumer by {{label}}": "Top consumer by {{label}}",
+  "View more": "View more",
+  "Top {{label}} consumers": "Top {{label}} consumers",
+  "Top consumers": "Top consumers",
+  "Select consumer type": "Select consumer type",
+  "Usage": "Usage",
+  "{{humanAvailable}} available": "{{humanAvailable}} available",
+  "{{humanLimit}} total limit": "{{humanLimit}} total limit",
+  "of {{humanMax}}": "of {{humanMax}}"
+}
