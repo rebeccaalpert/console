@@ -12,10 +12,12 @@ import { makeReduxID } from '../components/utils/k8s-watcher';
 import { APIServiceModel } from '../models';
 import { coFetchJSON } from '../co-fetch';
 import { referenceForModel, K8sResourceKind, K8sKind } from '../module/k8s';
+import { ClusterServiceVersionModel } from '@console/operator-lifecycle-manager';
 
 export enum ActionType {
   ReceivedResources = 'resources',
   GetResourcesInFlight = 'getResourcesInFlight',
+  GetCSVsInFlight = 'getCSVsInFlight',
   SetAPIGroups = 'setAPIGroups',
 
   StartWatchK8sObject = 'startWatchK8sObject',
@@ -56,6 +58,8 @@ export const getResourcesInFlight = () => action(ActionType.GetResourcesInFlight
 export const receivedResources = (resources: DiscoveryResources) =>
   action(ActionType.ReceivedResources, { resources });
 
+export const getCSVsInFlight = () => action(ActionType.GetCSVsInFlight);
+
 export const getResources = () => (dispatch: Dispatch) => {
   dispatch(getResourcesInFlight());
   getResources_()
@@ -66,6 +70,11 @@ export const getResources = () => (dispatch: Dispatch) => {
     })
     // eslint-disable-next-line no-console
     .catch((err) => console.error(err));
+};
+
+export const getCSVs = () => (dispatch: Dispatch) => {
+  dispatch(getCSVsInFlight());
+  //stub
 };
 
 export const filterList = (id: string, name: string, value: string) =>
@@ -279,6 +288,7 @@ export const watchK8sList = (
 export const setAPIGroups = (value: number) => action(ActionType.SetAPIGroups, { value });
 
 export const watchAPIServices = () => (dispatch, getState) => {
+  console.log('watchAPIServices');
   if (getState().k8s.has('apiservices') || POLLs[apiGroups]) {
     return;
   }
@@ -314,6 +324,51 @@ export const watchAPIServices = () => (dispatch, getState) => {
     });
 };
 
+export const watchCSVs = () => (dispatch, getState) => {
+  console.log('WatchCSVs');
+  /*if (getState().k8s.has('csv') || POLLs[apiGroups]) {
+    return;
+  }*/
+  if (POLLS[csvs]) {
+    return;
+  }
+  dispatch({ type: ActionType.GetCSVsInFlight });
+
+  console.log(k8sList(ClusterServiceVersionModel, {}));
+  console.log('/////////////////////////////');
+
+  k8sList(ClusterServiceVersionModel, {})
+    .then(() =>
+      dispatch(
+        watchK8sList(
+          makeReduxID(ClusterServiceVersionModel, {}),
+          {},
+          ClusterServiceVersionModel,
+          (id: string, events: K8sEvent[]) => {
+            // Only re-run API discovery on added or removed API services. A
+            // misbehaving API service can trigger frequent watch updates,
+            // which could cause console to thrash.
+            return events.some(({ type }) => type !== 'MODIFIED') ? getResources() : _.noop;
+          },
+        ),
+      ),
+    )
+    .catch(() => {
+      const poller = () =>
+        coFetchJSON('api/kubernetes/apis').then((d) => {
+          console.log('pizza');
+          console.log(d);
+          if (d.groups.length !== getState().k8s.getIn(['RESOURCES', apiGroups], 0)) {
+            dispatch(getResources());
+          }
+          dispatch(setAPIGroups(d.groups.length));
+        });
+
+      POLLs[csvs] = setInterval(poller, 30 * 1000);
+      poller();
+    });
+};
+
 const k8sActions = {
   updateListFromWS,
   bulkAddToList,
@@ -321,6 +376,7 @@ const k8sActions = {
   errored,
   modifyObject,
   getResourcesInFlight,
+  getCSVsInFlight,
   receivedResources,
   filterList,
   startWatchK8sObject,

@@ -16,7 +16,7 @@ import { Navigation } from './nav';
 import { history, Firehose } from './utils';
 import * as UIActions from '../actions/ui';
 import { fetchSwagger, getCachedResources, referenceForModel } from '../module/k8s';
-import { receivedResources, watchAPIServices } from '../actions/k8s';
+import { receivedResources, watchAPIServices, watchCSVs } from '../actions/k8s';
 import { ClusterVersionModel } from '../models';
 // cloud shell imports must come later than features
 import CloudShell from '@console/app/src/components/cloud-shell/CloudShell';
@@ -170,6 +170,8 @@ class App extends React.PureComponent {
 
 const startDiscovery = () => store.dispatch(watchAPIServices());
 
+const startCSVDiscovery = () => store.dispatch(watchCSVs());
+
 // Load cached API resources from localStorage to speed up page load.
 getCachedResources()
   .then((resources) => {
@@ -178,8 +180,19 @@ getCachedResources()
     }
     // Still perform discovery to refresh the cache.
     startDiscovery();
+    startCSVDiscovery();
   })
   .catch(startDiscovery);
+
+getCachedResources()
+  .then((resources) => {
+    if (resources) {
+      store.dispatch(receivedResources(resources));
+    }
+    // Still perform discovery to refresh the cache.
+    startCSVDiscovery();
+  })
+  .catch(startCSVDiscovery);
 
 store.dispatch(detectFeatures());
 
