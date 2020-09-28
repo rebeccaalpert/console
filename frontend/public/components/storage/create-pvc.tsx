@@ -2,6 +2,7 @@ import * as _ from 'lodash-es';
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ActionGroup, Button } from '@patternfly/react-core';
 import { isCephProvisioner, isObjectSC } from '@console/shared/src/utils';
 import { k8sCreate, K8sResourceKind, referenceFor } from '../../module/k8s';
@@ -114,6 +115,7 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
     volumeMode,
   ]);
 
+  const { t } = useTranslation();
   const handleNameValuePairs = ({ nameValuePairs: updatedNameValuePairs }) => {
     setNameValuePairs(updatedNameValuePairs);
   };
@@ -127,8 +129,8 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
     //setting message to display for various modes when a storage class of a know provisioner is selected
     const displayMessage =
       provisionerAccessModeMapping[provisioner] || isCephProvisioner(provisioner)
-        ? 'Access mode is set by storage class and cannot be changed'
-        : 'Permissions to the mounted drive';
+        ? `${t('create-pvc~Access mode is set by storage class and cannot be changed')}`
+        : `${t('create-pvc~Permissions to the mounted drive')}`;
     setAccessMode('ReadWriteOnce');
     setAccessModeHelp(displayMessage);
     //setting accessMode to default with the change to Storage Class selection
@@ -173,7 +175,9 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
         />
       </div>
       <label className="control-label co-required" htmlFor="pvc-name">
-        Persistent Volume Claim Name
+        {t('create-pvc~{{resource}} Name', {
+          resource: PersistentVolumeClaimModel.label,
+        })}
       </label>
       <div className="form-group">
         <input
@@ -187,11 +191,11 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
           required
         />
         <p className="help-block" id="pvc-name-help">
-          A unique name for the storage claim within the project
+          {t('create-pvc~A unique name for the storage claim within the project')}
         </p>
       </div>
       <label className="control-label co-required" htmlFor="access-mode">
-        Access Mode
+        {t('create-pvc~Access Mode')}
       </label>
       <div className="form-group">
         {accessModeRadios.map((radio) => {
@@ -221,7 +225,7 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
         </p>
       </div>
       <label className="control-label co-required" htmlFor="request-size-input">
-        Size
+        {t('create-pvc~Size')}
       </label>
       <RequestSizeInput
         name="requestSize"
@@ -234,10 +238,10 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
         inputID="request-size-input"
       />
       <p className="help-block" id="request-size-help">
-        Desired storage capacity
+        {t('create-pvc~Desired storage capacity')}
       </p>
       <Checkbox
-        label="Use label selectors to request storage"
+        label={t('create-pvc~Use label selectors to request storage')}
         onChange={handleUseSelector}
         checked={useSelector}
         name="showLabelSelector"
@@ -255,11 +259,11 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
           />
         )}
         <p className="help-block" id="label-selector-help">
-          Use label selectors to define how storage is created
+          {t('create-pvc~Use label selectors to define how storage is created')}
         </p>
       </div>
       <label className="control-label" htmlFor="volume-mode">
-        Volume Mode
+        {t('create-pvc~Volume Mode')}
       </label>
       <div className="form-group">
         {volumeModeRadios.map((radio) => (
@@ -278,11 +282,14 @@ export const CreatePVCForm: React.FC<CreatePVCFormProps> = (props) => {
 };
 
 export const CreatePVCPage: React.FC<CreatePVCPageProps> = (props) => {
+  const { t } = useTranslation();
   const [error, setError] = React.useState('');
   const [inProgress, setInProgress] = React.useState(false);
   const [pvcObj, setPvcObj] = React.useState(null);
-  const title = 'Create Persistent Volume Claim';
   const { namespace } = props;
+  const title = t('create-pvc~Create {{resource}}', {
+    resource: PersistentVolumeClaimModel.label,
+  });
 
   const save = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
@@ -313,7 +320,7 @@ export const CreatePVCPage: React.FC<CreatePVCPageProps> = (props) => {
             data-test="yaml-link"
             replace
           >
-            Edit YAML
+            {t('public~Edit')} YAML
           </Link>
         </div>
       </h1>
@@ -322,10 +329,10 @@ export const CreatePVCPage: React.FC<CreatePVCPageProps> = (props) => {
         <ButtonBar errorMessage={error} inProgress={inProgress}>
           <ActionGroup className="pf-c-form">
             <Button id="save-changes" type="submit" variant="primary">
-              Create
+              {t('create-pvc~Create')}
             </Button>
             <Button onClick={history.goBack} type="button" variant="secondary">
-              Cancel
+              {t('create-pvc~Cancel')}
             </Button>
           </ActionGroup>
         </ButtonBar>

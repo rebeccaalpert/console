@@ -12,7 +12,9 @@ import {
   PersistentVolumeClaimModel,
   VolumeSnapshotContentModel,
   VolumeSnapshotClassModel,
+  VolumeSnapshotModel,
 } from '@console/internal/models';
+import { useTranslation } from 'react-i18next';
 import { referenceForModel, VolumeSnapshotKind } from '@console/internal/module/k8s';
 import { ResourceEventStream } from '@console/internal/components/events';
 import { DetailsPage, DetailsPageProps } from '@console/internal/components/factory';
@@ -25,6 +27,7 @@ const { common, RestorePVC } = Kebab.factory;
 const menuActions = [RestorePVC, ...common];
 
 const Details: React.FC<DetailsProps> = ({ obj }) => {
+  const { t } = useTranslation();
   const { namespace } = obj.metadata || {};
   const sourceModel = obj?.spec?.source?.persistentVolumeClaimName
     ? PersistentVolumeClaimModel
@@ -40,11 +43,15 @@ const Details: React.FC<DetailsProps> = ({ obj }) => {
 
   return (
     <div className="co-m-pane__body">
-      <SectionHeading text="Volume Snapshot Details" />
+      <SectionHeading
+        text={t('volume-snapshot-details~{{resource}} details', {
+          resource: VolumeSnapshotModel.label,
+        })}
+      />
       <div className="row">
         <div className="col-md-6 col-xs-12">
           <ResourceSummary resource={obj}>
-            <dt>Status</dt>
+            <dt>{t('volume-snapshot-details~Status')}</dt>
             <dd>
               <Status status={volumeSnapshotStatus(obj)} />
             </dd>
@@ -52,9 +59,9 @@ const Details: React.FC<DetailsProps> = ({ obj }) => {
         </div>
         <div className="col-md-6">
           <dl className="co-m-pane__details">
-            <dt>Size</dt>
+            <dt>{t('volume-snapshot-details~Size')}</dt>
             <dd>{size ? sizeMetrics : '-'}</dd>
-            <dt>Source</dt>
+            <dt>{t('volume-snapshot-details~Source')}</dt>
             <dd>
               <ResourceLink
                 kind={referenceForModel(sourceModel)}

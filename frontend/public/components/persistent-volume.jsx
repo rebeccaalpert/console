@@ -4,6 +4,8 @@ import { sortable } from '@patternfly/react-table';
 import * as classNames from 'classnames';
 
 import { Status } from '@console/shared';
+import { useTranslation } from 'react-i18next';
+
 import { DetailsPage, ListPage, Table, TableRow, TableData } from './factory';
 import {
   Kebab,
@@ -15,7 +17,7 @@ import {
   ResourceSummary,
   Timestamp,
 } from './utils';
-import { PersistentVolumeModel } from '../models';
+import { PersistentVolumeModel, PersistentVolumeClaimModel, StorageClassModel } from '../models';
 
 const { common } = Kebab.factory;
 const menuActions = [...Kebab.getExtensionsActionsForKind(PersistentVolumeModel), ...common];
@@ -33,52 +35,6 @@ const tableColumnClasses = [
   classNames('col-lg-2', 'col-md-2', 'hidden-sm', 'hidden-xs'),
   Kebab.columnClass,
 ];
-
-const PVTableHeader = () => {
-  return [
-    {
-      title: 'Name',
-      sortField: 'metadata.name',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[0] },
-    },
-    {
-      title: 'Status',
-      sortField: 'status.phase',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[1] },
-    },
-    {
-      title: 'Claim',
-      sortField: 'spec.claimRef.name',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[2] },
-    },
-    {
-      title: 'Capacity',
-      sortFunc: 'pvStorage',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[3] },
-    },
-    {
-      title: 'Labels',
-      sortField: 'metadata.labels',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[4] },
-    },
-    {
-      title: 'Created',
-      sortField: 'metadata.creationTimestamp',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[5] },
-    },
-    {
-      title: '',
-      props: { className: tableColumnClasses[6] },
-    },
-  ];
-};
-PVTableHeader.displayName = 'PVTableHeader';
 
 const kind = 'PersistentVolume';
 
@@ -125,6 +81,7 @@ const PVTableRow = ({ obj, index, key, style }) => {
 };
 
 const Details = ({ obj: pv }) => {
+  const { t } = useTranslation();
   const storageClassName = _.get(pv, 'spec.storageClassName');
   const pvcName = _.get(pv, 'spec.claimRef.name');
   const namespace = _.get(pv, 'spec.claimRef.namespace');
@@ -134,35 +91,39 @@ const Details = ({ obj: pv }) => {
   const reclaimPolicy = _.get(pv, 'spec.persistentVolumeReclaimPolicy');
   return (
     <div className="co-m-pane__body">
-      <SectionHeading text="PersistentVolume Details" />
+      <SectionHeading
+        text={t('persistent-volume~{{resource}} details', {
+          resource: PersistentVolumeModel.label,
+        })}
+      />
       <div className="row">
         <div className="col-sm-6">
           <ResourceSummary resource={pv}>
-            <dt>Reclaim Policy</dt>
+            <dt>{t('persistent-volume~Reclaim Policy')}</dt>
             <dd>{reclaimPolicy}</dd>
           </ResourceSummary>
         </div>
         <div className="col-sm-6">
           <dl>
-            <dt>Status</dt>
+            <dt>{t('persistent-volume~Status')}</dt>
             <dd>
               <PVStatus pv={pv} />
             </dd>
             {storage && (
               <>
-                <dt>Capacity</dt>
+                <dt>{t('persistent-volume~Capacity')}</dt>
                 <dd>{storage}</dd>
               </>
             )}
             {!_.isEmpty(accessModes) && (
               <>
-                <dt>Access Modes</dt>
+                <dt>{t('persistent-volume~Access Modes')}</dt>
                 <dd>{accessModes.join(', ')}</dd>
               </>
             )}
-            <dt>Volume Mode</dt>
+            <dt>{t('persistent-volume~Volume Mode')}</dt>
             <dd>{volumeMode || 'Filesystem'}</dd>
-            <dt>Storage Class</dt>
+            <dt>{StorageClassModel.label}</dt>
             <dd>
               {storageClassName ? (
                 <ResourceLink kind="StorageClass" name={storageClassName} />
@@ -172,7 +133,7 @@ const Details = ({ obj: pv }) => {
             </dd>
             {pvcName && (
               <>
-                <dt>Persistent Volume Claim</dt>
+                <dt>{PersistentVolumeClaimModel.label}</dt>
                 <dd>
                   <ResourceLink kind="PersistentVolumeClaim" name={pvcName} namespace={namespace} />
                 </dd>
@@ -185,15 +146,63 @@ const Details = ({ obj: pv }) => {
   );
 };
 
-export const PersistentVolumesList = (props) => (
-  <Table
-    {...props}
-    aria-label="Persistent Volumes"
-    Header={PVTableHeader}
-    Row={PVTableRow}
-    virtualize
-  />
-);
+export const PersistentVolumesList = (props) => {
+  const { t } = useTranslation();
+  const PVTableHeader = () => {
+    return [
+      {
+        title: t('persistent-volume~Name'),
+        sortField: 'metadata.name',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[0] },
+      },
+      {
+        title: t('persistent-volume~Status'),
+        sortField: 'status.phase',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[1] },
+      },
+      {
+        title: t('persistent-volume~Claim'),
+        sortField: 'spec.claimRef.name',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[2] },
+      },
+      {
+        title: t('persistent-volume~Capacity'),
+        sortFunc: 'pvStorage',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[3] },
+      },
+      {
+        title: t('persistent-volume~Labels'),
+        sortField: 'metadata.labels',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[4] },
+      },
+      {
+        title: t('persistent-volume~Created'),
+        sortField: 'metadata.creationTimestamp',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[5] },
+      },
+      {
+        title: '',
+        props: { className: tableColumnClasses[6] },
+      },
+    ];
+  };
+  return (
+    <Table
+      {...props}
+      aria-label={PersistentVolumeModel.labelPlural}
+      Header={PVTableHeader}
+      Row={PVTableRow}
+      virtualize
+    />
+  );
+};
+
 export const PersistentVolumesPage = (props) => (
   <ListPage {...props} ListComponent={PersistentVolumesList} kind={kind} canCreate={true} />
 );

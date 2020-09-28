@@ -5,8 +5,9 @@ import * as classNames from 'classnames';
 import * as fuzzy from 'fuzzysearch';
 import * as _ from 'lodash-es';
 import { ActionGroup, Button } from '@patternfly/react-core';
+import { withTranslation } from 'react-i18next';
 import { getName } from '@console/shared';
-import { withExtensions } from '@console/plugin-sdk';
+import { Extension, withExtensions } from '@console/plugin-sdk';
 import {
   StorageClassProvisioner,
   isStorageClassProvisioner,
@@ -27,6 +28,7 @@ import {
 import { k8sCreate, K8sResourceKind, referenceForModel, referenceFor } from './../module/k8s';
 import * as k8sActions from '../actions/k8s';
 import { CSIDriverModel, StorageClassModel } from './../models';
+import { i18n, TFunction } from 'i18next';
 
 enum Provisioner {
   CSI = 'csi',
@@ -56,7 +58,7 @@ const defaultState = {
   fieldErrors: { parameters: {} },
 };
 
-export class StorageClassForm_ extends React.Component<
+class StorageClassFormWithTranslation extends React.Component<
   StorageClassFormProps,
   StorageClassFormState
 > {
@@ -104,39 +106,39 @@ export class StorageClassForm_ extends React.Component<
   CSIStorageTypes = Object.freeze({
     ...this.getExtensionsStorageClassProvisioners(Provisioner.CSI),
     'ebs.csi.aws.com': {
-      title: 'AWS CSI',
+      title: 'AWS CSI', // t('storage-class-form~AWS CSI')
       provisioner: 'ebs.csi.aws.com',
       allowVolumeExpansion: true,
       parameters: {
         type: {
-          name: 'Type',
+          name: 'Type', // t('storage-class-form~Type')
           values: { gp2: 'gp2', io1: 'io1', sc1: 'sc1', st1: 'st1', standard: 'standard' },
           hintText: 'Select AWS Type. Default is gp2',
         },
         iopsPerGB: {
-          name: 'IOPS Per GiB',
-          hintText: 'I/O operations per second per GiB',
+          name: 'IOPS Per GiB', // t('storage-class-form~IOPS Per GiB')
+          hintText: 'I/O operations per second per GiB', // t('storage-class-form~I/O operations per second per GiB')
           validation: (params) => {
             if (params.iopsPerGB.value && !params.iopsPerGB.value.match(/^\d+$/)) {
-              return 'IOPS per GiB must be a number';
+              return 'IOPS per GiB must be a number'; // t('storage-class-form~IOPS per GiB must be a number')
             }
             return null;
           },
           visible: (params) => _.get(params, 'type.value') === 'io1',
         },
         fsType: {
-          name: 'Filesystem Type',
-          hintText: 'Filesystem type to use during volume creation. Default is ext4.',
+          name: 'Filesystem Type', // t('storage-class-form~Filesystem Type')
+          hintText: 'Filesystem type to use during volume creation. Default is ext4.', // t('storage-class-form~Filesystem type to use during volume creation. Default is ext4.')
           values: { ext4: 'ext4', xfs: 'xfs', ext2: 'ext2', ext3: 'ext3' },
         },
         encrypted: {
-          name: 'Encrypted',
+          name: 'Encrypted', // t('storage-class-form~Encrypted')
           type: 'checkbox',
           format: (value) => value.toString(),
         },
         kmsKeyId: {
-          name: 'KMS Key ID',
-          hintText: 'The full Amazon Resource Name of the key to use when encrypting the volume',
+          name: 'KMS Key ID', // t('storage-class-form~KMS Key ID')
+          hintText: 'The full Amazon Resource Name of the key to use when encrypting the volume', // t('storage-class-form~The full Amazon Resource Name of the key to use when encrypting the volume')
           visible: (params) => _.get(params, 'encrypted.value', false),
         },
       },
@@ -147,7 +149,7 @@ export class StorageClassForm_ extends React.Component<
   defaultStorageTypes = Object.freeze({
     ...this.getExtensionsStorageClassProvisioners(Provisioner.OTHERS), // Plugin provisoners
     local: {
-      title: 'Local',
+      title: 'Local', // t('storage-class-form~Local')
       provisioner: 'kubernetes.io/no-provisioner',
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#local',
       parameters: {},
@@ -160,33 +162,33 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#aws-ebs',
       parameters: {
         type: {
-          name: 'Type',
+          name: 'Type', // t('storage-class-form~Type')
           values: { io1: 'io1', gp2: 'gp2', sc1: 'sc1', st1: 'st1' },
           hintText: 'Select AWS Type',
         },
         iopsPerGB: {
-          name: 'IOPS Per GiB',
-          hintText: 'I/O operations per second per GiB',
+          name: 'IOPS Per GiB', // t('storage-class-form~IOPS Per GiB')
+          hintText: 'I/O operations per second per GiB', // t('storage-class-form~I/O operations per second per GiB')
           validation: (params) => {
             if (params.iopsPerGB.value && !params.iopsPerGB.value.match(/^\d+$/)) {
-              return 'IOPS per GiB must be a number';
+              return 'IOPS per GiB must be a number'; // t('storage-class-form~IOPS per GiB must be a number')
             }
             return null;
           },
           visible: (params) => _.get(params, 'type.value') === 'io1',
         },
         fsType: {
-          name: 'Filesystem Type',
-          hintText: 'Filesystem type to use during volume creation. Default is ext4.',
+          name: 'Filesystem Type', // t('storage-class-form~Filesystem Type')
+          hintText: 'Filesystem type to use during volume creation. Default is ext4.', // t('storage-class-form~Filesystem type to use during volume creation. Default is ext4.')
         },
         encrypted: {
-          name: 'Encrypted',
+          name: 'Encrypted', // t('storage-class-form~Encrypted')
           type: 'checkbox',
           format: (value) => value.toString(),
         },
         kmsKeyId: {
-          name: 'KMS Key ID',
-          hintText: 'The full Amazon Resource Name of the key to use when encrypting the volume',
+          name: 'KMS Key ID', // t('storage-class-form~KMS Key ID')
+          hintText: 'The full Amazon Resource Name of the key to use when encrypting the volume', // t('storage-class-form~The full Amazon Resource Name of the key to use when encrypting the volume')
           visible: (params) => _.get(params, 'encrypted.value', false),
         },
       },
@@ -198,30 +200,30 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#gce',
       parameters: {
         type: {
-          name: 'Type',
+          name: 'Type', // t('storage-class-form~Type')
           values: { 'pd-standard': 'pd-standard', 'pd-ssd': 'pd-ssd' },
           hintText: 'Select GCE type',
         },
         zone: {
-          name: 'Zone',
+          name: 'Zone', // t('storage-class-form~Zone')
           validation: (params) => {
             if (params.zone.value !== '' && _.get(params, 'zones.value', '') !== '') {
-              return 'Zone and zones parameters must not be used at the same time';
+              return 'Zone and zones parameters must not be used at the same time'; // t('storage-class-form~Zone and zones parameters must not be used at the same time')
             }
             return null;
           },
         },
         zones: {
-          name: 'Zones',
+          name: 'Zones', // t('storage-class-form~Zones')
           validation: (params) => {
             if (params.zones.value !== '' && _.get(params, 'zone.value', '') !== '') {
-              return 'Zone and zones parameters must not be used at the same time';
+              return 'Zone and zones parameters must not be used at the same time'; // t('storage-class-form~Zone and zones parameters must not be used at the same time')
             }
             return null;
           },
         },
         'replication-type': {
-          name: 'Replication Type',
+          name: 'Replication Type', // t('storage-class-form~Replication Type')
           values: { none: 'none', 'regional-pd': 'regional-pd' },
           hintText: 'Select Replication Type',
           validation: (params) => {
@@ -229,7 +231,7 @@ export class StorageClassForm_ extends React.Component<
               params['replication-type'].value === 'regional-pd' &&
               _.get(params, 'zone.value', '') !== ''
             ) {
-              return 'Zone cannot be specified when Replication Type regional-pd is chosen, use zones instead';
+              return 'Zone cannot be specified when Replication Type regional-pd is chosen, use zones instead'; // t('storage-class-form~Zone cannot be specified when Replication Type regional-pd is chosen, use zones instead')
             }
             return null;
           },
@@ -243,41 +245,41 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#glusterfs',
       parameters: {
         resturl: {
-          name: 'Gluster REST/Heketi URL',
+          name: 'Gluster REST/Heketi URL', // t('storage-class-form~Gluster REST/Heketi URL')
           required: true,
         },
         restuser: {
-          name: 'Gluster REST/Heketi user',
+          name: 'Gluster REST/Heketi user', // t('storage-class-form~Gluster REST/Heketi user')
         },
         secretNamespace: {
-          name: 'Secret Namespace',
+          name: 'Secret Namespace', // t('storage-class-form~Secret Namespace')
         },
         secretName: {
-          name: 'Secret Name',
+          name: 'Secret Name', // t('storage-class-form~Secret Name')
         },
         clusterid: {
-          name: 'Cluster ID',
+          name: 'Cluster ID', // t('storage-class-form~Cluster ID')
         },
         gidMin: {
-          name: 'GID Min',
+          name: 'GID Min', // t('storage-class-form~GID Min')
           validation: (params) => {
             if (params.gidMin.value !== '' && !params.gidMin.value.match(/^[1-9]\d*$/)) {
-              return 'GID Min must be number';
+              return 'GID Min must be number'; // t('storage-class-form~GID Min must be number')
             }
             return null;
           },
         },
         gidMax: {
-          name: 'GID Max',
+          name: 'GID Max', // t('storage-class-form~GID Max')
           validation: (params) => {
             if (params.gidMax.value !== '' && !params.gidMax.value.match(/^[1-9]\d*$/)) {
-              return 'GID Max must be number';
+              return 'GID Max must be number'; // t('storage-class-form~GID Max must be number')
             }
             return null;
           },
         },
         volumetype: {
-          name: 'Volume Type',
+          name: 'Volume Type', // t('storage-class-form~Volume Type')
         },
       },
     },
@@ -289,10 +291,10 @@ export class StorageClassForm_ extends React.Component<
         'https://kubernetes.io/docs/concepts/storage/storage-classes/#openstack-cinder',
       parameters: {
         type: {
-          name: 'Volume Type',
+          name: 'Volume Type', // t('storage-class-form~Volume Type')
         },
         availability: {
-          name: 'Availability Zone',
+          name: 'Availability Zone', // t('storage-class-form~Availability Zone')
         },
       },
     },
@@ -303,16 +305,16 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#azure-file',
       parameters: {
         skuName: {
-          name: 'SKU Name',
-          hintText: 'Azure storage account SKU tier',
+          name: 'SKU Name', // t('storage-class-form~SKU Name')
+          hintText: 'Azure storage account SKU tier', // t('storage-class-form~Azure storage account SKU tier')
         },
         location: {
-          name: 'Location',
-          hintText: 'Azure storage account location',
+          name: 'Location', // t('storage-class-form~Location')
+          hintText: 'Azure storage account location', // t('storage-class-form~Azure storage account location')
         },
         storageAccount: {
-          name: 'Azure Storage Account Name',
-          hintText: 'Azure Storage Account Name',
+          name: 'Azure Storage Account Name', // t('storage-class-form~Azure Storage Account Name')
+          hintText: 'Azure Storage Account Name', // t('storage-class-form~Azure Storage Account Name')
         },
       },
     },
@@ -323,11 +325,11 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#azure-disk',
       parameters: {
         storageaccounttype: {
-          name: 'Storage Account Type',
-          hintText: 'Storage Account Type',
+          name: 'Storage Account Type', // t('storage-class-form~Storage Account Type')
+          hintText: 'Storage Account Type', // t('storage-class-form~Storage Account Type')
         },
         kind: {
-          name: 'Account Kind',
+          name: 'Account Kind', // t('storage-class-form~Account Kind')
           values: { shared: 'shared', dedicated: 'dedicated', managed: 'managed' },
           hintText: 'Select Account Kind',
         },
@@ -340,36 +342,36 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#quobyte',
       parameters: {
         quobyteAPIServer: {
-          name: 'Quobyte API Server',
-          hintText: 'Quobyte API Server',
+          name: 'Quobyte API Server', // t('storage-class-form~Quobyte API Server')
+          hintText: 'Quobyte API Server', // t('storage-class-form~Quobyte API Server')
         },
         registry: {
-          name: 'Registry Address(es)',
-          hintText: 'Registry Address(es)',
+          name: 'Registry Address(es)', // t('storage-class-form~Registry Address(es)')
+          hintText: 'Registry Address(es)', // t('storage-class-form~Registry Address(es)')
         },
         adminSecretName: {
-          name: 'Admin Secret Name',
-          hintText: 'Admin Secret Name',
+          name: 'Admin Secret Name', // t('storage-class-form~Admin Secret Name')
+          hintText: 'Admin Secret Name', // t('storage-class-form~Admin Secret Name')
         },
         adminSecretNamespace: {
-          name: 'Admin Secret Namespace',
-          hintText: 'Admin Secret Namespace',
+          name: 'Admin Secret Namespace', // t('storage-class-form~Admin Secret Namespace')
+          hintText: 'Admin Secret Namespace', // t('storage-class-form~Admin Secret Namespace')
         },
         user: {
-          name: 'User',
-          hintText: 'User',
+          name: 'User', // t('storage-class-form~User')
+          hintText: 'User', // t('storage-class-form~User')
         },
         group: {
-          name: 'Group',
-          hintText: 'Group',
+          name: 'Group', // t('storage-class-form~Group')
+          hintText: 'Group', // t('storage-class-form~Group')
         },
         quobyteConfig: {
-          name: 'Quobyte Configuration',
-          hintText: 'Quobyte Configuration',
+          name: 'Quobyte Configuration', // t('storage-class-form~Quobyte Configuration')
+          hintText: 'Quobyte Configuration', // t('storage-class-form~Quobyte Configuration')
         },
         quobyteTenant: {
-          name: 'Quobyte Tenant',
-          hintText: 'Quobyte tenant ID used to create/delete the volume',
+          name: 'Quobyte Tenant', // t('storage-class-form~Quobyte Tenant')
+          hintText: 'Quobyte tenant ID used to create/delete the volume', // t('storage-class-form~Quobyte tenant ID used to create/delete the volume')
         },
       },
     },
@@ -380,7 +382,7 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#vsphere',
       parameters: {
         diskformat: {
-          name: 'Disk Format',
+          name: 'Disk Format', // t('storage-class-form~Disk Format')
           values: {
             thin: 'thin',
             zeroedthick: 'zeroed thick',
@@ -389,8 +391,8 @@ export class StorageClassForm_ extends React.Component<
           hintText: 'Select Disk Format',
         },
         datastore: {
-          name: 'Datastore',
-          hintText: 'Datastore',
+          name: 'Datastore', // t('storage-class-form~Datastore')
+          hintText: 'Datastore', // t('storage-class-form~Datastore')
         },
       },
     },
@@ -402,44 +404,44 @@ export class StorageClassForm_ extends React.Component<
         'https://kubernetes.io/docs/concepts/storage/storage-classes/#portworx-volume',
       parameters: {
         fs: {
-          name: 'Filesystem',
+          name: 'Filesystem', // t('storage-class-form~Filesystem')
           values: { none: 'none', xfs: 'xfs', ext4: 'ext4' },
           hintText: 'Select Filesystem',
         },
         // eslint-disable-next-line camelcase
         block_size: {
-          name: 'Block Size',
-          hintText: 'Block size in Kb',
+          name: 'Block Size', // t('storage-class-form~Block Size')
+          hintText: 'Block size in Kb', // t('storage-class-form~Block Size in Kb')
           validation: (params) => {
             if (params.block_size.value !== '' && !params.block_size.value.match(/^[1-9]\d*$/)) {
-              return 'Snapshot interval must be a number';
+              return 'Snapshot interval must be a number'; // t('storage-class-form~Snapshot interval must be a number')
             }
             return null;
           },
         },
         repl: {
-          name: 'Number of synchronous replicas to be provided in the form of replication factor',
-          hintText: 'Number of Replicas',
+          name: 'Number of synchronous replicas to be provided in the form of replication factor', // t('storage-class-form~Number of synchronous replicas to be provided in the form of replication factor')
+          hintText: 'Number of Replicas', // t('storage-class-form~Number of Replicas')
           validation: (params) => {
             if (params.repl.value !== '' && !params.repl.value.match(/^[1-9]\d*$/)) {
-              return 'Number of replicas must be a number';
+              return 'Number of replicas must be a number'; // t('storage-class-form~Number of replicas must be a number')
             }
             return null;
           },
         },
         // eslint-disable-next-line camelcase
         io_priority: {
-          name: 'I/O Priority',
+          name: 'I/O Priority', // t('storage-class-form~I/O Priority')
           values: { high: 'high', medium: 'medium', low: 'low' },
           hintText: 'I/O Priority',
         },
         // eslint-disable-next-line camelcase
         snap_interval: {
-          name: 'Snapshot Interval',
-          hintText: 'Clock/time interval in minutes for when to trigger snapshots',
+          name: 'Snapshot Interval', // t('storage-class-form~Snapshot Interval')
+          hintText: 'Clock/time interval in minutes for when to trigger snapshots', // t('storage-class-form~Clock/time interval in minutes for when to trigger snapshots')
           validation: (params) => {
             if (params.repl.value !== '' && !params.repl.value.match(/^[1-9]\d*$/)) {
-              return 'Snapshot interval must be a number';
+              return 'Snapshot interval must be a number'; // t('storage-class-form~Snapshot interval must be a number')
             }
             return null;
           },
@@ -447,21 +449,21 @@ export class StorageClassForm_ extends React.Component<
         },
         // eslint-disable-next-line camelcase
         aggregation_level: {
-          name: 'Aggregation Level',
-          hintText: 'The number of chunks the volume would be distributed into',
+          name: 'Aggregation Level', // t('storage-class-form~Aggregation Level')
+          hintText: 'The number of chunks the volume would be distributed into', // t('storage-class-form~The number of chunks the volume would be distributed into')
           validation: (params) => {
             if (
               params.aggregation_level.value !== '' &&
               !params.aggregation_level.value.match(/^[1-9]\d*$/)
             ) {
-              return 'Aggregation level must be a number';
+              return 'Aggregation level must be a number'; // t('storage-class-form~Aggregation level must be a number')
             }
             return null;
           },
           format: (value) => value.toString(),
         },
         ephemeral: {
-          name: 'Ephemeral',
+          name: 'Ephemeral', // t('storage-class-form~Ephemeral')
           type: 'checkbox',
           format: (value) => value.toString(),
         },
@@ -474,42 +476,42 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#scaleio',
       parameters: {
         gateway: {
-          name: 'API Gateway',
+          name: 'API Gateway', // t('storage-class-form~API Gateway')
           required: true,
-          hintText: 'ScaleIO API gateway address',
+          hintText: 'ScaleIO API gateway address', // t('storage-class-form~ScaleIO API gateway address')
         },
         system: {
-          name: 'System Name',
+          name: 'System Name', // t('storage-class-form~System Name')
           required: true,
-          hintText: 'Name of the ScaleIO system',
+          hintText: 'Name of the ScaleIO system', // t('storage-class-form~Name of the ScaleIO system')
         },
         protectionDomain: {
-          name: 'Protection Domain',
+          name: 'Protection Domain', // t('storage-class-form~Protection Domain')
           required: true,
-          hintText: 'Name of the ScaleIO protection domain',
+          hintText: 'Name of the ScaleIO protection domain', // t('storage-class-form~Name of the ScaleIO protection domain')
         },
         storagePool: {
-          name: 'Storage Pool',
+          name: 'Storage Pool', // t('storage-class-form~Storage Pool')
           required: true,
-          hintText: 'Name of the volume storage pool',
+          hintText: 'Name of the volume storage pool', // t('storage-class-form~Name of the volume storage pool')
         },
         storageMode: {
-          name: 'Storage Mode',
+          name: 'Storage Mode', // t('storage-class-form~Storage Mode')
           values: { thinProvisioned: 'ThinProvisioned', thickProvisioned: 'ThickProvisioned' },
           hintText: 'Select Storage Provision Mode',
         },
         secretRef: {
-          name: 'Secret Reference',
+          name: 'Secret Reference', // t('storage-class-form~Secret Reference')
           required: true,
-          hintText: 'Reference to a configured Secret object',
+          hintText: 'Reference to a configured Secret object', // t('storage-class-form~Reference to a configured Secret object')
         },
         readOnly: {
-          name: 'Read Only',
+          name: 'Read Only', // t('storage-class-form~Read Only')
           type: 'checkbox',
         },
         fsType: {
-          name: 'Filesystem Type',
-          hintText: 'Filesystem to use for the volume',
+          name: 'Filesystem Type', // t('storage-class-form~Filesystem Type')
+          hintText: 'Filesystem to use for the volume', // t('storage-class-form~Filesystem to use for the volume')
         },
       },
     },
@@ -520,25 +522,25 @@ export class StorageClassForm_ extends React.Component<
       documentationLink: 'https://kubernetes.io/docs/concepts/storage/storage-classes/#storageos',
       parameters: {
         pool: {
-          name: 'Pool',
+          name: 'Pool', // t('storage-class-form~Pool')
           hintText:
-            'Name of the StorageOS distributed capacity pool from which to provision the volume',
+            'Name of the StorageOS distributed capacity pool from which to provision the volume', // t('storage-class-form~Name of the StorageOS distributed capacity pool from which to provision the volume')
         },
         description: {
-          name: 'Description',
-          hintText: 'Description to assign to volumes that were created dynamically',
+          name: 'Description', // t('storage-class-form~Description')
+          hintText: 'Description to assign to volumes that were created dynamically', // t('storage-class-form~Description to assign to volumes that were created dynamically')
         },
         fsType: {
-          name: 'Filesystem Type',
-          hintText: 'Default filesystem type to request',
+          name: 'Filesystem Type', // t('storage-class-form~Filesystem Type')
+          hintText: 'Default filesystem type to request', // t('storage-class-form~Default filesystem type to request')
         },
         adminSecretName: {
-          name: 'Admin Secret Name',
-          hintText: 'Name of the secret to use for obtaining the StorageOS API credentials',
+          name: 'Admin Secret Name', // t('storage-class-form~Admin Secret Name')
+          hintText: 'Name of the secret to use for obtaining the StorageOS API credentials', // t('storage-class-form~Name of the secret to use for obtaining the StorageOS API credentials')
         },
         adminSecretNamespace: {
-          name: 'Admin Secret Namespace',
-          hintText: 'Namespace where the API configuration secret is located',
+          name: 'Admin Secret Namespace', // t('storage-class-form~Admin Secret Namespace')
+          hintText: 'Namespace where the API configuration secret is located', // t('storage-class-form~Namespace where the API configuration secret is located')
           required: (params) => {
             const adminSecretName = _.get(params, 'adminSecretName.value', null);
             return adminSecretName !== null && adminSecretName !== '';
@@ -726,7 +728,7 @@ export class StorageClassForm_ extends React.Component<
     // Display error if duplicate keys are found
     const keys = customParams.map((t) => t[NameValueEditorPair.Name]);
     if (_.uniq(keys).length !== keys.length) {
-      this.setState({ error: 'Duplicate keys found.' });
+      this.setState({ error: 'Duplicate keys found.' }); // t('storage-class-form~Duplicate keys found.')
       return;
     }
 
@@ -784,12 +786,12 @@ export class StorageClassForm_ extends React.Component<
 
     if (nameUpdated) {
       if (updatedName.trim().length === 0) {
-        returnVal.error = 'Storage name is required';
+        returnVal.error = 'Storage name is required'; // t('storage-class-form~Storage name is required')
         returnVal.nameIsValid = false;
       } else if (this.resources) {
         _.each(this.resources.data, function(storageClass) {
           if (storageClass.metadata.name === updatedName.toLowerCase()) {
-            returnVal.error = 'Storage name must be unique';
+            returnVal.error = 'Storage name must be unique'; // t('storage-class-form~Storage name must be unique')
             returnVal.nameIsValid = false;
           }
         });
@@ -938,19 +940,20 @@ export class StorageClassForm_ extends React.Component<
         </div>
       );
     });
-
+    const { t } = this.props;
     return (
       <>
         {dynamicContent}
 
         {this.storageTypes[this.state.newStorageClass.type].documentationLink && (
           <div className="form-group">
-            <label>Additional Parameters</label>
+            <label>{t('storage-class-form~Additional Parameters')}</label>
             <p>
-              Specific fields for the selected provisioner. &nbsp;
+              {t('storage-class-form~Specific fields for the selected provisioner.')}
+              &nbsp;
               <ExternalLink
                 href={this.storageTypes[this.state.newStorageClass.type].documentationLink}
-                text="What should I enter here?"
+                text={t('storage-class-form~What should I enter here?')}
               />
             </p>
             <NameValueEditorComponent
@@ -969,6 +972,7 @@ export class StorageClassForm_ extends React.Component<
   autocompleteFilter = (text, item) => fuzzy(text, item);
 
   render() {
+    const { t } = this.props;
     const { newStorageClass, fieldErrors } = this.state;
     const reclaimPolicyKey =
       newStorageClass.reclaim === null ? this.reclaimPolicies.Delete : newStorageClass.reclaim;
@@ -979,7 +983,7 @@ export class StorageClassForm_ extends React.Component<
     return (
       <div className="co-m-pane__body co-m-pane__form">
         <h1 className="co-m-pane__heading co-m-pane__heading--baseline">
-          <div className="co-m-pane__name">Create Storage Class</div>
+          <div className="co-m-pane__name">{StorageClassModel.label}</div>
           <div className="co-m-pane__heading-link">
             <Link
               to="/k8s/cluster/storageclasses/~new"
@@ -987,14 +991,14 @@ export class StorageClassForm_ extends React.Component<
               data-test="yaml-link"
               replace
             >
-              Edit YAML
+              {t('storage-class-form~Edit')} YAML
             </Link>
           </div>
         </h1>
         <form data-test-id="storage-class-form">
           <div className={classNames('form-group', { 'has-error': fieldErrors.nameValidationMsg })}>
             <label className="control-label co-required" htmlFor="storage-class-name">
-              Name
+              {t('storage-class-form~Name')}
             </label>
             <input
               type="text"
@@ -1010,7 +1014,7 @@ export class StorageClassForm_ extends React.Component<
           </div>
 
           <div className="form-group">
-            <label htmlFor="storage-class-description">Description</label>
+            <label htmlFor="storage-class-description">{t('storage-class-form~Description')}</label>
             <input
               type="text"
               className="pf-c-form-control"
@@ -1022,10 +1026,10 @@ export class StorageClassForm_ extends React.Component<
 
           <div className="form-group">
             <label className="co-required" htmlFor="storage-class-reclaim-policy">
-              Reclaim Policy
+              {t('storage-class-form~Reclaim Policy')}
             </label>
             <Dropdown
-              title="Select Reclaim Policy"
+              title={`${t('storage-class-form~Select Reclaim Policy')}`}
               items={this.reclaimPolicies}
               dropDownClassName="dropdown--full-width"
               selectedKey={reclaimPolicyKey}
@@ -1033,14 +1037,16 @@ export class StorageClassForm_ extends React.Component<
               id="storage-class-reclaim-policy"
             />
             <span className="help-block">
-              Determines what happens to persistent volumes when the associated persistent volume
-              claim is deleted. Defaults to &lsquo;Delete&rsquo;
+              {t(
+                'storage-class-form~storage-class-form~Determines what happens to persistent volumes when the associated persistent volume claim is deleted. Defaults to ',
+              )}{' '}
+              &lsquo;{t('storage-class-form~Delete')}&rsquo;
             </span>
           </div>
 
           <div className="form-group">
             <label className="co-required" htmlFor="storage-class-provisioner">
-              Provisioner
+              {t('storage-class-form~Provisioner')}
             </label>
             <Dropdown
               title="Select Provisioner"
@@ -1054,7 +1060,9 @@ export class StorageClassForm_ extends React.Component<
               id="storage-class-provisioner"
             />
             <span className="help-block">
-              Determines what volume plugin is used for provisioning persistent volumes.
+              {t(
+                'storage-class-form~Determines what volume plugin is used for provisioning persistent volumes.',
+              )}
             </span>
           </div>
 
@@ -1067,7 +1075,7 @@ export class StorageClassForm_ extends React.Component<
                   onChange={(event) => this.setStorageHandler('expansion', event.target.checked)}
                   checked={allowExpansion}
                 />
-                Allow persistent volume claims to be expanded
+                {t('storage-class-form~Allow persistent volume claims to be expanded')}
               </label>
             </div>
           )}
@@ -1088,7 +1096,7 @@ export class StorageClassForm_ extends React.Component<
                 type="submit"
                 variant="primary"
               >
-                Create
+                {t('storage-class-form~Create')}
               </Button>
               <Button
                 id="cancel"
@@ -1096,7 +1104,7 @@ export class StorageClassForm_ extends React.Component<
                 type="button"
                 variant="secondary"
               >
-                Cancel
+                {t('storage-class-form~Cancel')}
               </Button>
             </ActionGroup>
           </ButtonBar>
@@ -1106,25 +1114,40 @@ export class StorageClassForm_ extends React.Component<
   }
 }
 
-const mapStateToProps = ({ k8s }, { onClose }) => ({
+type StateProps = {
+  k8s: any;
+  onClose: () => void;
+};
+
+type DispatchProps = {
+  watchK8sList: (id: string, query: object, kind: object) => void;
+  stopK8sWatch: (id: string) => void;
+};
+
+const mapStateToProps = ({ k8s }, { onClose }): StateProps => ({
   k8s,
   onClose,
 });
 
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (): DispatchProps => ({
   stopK8sWatch: k8sActions.stopK8sWatch,
   watchK8sList: k8sActions.watchK8sList,
 });
 
-export type StorageClassFormProps = StorageClassFormExtensionProps & {
-  onClose: () => void;
-  watchK8sList: (id: string, query: object, kind: object) => void;
-  stopK8sWatch: (id: string) => void;
-  k8s: any;
-  resources?: {
-    [key: string]: FirehoseResult;
-  };
+type WithTranslation = {
+  t: TFunction;
+  i18n: i18n;
+  tReady: boolean;
 };
+
+export type StorageClassFormProps = WithTranslation &
+  StorageClassFormExtensionProps &
+  StateProps &
+  DispatchProps & {
+    resources?: {
+      [key: string]: FirehoseResult;
+    };
+  };
 
 export type StorageClassData = {
   name: string;
@@ -1163,8 +1186,10 @@ export const ConnectedStorageClassForm = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(
-  withExtensions<StorageClassFormExtensionProps>({ params: isStorageClassProvisioner })(
-    StorageClassForm_,
+  withTranslation()(
+    withExtensions<StorageClassFormExtensionProps, Extension, StorageClassFormProps>({
+      params: isStorageClassProvisioner,
+    })(StorageClassFormWithTranslation),
   ),
 );
 

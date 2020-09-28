@@ -27,6 +27,7 @@ import {
   PodModel,
   StorageClassModel,
   PersistentVolumeClaimModel,
+  VolumeSnapshotModel,
   VolumeSnapshotContentModel,
   ClusterOperatorModel,
 } from '@console/internal/models';
@@ -232,7 +233,7 @@ const plugin: Plugin<ConsumedExtensions> = [
     properties: {
       section: 'Storage',
       componentProps: {
-        name: 'Volume Snapshot Contents',
+        name: VolumeSnapshotContentModel.labelPlural,
         resource: referenceForModel(VolumeSnapshotContentModel),
       },
     },
@@ -271,7 +272,7 @@ const plugin: Plugin<ConsumedExtensions> = [
     properties: {
       href: 'volumesnapshots',
       model: PersistentVolumeClaimModel,
-      name: 'Volume Snapshots',
+      name: VolumeSnapshotModel.labelPlural,
       loader: () =>
         import(
           './components/volume-snapshot/volume-snapshot' /* webpackChunkName: "volume-snapshot-page" */

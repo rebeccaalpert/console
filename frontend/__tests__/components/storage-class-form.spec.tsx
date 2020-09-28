@@ -14,6 +14,17 @@ import {
   StorageClassFormExtensionProps,
 } from '../../public/components/storage-class-form';
 
+jest.mock('react-i18next', () => {
+  const reactI18next = require.requireActual('react-i18next');
+  return {
+    ...reactI18next,
+    withTranslation: () => (Component) => {
+      Component.defaultProps = { ...Component.defaultProps, t: (s) => s };
+      return Component;
+    },
+  };
+});
+
 describe(ConnectedStorageClassForm.displayName, () => {
   const Component: React.ComponentType<StorageClassFormProps &
     StorageClassFormExtensionProps> = ConnectedStorageClassForm.WrappedComponent as any;
@@ -22,6 +33,9 @@ describe(ConnectedStorageClassForm.displayName, () => {
   let watchK8sList: Spy;
   let stopK8sWatch: Spy;
   let k8s: Spy;
+  let t: Spy;
+  let i18n: Spy;
+  let tReady: Spy;
   let params: StorageClassProvisioner[];
   let extensionFunction: ExtensionSCProvisionerProp;
 
@@ -30,6 +44,9 @@ describe(ConnectedStorageClassForm.displayName, () => {
     watchK8sList = jasmine.createSpy('watchK8sList');
     stopK8sWatch = jasmine.createSpy('stopK8sWatch');
     k8s = jasmine.createSpy('k8s');
+    t = jasmine.createSpy('t');
+    i18n = jasmine.createSpy('i18n');
+    tReady = jasmine.createSpy('tReady');
     params = [
       {
         type: 'StorageClass/Provisioner',
@@ -45,6 +62,9 @@ describe(ConnectedStorageClassForm.displayName, () => {
         watchK8sList={watchK8sList}
         stopK8sWatch={stopK8sWatch}
         k8s={k8s}
+        t={t}
+        i18n={i18n}
+        tReady={tReady}
         params={params}
       />,
     );

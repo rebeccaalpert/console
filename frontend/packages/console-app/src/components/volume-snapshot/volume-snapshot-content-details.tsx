@@ -7,16 +7,22 @@ import {
   Kebab,
   humanizeBinaryBytes,
 } from '@console/internal/components/utils';
-import { VolumeSnapshotClassModel, VolumeSnapshotModel } from '@console/internal/models';
+import {
+  VolumeSnapshotClassModel,
+  VolumeSnapshotContentModel,
+  VolumeSnapshotModel,
+} from '@console/internal/models';
 import { referenceForModel, VolumeSnapshotContentKind } from '@console/internal/module/k8s';
 import { DetailsPage, DetailsPageProps } from '@console/internal/components/factory';
 import { Status } from '@console/shared';
+import { useTranslation } from 'react-i18next';
 import { ResourceEventStream } from '@console/internal/components/events';
 import { volumeSnapshotStatus } from '../../status';
 
 const { editYaml, events } = navFactory;
 
 const Details: React.FC<DetailsProps> = ({ obj }) => {
+  const { t } = useTranslation();
   const { deletionPolicy, driver } = obj?.spec;
   const { volumeHandle, snapshotHandle } = obj?.spec?.source || {};
   const { name: snapshotName, namespace: snapshotNamespace } = obj?.spec?.volumeSnapshotRef || {};
@@ -25,11 +31,15 @@ const Details: React.FC<DetailsProps> = ({ obj }) => {
 
   return (
     <div className="co-m-pane__body">
-      <SectionHeading text="Volume Snapshot Content Details" />
+      <SectionHeading
+        text={t('volume-snapshot-content~{{resource}} details', {
+          resource: VolumeSnapshotContentModel.label,
+        })}
+      />
       <div className="row">
         <div className="col-md-6 col-xs-12">
           <ResourceSummary resource={obj}>
-            <dt>Status</dt>
+            <dt>{t('volume-snapshot-content~Status')}</dt>
             <dd>
               <Status status={volumeSnapshotStatus(obj)} />
             </dd>
@@ -39,11 +49,11 @@ const Details: React.FC<DetailsProps> = ({ obj }) => {
           <dl className="co-m-pane__details">
             {size && (
               <>
-                <dt>Size</dt>
+                <dt>{t('volume-snapshot-content~Size')}</dt>
                 <dd>{sizeMetrics}</dd>
               </>
             )}
-            <dt>Volume Snapshot</dt>
+            <dt>{VolumeSnapshotModel.label}</dt>
             <dd>
               <ResourceLink
                 kind={referenceForModel(VolumeSnapshotModel)}
@@ -51,26 +61,26 @@ const Details: React.FC<DetailsProps> = ({ obj }) => {
                 namespace={snapshotNamespace}
               />
             </dd>
-            <dt>Volume Snapshot Class</dt>
+            <dt>{VolumeSnapshotClassModel.label}</dt>
             <dd>
               <ResourceLink
                 kind={referenceForModel(VolumeSnapshotClassModel)}
                 name={obj?.spec?.volumeSnapshotClassName}
               />
             </dd>
-            <dt>Deletion Policy</dt>
+            <dt>{t('volume-snapshot-content~Deletion Policy')}</dt>
             <dd>{deletionPolicy}</dd>
-            <dt>Driver</dt>
+            <dt>{t('volume-snapshot-content~Driver')}</dt>
             <dd>{driver}</dd>
             {volumeHandle && (
               <>
-                <dt>Volume Handle</dt>
+                <dt>{t('volume-snapshot-content~Volume Handle')}</dt>
                 <dd>{volumeHandle}</dd>
               </>
             )}
             {snapshotHandle && (
               <>
-                <dt>Snapshot Handle</dt>
+                <dt>{t('volume-snapshot-content~Snapshot Handle')}</dt>
                 <dd>{snapshotHandle}</dd>
               </>
             )}

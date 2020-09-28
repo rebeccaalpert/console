@@ -487,24 +487,24 @@ export const LocalResourceAccessReviewsModel: K8sKind = {
 };
 
 export const PersistentVolumeModel: K8sKind = {
-  label: 'Persistent Volume',
+  label: 'PersistentVolume',
   apiVersion: 'v1',
   plural: 'persistentvolumes',
   abbr: 'PV',
   kind: 'PersistentVolume',
   id: 'persistentvolume',
-  labelPlural: 'Persistent Volumes',
+  labelPlural: 'PersistentVolumes',
 };
 
 export const PersistentVolumeClaimModel: K8sKind = {
-  label: 'Persistent Volume Claim',
+  label: 'PersistentVolumeClaim',
   apiVersion: 'v1',
   plural: 'persistentvolumeclaims',
   abbr: 'PVC',
   namespaced: true,
   kind: 'PersistentVolumeClaim',
   id: 'persistentvolumeclaim',
-  labelPlural: 'Persistent Volume Claims',
+  labelPlural: 'PersistentVolumeClaims',
 };
 
 export const PetsetModel: K8sKind = {
@@ -593,8 +593,8 @@ export const CronJobModel: K8sKind = {
 };
 
 export const StorageClassModel: K8sKind = {
-  label: 'Storage Class',
-  labelPlural: 'Storage Classes',
+  label: 'StorageClass',
+  labelPlural: 'StorageClasses',
   apiVersion: 'v1',
   apiGroup: 'storage.k8s.io',
   plural: 'storageclasses',
@@ -958,7 +958,7 @@ export const ConsoleYAMLSampleModel: K8sKind = {
 };
 
 export const VolumeSnapshotModel: K8sKind = {
-  label: 'Volume Snapshot',
+  label: 'VolumeSnapshot',
   apiVersion: 'v1beta1',
   apiGroup: 'snapshot.storage.k8s.io',
   plural: 'volumesnapshots',
@@ -966,12 +966,12 @@ export const VolumeSnapshotModel: K8sKind = {
   namespaced: true,
   kind: 'VolumeSnapshot',
   id: 'volumesnapshot',
-  labelPlural: 'Volume Snapshots',
+  labelPlural: 'VolumeSnapshots',
   crd: true,
 };
 
 export const VolumeSnapshotClassModel: K8sKind = {
-  label: 'Volume Snapshot Class',
+  label: 'VolumeSnapshotClass',
   apiVersion: 'v1beta1',
   apiGroup: 'snapshot.storage.k8s.io',
   plural: 'volumesnapshotclasses',
@@ -979,12 +979,12 @@ export const VolumeSnapshotClassModel: K8sKind = {
   namespaced: false,
   kind: 'VolumeSnapshotClass',
   id: 'volumesnapshotclass',
-  labelPlural: 'Volume Snapshot Classes',
+  labelPlural: 'VolumeSnapshotclasses',
   crd: true,
 };
 
 export const VolumeSnapshotContentModel: K8sKind = {
-  label: 'Volume Snapshot Content',
+  label: 'VolumeSnapshotContent',
   apiVersion: 'v1beta1',
   apiGroup: 'snapshot.storage.k8s.io',
   plural: 'volumesnapshotcontents',
@@ -992,6 +992,6 @@ export const VolumeSnapshotContentModel: K8sKind = {
   namespaced: false,
   kind: 'VolumeSnapshotContent',
   id: 'volumesnapshotcontent',
-  labelPlural: 'Volume Snapshot Contents',
+  labelPlural: 'VolumeSnapshotContents',
   crd: true,
 };

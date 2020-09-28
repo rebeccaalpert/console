@@ -5,6 +5,7 @@ import * as classNames from 'classnames';
 // @ts-ignore
 import { useDispatch, connect } from 'react-redux';
 import { sortable } from '@patternfly/react-table';
+import { useTranslation } from 'react-i18next';
 import { ChartDonut } from '@patternfly/react-charts';
 import {
   Status,
@@ -32,7 +33,7 @@ import {
   asAccessReview,
 } from './utils';
 import { ResourceEventStream } from './events';
-import { PersistentVolumeClaimModel } from '../models';
+import { PersistentVolumeClaimModel, PersistentVolumeModel, StorageClassModel } from '../models';
 import { setPVCMetrics } from '../actions/ui';
 import { PrometheusEndpoint } from './graphs/helpers';
 import { usePrometheusPoll } from './graphs/prometheus-poll-hook';
@@ -93,59 +94,6 @@ const tableColumnClasses = [
   classNames('pf-m-hidden', 'pf-m-visible-on-2xl'), // storage class
   Kebab.columnClass,
 ];
-
-const PVCTableHeader = () => {
-  return [
-    {
-      title: 'Name',
-      sortField: 'metadata.name',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[0] },
-    },
-    {
-      title: 'Namespace',
-      sortField: 'metadata.namespace',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[1] },
-      id: 'namespace',
-    },
-    {
-      title: 'Status',
-      sortField: 'status.phase',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[2] },
-    },
-    {
-      title: 'Persistent Volume',
-      sortField: 'spec.volumeName',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[3] },
-    },
-    {
-      title: 'Capacity',
-      sortFunc: 'pvcStorage',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[4] },
-    },
-    {
-      title: 'Used',
-      sortFunc: 'pvcUsed',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[5] },
-    },
-    {
-      title: 'Storage Class',
-      sortField: 'spec.storageClassName',
-      transforms: [sortable],
-      props: { className: tableColumnClasses[6] },
-    },
-    {
-      title: '',
-      props: { className: tableColumnClasses[7] },
-    },
-  ];
-};
-PVCTableHeader.displayName = 'PVCTableHeader';
 
 const kind = 'PersistentVolumeClaim';
 
@@ -247,12 +195,16 @@ const Details_ = ({ flags, obj: pvc }) => {
   const alertComponents = pvcAlertExtensions.map(({ properties: { loader } }, i) => (
     <AsyncComponent key={`ext-${i}`} loader={loader} pvc={pvc} />
   ));
-
+  const { t } = useTranslation();
   return (
     <>
       <div className="co-m-pane__body">
         {alertComponents}
-        <SectionHeading text="Persistent Volume Claim Details" />
+        <SectionHeading
+          text={t('persistent-volume-claim~{{resource}} details', {
+            resource: PersistentVolumeClaimModel.label,
+          })}
+        />
         {totalCapacityMetric && !loading && (
           <div className="co-pvc-donut">
             <ChartDonut
@@ -274,7 +226,7 @@ const Details_ = ({ flags, obj: pvc }) => {
         <div className="row">
           <div className="col-sm-6">
             <ResourceSummary resource={pvc}>
-              <dt>Label Selector</dt>
+              <dt>{t('persistent-volume-claim~Label Selector')}</dt>
               <dd data-test-id="pvc-name">
                 <Selector selector={labelSelector} kind="PersistentVolume" />
               </dd>
@@ -282,35 +234,35 @@ const Details_ = ({ flags, obj: pvc }) => {
           </div>
           <div className="col-sm-6">
             <dl>
-              <dt>Status</dt>
+              <dt>{t('persistent-volume-claim~Status')}</dt>
               <dd data-test-id="pvc-status">
                 <PVCStatus pvc={pvc} />
               </dd>
-              <dt>Requested Capacity</dt>
+              <dt>{t('persistent-volume-claim~Requested Capacity')}</dt>
               <dd data-test="pvc-requested-capacity">
                 {humanizeBinaryBytes(totalRequestMetric).string}
               </dd>
               {storage && (
                 <>
-                  <dt>Capacity</dt>
+                  <dt>{t('persistent-volume-claim~Capacity')}</dt>
                   <dd data-test-id="pvc-capacity">{totalCapacity.string}</dd>
                 </>
               )}
               {usedMetrics && _.isEmpty(loadError) && !loading && (
                 <>
-                  <dt>Used</dt>
+                  <dt>{t('persistent-volume-claim~Used')}</dt>
                   <dd>{humanizeBinaryBytes(usedMetrics).string}</dd>
                 </>
               )}
               {!_.isEmpty(accessModes) && (
                 <>
-                  <dt>Access Modes</dt>
+                  <dt>{t('persistent-volume-claim~Access Modes')}</dt>
                   <dd data-test-id="pvc-access-mode">{accessModes.join(', ')}</dd>
                 </>
               )}
-              <dt>Volume Mode</dt>
+              <dt>{t('persistent-volume-claim~Volume Mode')}</dt>
               <dd data-test-id="pvc-volume-mode">{volumeMode || 'Filesystem'}</dd>
-              <dt>Storage Class</dt>
+              <dt>{StorageClassModel.labelPlural}</dt>
               <dd data-test-id="pvc-storageclass">
                 {storageClassName ? (
                   <ResourceLink kind="StorageClass" name={storageClassName} />
@@ -320,7 +272,7 @@ const Details_ = ({ flags, obj: pvc }) => {
               </dd>
               {volumeName && canListPV && (
                 <>
-                  <dt>Persistent Volume</dt>
+                  <dt>{PersistentVolumeModel.labelPlural}</dt>
                   <dd data-test-id="persistent-volume">
                     <ResourceLink kind="PersistentVolume" name={volumeName} />
                   </dd>
@@ -331,7 +283,7 @@ const Details_ = ({ flags, obj: pvc }) => {
         </div>
       </div>
       <div className="co-m-pane__body">
-        <SectionHeading text="Conditions" />
+        <SectionHeading text={t('persistent-volume-claim~Conditions')} />
         <Conditions conditions={conditions} />
       </div>
     </>
@@ -341,24 +293,65 @@ const Details_ = ({ flags, obj: pvc }) => {
 const Details = connectToFlags(FLAGS.CAN_LIST_PV)(Details_);
 
 const allPhases = ['Pending', 'Bound', 'Lost'];
-const filters = [
-  {
-    filterGroupName: 'Status',
-    type: 'pvc-status',
-    reducer: (pvc) => pvc.status.phase,
-    items: _.map(allPhases, (phase) => ({
-      id: phase,
-      title: phase,
-    })),
-  },
-];
 
 export const PersistentVolumeClaimsList = (props) => {
   const Row = React.useCallback((rowProps) => <PVCTableRow {...rowProps} />, []);
+  const { t } = useTranslation();
+  const PVCTableHeader = () => {
+    return [
+      {
+        title: t('persistent-volume-claim~Name'),
+        sortField: 'metadata.name',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[0] },
+      },
+      {
+        title: t('persistent-volume-claim~Namespace'),
+        sortField: 'metadata.namespace',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[1] },
+        id: 'namespace',
+      },
+      {
+        title: t('persistent-volume-claim~Status'),
+        sortField: 'status.phase',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[2] },
+      },
+      {
+        title: `${PersistentVolumeModel.labelPlural}`,
+        sortField: 'spec.volumeName',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[3] },
+      },
+      {
+        title: t('persistent-volume-claim~Capacity'),
+        sortFunc: 'pvcStorage',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[4] },
+      },
+      {
+        title: t('persistent-volume-claim~Used'),
+        sortFunc: 'pvcUsed',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[5] },
+      },
+      {
+        title: `${StorageClassModel.labelPlural}`,
+        sortField: 'spec.storageClassName',
+        transforms: [sortable],
+        props: { className: tableColumnClasses[6] },
+      },
+      {
+        title: '',
+        props: { className: tableColumnClasses[7] },
+      },
+    ];
+  };
   return (
     <Table
       {...props}
-      aria-label="Persistent Volume Claims"
+      aria-label={PersistentVolumeClaimModel.labelPlural}
       Header={PVCTableHeader}
       Row={Row}
       virtualize
@@ -412,6 +405,19 @@ export const PersistentVolumeClaimsPage = (props) => {
             return initPath.concat(item.path);
           },
         };
+
+  const { t } = useTranslation();
+  const filters = [
+    {
+      filterGroupName: t('persistent-volume-claim~Status'),
+      type: 'pvc-status',
+      reducer: (pvc) => pvc.status.phase,
+      items: _.map(allPhases, (phase) => ({
+        id: phase,
+        title: phase,
+      })),
+    },
+  ];
 
   return (
     <ListPage

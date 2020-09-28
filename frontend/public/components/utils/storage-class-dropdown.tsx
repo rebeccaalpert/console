@@ -1,13 +1,16 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 
 import { Firehose, LoadingInline, Dropdown, ResourceName, ResourceIcon } from '.';
 import { isDefaultClass } from '../storage-class';
+import { StorageClassModel } from '../../models';
 
 /* Component StorageClassDropdown - creates a dropdown list of storage classes */
 
-export class StorageClassDropdownInner extends React.Component<
+class StorageClassDropdownInnerWithTranslation extends React.Component<
   StorageClassDropdownInnerProps,
   StorageClassDropdownInnerState
 > {
@@ -129,7 +132,7 @@ export class StorageClassDropdownInner extends React.Component<
   };
 
   render() {
-    const { id, loaded, describedBy, noSelection } = this.props;
+    const { id, loaded, describedBy, noSelection, t } = this.props;
     const items = {};
     _.each(
       this.state.items,
@@ -140,7 +143,6 @@ export class StorageClassDropdownInner extends React.Component<
           <StorageClassDropdownNoStorageClassOption {...props} />
         )),
     );
-
     const { selectedKey, defaultClass } = this.state;
 
     // Only show the dropdown if 'no storage class' is not the only option which depends on defaultClass
@@ -157,7 +159,7 @@ export class StorageClassDropdownInner extends React.Component<
               }
               htmlFor={id}
             >
-              Storage Class
+              {StorageClassModel.label}
             </label>
             <Dropdown
               className="co-storage-class-dropdown"
@@ -174,7 +176,9 @@ export class StorageClassDropdownInner extends React.Component<
             />
             {describedBy && (
               <p className="help-block" id={describedBy}>
-                Storage class for the new claim
+                {t('storage-class-dropdown~{{resource}} for the new claim', {
+                  resource: StorageClassModel.label,
+                })}
               </p>
             )}
           </div>
@@ -183,6 +187,10 @@ export class StorageClassDropdownInner extends React.Component<
     );
   }
 }
+
+export const StorageClassDropdownInner = withTranslation()(
+  StorageClassDropdownInnerWithTranslation,
+);
 
 export const StorageClassDropdown = (props) => {
   return (
@@ -229,7 +237,7 @@ export type StorageClassDropdownInnerState = {
   defaultClass: string;
 };
 
-export type StorageClassDropdownInnerProps = {
+export type StorageClassDropdownInnerProps = WithTranslation & {
   id?: string;
   loaded?: boolean;
   resources?: any;
@@ -241,4 +249,5 @@ export type StorageClassDropdownInnerProps = {
   hideClassName?: string;
   filter?: (param) => boolean;
   noSelection?: boolean;
+  t: TFunction;
 };
