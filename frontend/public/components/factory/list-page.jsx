@@ -5,6 +5,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, TextInput } from '@patternfly/react-core';
+import { useTranslation } from 'react-i18next';
 
 import { withFallback } from '@console/shared/src/components/error/error-boundary';
 import { useDocumentListener, KEYBOARD_SHORTCUTS } from '@console/shared';
@@ -342,6 +343,7 @@ export const ListPage = withFallback((props) => {
     hideColumnManagement,
     columnLayout,
   } = props;
+  const { t } = useTranslation();
   let { createProps } = props;
   const ko = kindObj(kind);
   const { label, labelPlural, namespaced, plural } = ko;
@@ -388,10 +390,10 @@ export const ListPage = withFallback((props) => {
       autoFocus={autoFocus}
       canCreate={canCreate}
       createAccessReview={createAccessReview}
-      createButtonText={createButtonText || `Create ${label}`}
+      createButtonText={createButtonText || t('list-page~Create {{label}}', { label })}
       createProps={createProps}
       customData={customData}
-      filterLabel={filterLabel || 'by name'}
+      filterLabel={filterLabel || t('list-page~by name')}
       nameFilterPlaceholder={nameFilterPlaceholder}
       labelFilterPlaceholder={labelFilterPlaceholder}
       flatten={(_resources) => _.get(_resources, name || kind, {}).data}
@@ -402,7 +404,7 @@ export const ListPage = withFallback((props) => {
       namespace={usedNamespace}
       resources={resources}
       rowFilters={rowFilters}
-      selectorFilterLabel="Filter by selector (app=nginx) ..."
+      selectorFilterLabel={t('list-page~Filter by selector (app=nginx) ...')}
       showTitle={showTitle}
       textFilter={textFilter}
       title={title}
@@ -447,6 +449,7 @@ export const MultiListPage = (props) => {
     columnLayout,
   } = props;
 
+  const { t } = useTranslation();
   const resources = _.map(props.resources, (r) => ({
     ...r,
     isList: r.isList !== undefined ? r.isList : true,
@@ -459,12 +462,12 @@ export const MultiListPage = (props) => {
       autoFocus={autoFocus}
       canCreate={canCreate}
       createAccessReview={createAccessReview}
-      createButtonText={createButtonText || 'Create'}
+      createButtonText={createButtonText || t('list-page~Create')}
       createProps={createProps}
-      filterLabel={filterLabel || 'by name'}
+      filterLabel={filterLabel || t('list-page~by name')}
       helpText={helpText}
       resources={mock ? [] : resources}
-      selectorFilterLabel="Filter by selector (app=nginx) ..."
+      selectorFilterLabel={t('list-page~Filter by selector (app=nginx) ...')}
       textFilter={textFilter}
       title={showTitle ? title : undefined}
       badge={badge}

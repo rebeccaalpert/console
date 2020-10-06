@@ -12,10 +12,10 @@ export const getBreadcrumbPath = (match: any, customPlural?: string) => {
   return `/k8s/cluster/${customPlural || match.params.plural}`;
 };
 
-export const breadcrumbsForDetailsPage = (kindObj: K8sKind, match: any) => () => [
+export const breadcrumbsForDetailsPage = (kindObj: K8sKind, match: any, t: any) => () => [
   {
     name: `${kindObj.labelPlural}`,
     path: getBreadcrumbPath(match),
   },
-  { name: `${kindObj.label} Details`, path: `${match.url}` },
+  { name: t('details-item~{{kind}} details', { kind: kindObj.label }), path: `${match.url}` },
 ];

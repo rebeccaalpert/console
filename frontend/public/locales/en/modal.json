@@ -1,0 +1,12 @@
+{
+  "Cancel": "Cancel",
+  "Manage columns": "Manage columns",
+  "Selected columns will appear in the table.": "Selected columns will appear in the table.",
+  "You can select up to {{MAX_VIEW_COLS}} columns": "You can select up to {{MAX_VIEW_COLS}} columns",
+  "Default {{resourceKind}} columns": "Default {{resourceKind}} columns",
+  "Default column list": "Default column list",
+  "Additional columns": "Additional columns",
+  "Additional column list": "Additional column list",
+  "Save": "Save",
+  "Restore default columns": "Restore default columns"
+}

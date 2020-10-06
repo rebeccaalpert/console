@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as _ from 'lodash-es';
 import { Button } from '@patternfly/react-core';
 import { PencilAltIcon } from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
 
 import { DetailsItem } from './details-item';
 import { Kebab } from './kebab';
@@ -51,6 +52,7 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
   podSelector = 'spec.selector',
   nodeSelector = 'spec.template.spec.nodeSelector',
 }) => {
+  const { t } = useTranslation();
   const { metadata, type } = resource;
   const reference = referenceFor(resource);
   const model = modelFor(reference);
@@ -66,9 +68,13 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
 
   return (
     <dl data-test-id="resource-summary" className="co-m-pane__details">
-      <DetailsItem label="Name" obj={resource} path={customPathName || 'metadata.name'} />
+      <DetailsItem
+        label={t('details-item~Name')}
+        obj={resource}
+        path={customPathName || 'metadata.name'}
+      />
       {metadata.namespace && (
-        <DetailsItem label="Namespace" obj={resource} path="metadata.namespace">
+        <DetailsItem label={t('details-item~Namespace')} obj={resource} path="metadata.namespace">
           <ResourceLink
             kind="Namespace"
             name={metadata.namespace}
@@ -77,10 +83,10 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
           />
         </DetailsItem>
       )}
-      {type ? <dt>Type</dt> : null}
+      {type ? <dt>{t('details-item~Type')}</dt> : null}
       {type ? <dd>{type}</dd> : null}
       <DetailsItem
-        label="Labels"
+        label={t('details-item~Labels')}
         obj={resource}
         path="metadata.labels"
         valueClassName="details-item__value--labels"
@@ -91,7 +97,7 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
         <LabelList kind={reference} labels={metadata.labels} />
       </DetailsItem>
       {showPodSelector && (
-        <DetailsItem label="Pod Selector" obj={resource} path={podSelector}>
+        <DetailsItem label={t('details-item~Pod selector')} obj={resource} path={podSelector}>
           <Selector
             selector={_.get(resource, podSelector)}
             namespace={_.get(resource, 'metadata.namespace')}
@@ -99,12 +105,12 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
         </DetailsItem>
       )}
       {showNodeSelector && (
-        <DetailsItem label="Node Selector" obj={resource} path={nodeSelector}>
+        <DetailsItem label={t('details-item~Node selector')} obj={resource} path={nodeSelector}>
           <Selector kind="Node" selector={_.get(resource, nodeSelector)} />
         </DetailsItem>
       )}
       {showTolerations && (
-        <DetailsItem label="Tolerations" obj={resource} path={tolerationsPath}>
+        <DetailsItem label={t('details-item~Tolerations')} obj={resource} path={tolerationsPath}>
           {canUpdate ? (
             <Button
               type="button"
@@ -112,16 +118,20 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
               onClick={Kebab.factory.ModifyTolerations(model, resource).callback}
               variant="link"
             >
-              {pluralize(_.size(tolerations), 'Toleration')}
+              {t('details-item~{{count}} toleration', { count: _.size(tolerations) })}
               <PencilAltIcon className="co-icon-space-l pf-c-button-icon--plain" />
             </Button>
           ) : (
-            pluralize(_.size(tolerations), 'Toleration')
+            t('details-item~Toleration', { count: _.size(tolerations) })
           )}
         </DetailsItem>
       )}
       {showAnnotations && (
-        <DetailsItem label="Annotations" obj={resource} path="metadata.annotations">
+        <DetailsItem
+          label={t('details-item~Annotations')}
+          obj={resource}
+          path="metadata.annotations"
+        >
           {canUpdate ? (
             <Button
               data-test-id="edit-annotations"
@@ -130,31 +140,48 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
               onClick={Kebab.factory.ModifyAnnotations(model, resource).callback}
               variant="link"
             >
-              {pluralize(_.size(metadata.annotations), 'Annotation')}
+              {t('details-item~{{count}} annotation', { count: _.size(metadata.annotations) })}
               <PencilAltIcon className="co-icon-space-l pf-c-button-icon--plain" />
             </Button>
           ) : (
-            pluralize(_.size(metadata.annotations), 'Annotation')
+            t('details-item~Annotation', { count: _.size(metadata.annotations) })
           )}
         </DetailsItem>
       )}
       {children}
-      <DetailsItem label="Created At" obj={resource} path="metadata.creationTimestamp">
+      <DetailsItem
+        label={t('details-item~Created at')}
+        obj={resource}
+        path="metadata.creationTimestamp"
+      >
         <Timestamp timestamp={metadata.creationTimestamp} />
       </DetailsItem>
-      <DetailsItem label="Owner" obj={resource} path="metadata.ownerReferences">
+      <DetailsItem label={t('details-item~Owner')} obj={resource} path="metadata.ownerReferences">
         <OwnerReferences resource={resource} />
       </DetailsItem>
     </dl>
   );
 };
 
-export const ResourcePodCount: React.SFC<ResourcePodCountProps> = ({ resource }) => (
-  <dl>
-    <DetailsItem label="Current Count" obj={resource} path="status.replicas" defaultValue="0" />
-    <DetailsItem label="Desired Count" obj={resource} path="spec.replicas" defaultValue="0" />
-  </dl>
-);
+export const ResourcePodCount: React.SFC<ResourcePodCountProps> = ({ resource }) => {
+  const { t } = useTranslation();
+  return (
+    <dl>
+      <DetailsItem
+        label={t('details-item~Current count')}
+        obj={resource}
+        path="status.replicas"
+        defaultValue="0"
+      />
+      <DetailsItem
+        label={t('details-item~Desired count')}
+        obj={resource}
+        path="spec.replicas"
+        defaultValue="0"
+      />
+    </dl>
+  );
+};
 
 export type ResourceSummaryProps = {
   resource: K8sResourceKind;

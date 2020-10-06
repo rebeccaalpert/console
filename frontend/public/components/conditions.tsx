@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Timestamp } from './utils';
 import { CamelCaseWrap } from './utils/camel-case-wrap';
 import { K8sResourceCondition } from '../module/k8s';
+import { useTranslation } from 'react-i18next';
 
 export const Conditions: React.SFC<ConditionsProps> = ({ conditions }) => {
+  const { t } = useTranslation();
   const rows = conditions?.map?.((condition: K8sResourceCondition, i: number) => (
     <div className="row" data-test-id={condition.type} key={i}>
       <div className="col-xs-4 col-sm-2 col-md-2">
@@ -30,17 +32,17 @@ export const Conditions: React.SFC<ConditionsProps> = ({ conditions }) => {
       {conditions?.length ? (
         <div className="co-m-table-grid co-m-table-grid--bordered">
           <div className="row co-m-table-grid__head">
-            <div className="col-xs-4 col-sm-2 col-md-2">Type</div>
-            <div className="col-xs-4 col-sm-2 col-md-2">Status</div>
-            <div className="hidden-xs hidden-sm col-md-2">Updated</div>
-            <div className="col-xs-4 col-sm-3 col-md-2">Reason</div>
-            <div className="hidden-xs col-sm-5 col-md-4">Message</div>
+            <div className="col-xs-4 col-sm-2 col-md-2">{t('details-item~Type')}</div>
+            <div className="col-xs-4 col-sm-2 col-md-2">{t('details-item~Status')}</div>
+            <div className="hidden-xs hidden-sm col-md-2">{t('details-item~Updated')}</div>
+            <div className="col-xs-4 col-sm-3 col-md-2">{t('details-item~Reason')}</div>
+            <div className="hidden-xs col-sm-5 col-md-4">{t('details-item~Message')}</div>
           </div>
           <div className="co-m-table-grid__body">{rows}</div>
         </div>
       ) : (
         <div className="cos-status-box">
-          <div className="text-center">No Conditions Found</div>
+          <div className="text-center">{t('details-item~No conditions found')}</div>
         </div>
       )}
     </>

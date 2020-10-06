@@ -19,6 +19,7 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon, FilterIcon, ColumnsIcon } from '@patternfly/react-icons';
 import { Dropdown as DropdownInternal } from '@console/internal/components/utils';
+import { useTranslation } from 'react-i18next';
 
 import { setQueryArgument, removeQueryArgument } from './utils';
 import { filterList } from '../actions/k8s';
@@ -98,11 +99,30 @@ const FilterToolbar_: React.FC<FilterToolbarProps & RouteComponentProps> = (prop
     labelFilter = filterTypeMap[FilterType.LABEL],
   } = props;
 
+  const { t } = useTranslation();
+  const translateFilterType = (value: string) => {
+    switch (value) {
+      case 'Name':
+        return t('filter-toolbar~Name');
+      case 'Label':
+        return t('filter-toolbar~Label');
+      case 'labels':
+        return t('filter-toolbar~labels');
+      case 'name':
+        return t('filter-toolbar~name');
+      default:
+        return t('filter-toolbar~{{value}}', { value });
+    }
+  };
+  const translatedFilterType = {
+    NAME: t('filter-toolbar~Name'),
+    LABEL: t('filter-toolbar~Label'),
+  };
   const [inputText, setInputText] = React.useState('');
-  const [filterType, setFilterType] = React.useState(FilterType.NAME);
+  const [filterType, setFilterType] = React.useState(translateFilterType(FilterType.NAME));
   const [isOpen, setOpen] = React.useState(false);
   const [placeholder, setPlaceholder] = React.useState(
-    nameFilterPlaceholder || 'Search by name...',
+    nameFilterPlaceholder || t('filter-toolbar~Search by name...'),
   );
 
   // (rowFilters) => {'rowFilterTypeA': ['staA', 'staB'], 'rowFilterTypeB': ['stbA'] }
@@ -149,7 +169,8 @@ const FilterToolbar_: React.FC<FilterToolbarProps & RouteComponentProps> = (prop
   /* Logic for Name and Label Filter */
 
   const applyFilter = (input: string | string[], type: FilterType) => {
-    const filter = type === FilterType.NAME ? textFilter : labelFilter;
+    const filter =
+      type === FilterType.NAME ? translateFilterType(textFilter) : translateFilterType(labelFilter);
     const value = type === FilterType.NAME ? input : { all: input };
     props.reduxIDs.forEach((id) => props.filterList(id, filter, value));
   };
@@ -259,16 +280,16 @@ const FilterToolbar_: React.FC<FilterToolbarProps & RouteComponentProps> = (prop
   }, []);
 
   const switchFilter = (type: FilterType) => {
-    setFilterType(FilterType[type]);
+    setFilterType(translateFilterType(FilterType[type]));
     switch (FilterType[type]) {
       case 'Name':
-        setPlaceholder(nameFilterPlaceholder || 'Search by name...');
+        setPlaceholder(nameFilterPlaceholder || t('filter-toolbar~Search by name...'));
         break;
       case 'Label':
-        setPlaceholder(labelFilterPlaceholder || 'Search by label...');
+        setPlaceholder(labelFilterPlaceholder || t('filter-toolbar~Search by label...'));
         break;
       default:
-        setPlaceholder('app=frontend');
+        setPlaceholder(t('filter-toolbar~app=frontend'));
     }
     setInputText(nameFilter && FilterType[type] === FilterType.NAME ? nameFilter : '');
   };
@@ -305,7 +326,7 @@ const FilterToolbar_: React.FC<FilterToolbarProps & RouteComponentProps> = (prop
                     toggleIndicator={CaretDownIcon}
                   >
                     <FilterIcon className="span--icon__right-margin" />
-                    Filter
+                    {t('filter-toolbar~Filter')}
                   </DropdownToggle>
                 }
               />,
@@ -320,17 +341,17 @@ const FilterToolbar_: React.FC<FilterToolbarProps & RouteComponentProps> = (prop
               deleteChip={(filter, chip: string) =>
                 updateLabelFilter(_.difference(labelFilters, [chip]))
               }
-              categoryName="Label"
+              categoryName={t('filter-toolbar~Label')}
             >
               <ToolbarFilter
                 chips={nameFilter && nameFilter.length > 0 ? [nameFilter] : []}
                 deleteChip={() => updateNameFilter('')}
-                categoryName="Name"
+                categoryName={t('filter-toolbar~Name')}
               >
                 <div className="pf-c-input-group">
                   {!hideLabelFilter && (
                     <DropdownInternal
-                      items={FilterType}
+                      items={translatedFilterType}
                       onChange={switchFilter}
                       selectedKey={filterType}
                       title={filterType}
@@ -355,7 +376,7 @@ const FilterToolbar_: React.FC<FilterToolbarProps & RouteComponentProps> = (prop
         )}
         {columnLayout?.id && !hideColumnManagement && (
           <ToolbarItem>
-            <Tooltip content="Manage columns">
+            <Tooltip content={t('filter-toolbar~Manage columns')}>
               <Button
                 variant="plain"
                 onClick={() =>
@@ -363,7 +384,7 @@ const FilterToolbar_: React.FC<FilterToolbarProps & RouteComponentProps> = (prop
                     columnLayout,
                   })
                 }
-                aria-label="Column Management"
+                aria-label={t('filter-toolbar~Column Management')}
               >
                 <ColumnsIcon />
               </Button>
