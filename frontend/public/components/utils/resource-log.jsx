@@ -4,6 +4,8 @@ import { Base64 } from 'js-base64';
 import { saveAs } from 'file-saver';
 import { Alert, AlertActionLink, Button } from '@patternfly/react-core';
 import * as _ from 'lodash-es';
+import { Trans, withTranslation, useTranslation } from 'react-i18next';
+
 import {
   CompressIcon,
   ExpandIcon,
@@ -33,10 +35,14 @@ export const LOG_SOURCE_WAITING = 'waiting';
 
 // Messages to display for corresponding log status
 const streamStatusMessages = {
-  [STREAM_EOF]: 'Log stream ended.',
-  [STREAM_LOADING]: 'Loading log...',
-  [STREAM_PAUSED]: 'Log stream paused.',
-  [STREAM_ACTIVE]: 'Log streaming...',
+  // t('details-item~Log stream ended.')
+  [STREAM_EOF]: 'details-item~Log stream ended.',
+  // t('details-item~Loading log...')
+  [STREAM_LOADING]: 'details-item~Loading log...',
+  // t('details-item~Log stream paused.')
+  [STREAM_PAUSED]: 'details-item~Log stream paused.',
+  // t('details-item~Log streaming...')
+  [STREAM_ACTIVE]: 'details-item~Log streaming...',
 };
 
 const replaceVariables = (template, values) => {
@@ -65,6 +71,7 @@ export const LogControls = ({
   podLogLinks,
   namespaceUID,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="co-toolbar">
       <div className="co-toolbar__group co-toolbar__group--left">
@@ -78,7 +85,7 @@ export const LogControls = ({
           {[STREAM_ACTIVE, STREAM_PAUSED].includes(status) && (
             <TogglePlay active={status === STREAM_ACTIVE} onClick={toggleStreaming} />
           )}
-          {streamStatusMessages[status]}
+          {t(streamStatusMessages[status])}
         </div>
         {dropdown && <div className="co-toolbar__item">{dropdown}</div>}
       </div>
@@ -118,14 +125,14 @@ export const LogControls = ({
           })}
         <a href={logURL} target="_blank" rel="noopener noreferrer">
           <OutlinedWindowRestoreIcon className="co-icon-space-r" />
-          Raw
+          {t('details-item~Raw')}
         </a>
         <span aria-hidden="true" className="co-action-divider hidden-xs">
           |
         </span>
         <a href={logURL} download>
           <DownloadIcon className="co-icon-space-r" />
-          Download
+          {t('details-item~Download')}
         </a>
         {screenfull.enabled && (
           <>
@@ -136,12 +143,12 @@ export const LogControls = ({
               {isFullscreen ? (
                 <>
                   <CompressIcon className="co-icon-space-r" />
-                  Collapse
+                  {t('details-item~Collapse')}
                 </>
               ) : (
                 <>
                   <ExpandIcon className="co-icon-space-r" />
-                  Expand
+                  {t('details-item~Expand')}
                 </>
               )}
             </Button>
@@ -387,7 +394,7 @@ class ResourceLog_ extends React.Component {
   }
 
   render() {
-    const { resource, containerName, dropdown, bufferSize } = this.props;
+    const { resource, containerName, dropdown, bufferSize, t } = this.props;
     const {
       error,
       hasTruncated,
@@ -413,8 +420,12 @@ class ResourceLog_ extends React.Component {
             isInline
             className="co-alert"
             variant="danger"
-            title="An error occurred while retrieving the requested logs."
-            actionLinks={<AlertActionLink onClick={this._restartStream}>Retry</AlertActionLink>}
+            title={t('details-item~An error occurred while retrieving the requested logs.')}
+            actionLinks={
+              <AlertActionLink onClick={this._restartStream}>
+                {t('details-item~Retry')}
+              </AlertActionLink>
+            }
           />
         )}
         {hasTruncated && (
@@ -422,17 +433,21 @@ class ResourceLog_ extends React.Component {
             isInline
             className="co-alert"
             variant="warning"
-            title={'Some lines have been abridged because they are exceptionally long.'}
+            title={t(
+              'details-item~Some lines have been abridged because they are exceptionally long.',
+            )}
           >
-            To view unabridged log content, you can either{' '}
-            <a href={logURL} target="_blank" rel="noopener noreferrer">
-              open the raw file in another window
-            </a>{' '}
-            or{' '}
-            <a href={logURL} download>
-              download it
-            </a>
-            .
+            <Trans ns="details-item" t={t}>
+              To view unabridged log content, you can either{' '}
+              <a href={logURL} target="_blank" rel="noopener noreferrer">
+                open the raw file in another window
+              </a>{' '}
+              or{' '}
+              <a href={logURL} download>
+                download it
+              </a>
+              .
+            </Trans>
           </Alert>
         )}
         {stale && (
@@ -440,8 +455,14 @@ class ResourceLog_ extends React.Component {
             isInline
             className="co-alert"
             variant="info"
-            title={`The logs for this ${resource.kind} may be stale.`}
-            actionLinks={<AlertActionLink onClick={this._restartStream}>Refresh</AlertActionLink>}
+            title={t('details-item~The logs for this {{resourceKind}} may be stale.', {
+              resourceKind: resource.kind,
+            })}
+            actionLinks={
+              <AlertActionLink onClick={this._restartStream}>
+                {t('details-item~Refresh')}
+              </AlertActionLink>
+            }
           />
         )}
         <div
@@ -476,7 +497,9 @@ class ResourceLog_ extends React.Component {
 }
 
 /** @type {React.FC<{bufferSize?: number, containerName?: string, dropdown?: React.ReactNode, resource: any, resourceStatus: string}}>} */
-export const ResourceLog = connectToFlags(FLAGS.CONSOLE_EXTERNAL_LOG_LINK)(ResourceLog_);
+const ResourceLogWithTranslation = connectToFlags(FLAGS.CONSOLE_EXTERNAL_LOG_LINK)(ResourceLog_);
+
+export const ResourceLog = withTranslation()(ResourceLogWithTranslation);
 
 ResourceLog.defaultProps = {
   bufferSize: 1000,

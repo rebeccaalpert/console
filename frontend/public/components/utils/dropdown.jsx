@@ -10,6 +10,7 @@ import { history } from './router';
 import { KebabItems } from './kebab';
 import { ResourceName } from './resource-icon';
 import { useSafetyFirst } from '../safety-first';
+import { useTranslation } from 'react-i18next';
 
 export class DropdownMixin extends React.PureComponent {
   constructor(props) {
@@ -715,46 +716,45 @@ const containerLabel = (container) => (
   <ResourceName name={container ? container.name : ''} kind="Container" />
 );
 
-export class ContainerDropdown extends React.PureComponent {
-  getSpacer(container) {
+export const ContainerDropdown = (props) => {
+  const { t } = useTranslation();
+
+  const getSpacer = (container) => {
     const spacerBefore = new Set();
     return container ? spacerBefore.add(container.name) : spacerBefore;
-  }
+  };
 
-  getHeaders(container, initContainer) {
+  const getHeaders = (container, initContainer) => {
     return initContainer
       ? {
-          [container.name]: 'Containers',
-          [initContainer.name]: 'Init Containers',
+          [container.name]: t('dropdown~Containers'),
+          [initContainer.name]: t('dropdown~Init Containers'),
         }
       : {};
-  }
+  };
 
-  render() {
-    const { currentKey, containers, initContainers, onChange } = this.props;
-    if (_.isEmpty(containers) && _.isEmpty(initContainers)) {
-      return null;
-    }
-    const firstInitContainer = _.find(initContainers, { order: 0 });
-    const firstContainer = _.find(containers, { order: 0 });
-    const spacerBefore = this.getSpacer(firstInitContainer);
-    const headerBefore = this.getHeaders(firstContainer, firstInitContainer);
-    const dropdownItems = _.mapValues(_.merge(containers, initContainers), containerLabel);
-    const title = _.get(dropdownItems, currentKey) || containerLabel(firstContainer);
-    return (
-      <Dropdown
-        className="btn-group"
-        menuClassName="dropdown-menu--text-wrap"
-        headerBefore={headerBefore}
-        items={dropdownItems}
-        spacerBefore={spacerBefore}
-        title={title}
-        onChange={onChange}
-        selectedKey={currentKey}
-      />
-    );
+  const { currentKey, containers, initContainers, onChange } = props;
+  if (_.isEmpty(containers) && _.isEmpty(initContainers)) {
+    return null;
   }
-}
+  const firstInitContainer = _.find(initContainers, { order: 0 });
+  const firstContainer = _.find(containers, { order: 0 });
+  const spacerBefore = getSpacer(firstInitContainer);
+  const headerBefore = getHeaders(firstContainer, firstInitContainer);
+  const dropdownItems = _.mapValues(_.merge(containers, initContainers), containerLabel);
+  const title = _.get(dropdownItems, currentKey) || containerLabel(firstContainer);
+  return (
+    <Dropdown
+      className="btn-group"
+      headerBefore={headerBefore}
+      items={dropdownItems}
+      spacerBefore={spacerBefore}
+      title={title}
+      onChange={onChange}
+      selectedKey={currentKey}
+    />
+  );
+};
 
 ContainerDropdown.propTypes = {
   containers: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,

@@ -48,6 +48,7 @@ i18n
         'details-item',
         'editor',
         'sidebar',
+        'dropdown',
       ],
       defaultNS: 'public',
       nsSeparator: '~',
@@ -72,6 +73,8 @@ i18n
       react: {
         useSuspense: true,
         wait: true,
+        transSupportBasicHtmlNodes: true,
+        transKeepBasicHtmlNodesFor: ['br', 'strong', 'i'],
       },
       saveMissing: true,
       missingKeyHandler: function(lng, ns, key) {

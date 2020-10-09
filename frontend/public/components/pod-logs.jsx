@@ -1,5 +1,6 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
+import { withTranslation } from 'react-i18next';
 
 import {
   ContainerDropdown,
@@ -53,7 +54,7 @@ const containerToLogSourceStatus = (container) => {
   return LOG_SOURCE_RUNNING;
 };
 
-export class PodLogs extends React.Component {
+class PodLogs_ extends React.Component {
   constructor(props) {
     super(props);
     this._selectContainer = this._selectContainer.bind(this);
@@ -108,3 +109,5 @@ export class PodLogs extends React.Component {
     );
   }
 }
+
+export const PodLogs = withTranslation()(PodLogs_);

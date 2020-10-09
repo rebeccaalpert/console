@@ -6,12 +6,13 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { DRAGGABLE_TYPE } from './draggable-item-types';
 import { Button, Tooltip } from '@patternfly/react-core';
 import { PficonDragdropIcon, MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import { withTranslation } from 'react-i18next';
 
 import { NameValueEditorPair, EnvFromPair, EnvType } from './index';
 import { ValueFromPair } from './value-from-pair';
 import withDragDropContext from './drag-drop-context';
 
-export const NameValueEditor = withDragDropContext(
+const NameValueEditor_ = withDragDropContext(
   class NameValueEditor extends React.Component {
     constructor(props) {
       super(props);
@@ -78,8 +79,6 @@ export const NameValueEditor = withDragDropContext(
 
     render() {
       const {
-        nameString,
-        valueString,
         addString,
         nameValuePairs,
         allowSorting,
@@ -89,17 +88,21 @@ export const NameValueEditor = withDragDropContext(
         secrets,
         addConfigMapSecret,
         toolTip,
+        t,
       } = this.props;
+      const nameString = this.props.nameString ? this.props.nameString : t('details-item~Key');
+      const valueString = this.props.valueString ? this.props.valueString : t('details-item~Value');
       const pairElems = nameValuePairs.map((pair, i) => {
         const key = _.get(pair, [NameValueEditorPair.Index], i);
         const isEmpty = nameValuePairs.length === 1 && nameValuePairs[0].every((value) => !value);
-
         return (
           <PairElement
             onChange={this._change}
             index={i}
-            nameString={nameString}
-            valueString={valueString}
+            nameString={this.props.nameString}
+            nameKey={t('details-item~key')}
+            valueString={this.props.valueString}
+            valueKey={!this.props.valueString && t('details-item~value')}
             allowSorting={allowSorting}
             readOnly={readOnly}
             pair={pair}
@@ -139,7 +142,7 @@ export const NameValueEditor = withDragDropContext(
                       data-test-id="pairs-list__add-icon"
                       className="co-icon-space-r"
                     />
-                    {addString}
+                    {addString ? addString : t('details-item~Add more')}
                   </Button>
                   {addConfigMapSecret && (
                     <>
@@ -153,7 +156,7 @@ export const NameValueEditor = withDragDropContext(
                           data-test-id="pairs-list__add-icon"
                           className="co-icon-space-r"
                         />
-                        Add from Config Map or Secret
+                        {t('details-item~Add from Config Map or Secret')}
                       </Button>
                     </>
                   )}
@@ -166,6 +169,9 @@ export const NameValueEditor = withDragDropContext(
     }
   },
 );
+
+export const NameValueEditor = withTranslation()(NameValueEditor_);
+
 NameValueEditor.propTypes = {
   nameString: PropTypes.string,
   valueString: PropTypes.string,
@@ -189,9 +195,6 @@ NameValueEditor.propTypes = {
   toolTip: PropTypes.string,
 };
 NameValueEditor.defaultProps = {
-  nameString: 'Key',
-  valueString: 'Value',
-  addString: 'Add More',
   allowSorting: false,
   readOnly: false,
   nameValueId: 0,
@@ -200,7 +203,7 @@ NameValueEditor.defaultProps = {
 
 NameValueEditor.displayName = 'Name Value Editor';
 
-export const EnvFromEditor = withDragDropContext(
+const EnvFromEditor_ = withDragDropContext(
   class EnvFromEditor extends React.Component {
     constructor(props) {
       super(props);
@@ -267,6 +270,7 @@ export const EnvFromEditor = withDragDropContext(
         secondTitle,
         addButtonDisabled,
         addButtonLabel,
+        t,
       } = this.props;
       const pairElems = nameValuePairs.map((pair, i) => {
         const key = _.get(pair, [EnvFromPair.Index], i);
@@ -275,7 +279,7 @@ export const EnvFromEditor = withDragDropContext(
           <EnvFromPairElement
             onChange={this._change}
             index={i}
-            nameString="config map/secret"
+            nameKey={t('details-item~Config Map/Secret')}
             valueString=""
             readOnly={readOnly}
             pair={pair}
@@ -294,8 +298,12 @@ export const EnvFromEditor = withDragDropContext(
         <>
           <div className="row pairs-list__heading">
             {!readOnly && <div className="col-xs-1 co-empty__header" />}
-            <div className="col-xs-5 text-secondary text-uppercase">{firstTitle}</div>
-            <div className="col-xs-5 text-secondary text-uppercase">{secondTitle}</div>
+            <div className="col-xs-5 text-secondary text-uppercase">
+              {firstTitle ? firstTitle : t('details-item~Config map/secret')}
+            </div>
+            <div className="col-xs-5 text-secondary text-uppercase">
+              {secondTitle ? secondTitle : t('details-item~Prefix (optional)')}
+            </div>
             <div className="col-xs-1 co-empty__header" />
           </div>
           {pairElems}
@@ -309,7 +317,10 @@ export const EnvFromEditor = withDragDropContext(
                   variant="link"
                   isDisabled={addButtonDisabled}
                 >
-                  <PlusCircleIcon /> {addButtonLabel}
+                  <PlusCircleIcon />{' '}
+                  {addButtonLabel
+                    ? addButtonLabel
+                    : t('details-item~Add all from Config Map or Secret')}
                 </Button>
               )}
             </div>
@@ -319,6 +330,9 @@ export const EnvFromEditor = withDragDropContext(
     }
   },
 );
+
+export const EnvFromEditor = withTranslation()(EnvFromEditor_);
+
 EnvFromEditor.propTypes = {
   readOnly: PropTypes.bool,
   nameValueId: PropTypes.number,
@@ -342,10 +356,7 @@ EnvFromEditor.propTypes = {
 EnvFromEditor.defaultProps = {
   readOnly: false,
   nameValueId: 0,
-  firstTitle: 'Config map/secret',
-  secondTitle: 'Prefix (Optional)',
   addButtonDisabled: false,
-  addButtonLabel: 'Add All From Config Map or Secret',
 };
 
 const pairSource = {
@@ -414,7 +425,7 @@ const collectTargetPair = (connect) => ({
   connectDropTarget: connect.dropTarget(),
 });
 
-const PairElement = DragSource(
+const PairElement_ = DragSource(
   DRAGGABLE_TYPE.ENV_ROW,
   pairSource,
   collectSourcePair,
@@ -455,7 +466,9 @@ const PairElement = DragSource(
           connectDragPreview,
           connectDropTarget,
           nameString,
+          nameKey,
           valueString,
+          valueKey,
           allowSorting,
           readOnly,
           pair,
@@ -464,11 +477,12 @@ const PairElement = DragSource(
           isEmpty,
           disableReorder,
           toolTip,
+          t,
         } = this.props;
         const deleteIcon = (
           <>
             <MinusCircleIcon className="pairs-list__side-btn pairs-list__delete-icon" />
-            <span className="sr-only">Delete</span>
+            <span className="sr-only">{t('details-item~Delete')}</span>
           </>
         );
         const dragButton = (
@@ -479,7 +493,7 @@ const PairElement = DragSource(
               tabIndex="-1"
               isDisabled={disableReorder}
               variant="plain"
-              aria-label="Drag to reorder"
+              aria-label={t('details-item~Drag to reorder')}
             >
               <PficonDragdropIcon className="pairs-list__action-icon--reorder" />
             </Button>
@@ -504,7 +518,7 @@ const PairElement = DragSource(
                 <input
                   type="text"
                   className="pf-c-form-control"
-                  placeholder={nameString.toLowerCase()}
+                  placeholder={nameKey ? nameKey : nameString.toLowerCase()}
                   value={pair[NameValueEditorPair.Name]}
                   onChange={this._onChangeName}
                   disabled={readOnly}
@@ -525,7 +539,7 @@ const PairElement = DragSource(
                   <input
                     type="text"
                     className="pf-c-form-control"
-                    placeholder={valueString.toLowerCase()}
+                    placeholder={valueKey ? valueKey : valueString.toLowerCase()}
                     value={pair[NameValueEditorPair.Value] || ''}
                     onChange={this._onChangeValue}
                     disabled={readOnly}
@@ -534,7 +548,7 @@ const PairElement = DragSource(
               )}
               {!readOnly && (
                 <div className="col-xs-1 pairs-list__action">
-                  <Tooltip content={toolTip || 'Remove'}>
+                  <Tooltip content={toolTip || t('details-item~Remove')}>
                     <Button
                       type="button"
                       data-test-id="pairs-list__delete-btn"
@@ -557,6 +571,9 @@ const PairElement = DragSource(
     },
   ),
 );
+
+const PairElement = withTranslation()(PairElement_);
+
 PairElement.propTypes = {
   nameString: PropTypes.string,
   valueString: PropTypes.string,
@@ -579,7 +596,7 @@ PairElement.propTypes = {
   toolTip: PropTypes.string,
 };
 
-const EnvFromPairElement = DragSource(
+const EnvFromPairElement_ = DragSource(
   DRAGGABLE_TYPE.ENV_FROM_ROW,
   pairSource,
   collectSourcePair,
@@ -619,16 +636,18 @@ const EnvFromPairElement = DragSource(
           connectDragPreview,
           connectDropTarget,
           valueString,
+          valueKey,
           readOnly,
           pair,
           configMaps,
           secrets,
           serviceAccounts,
+          t,
         } = this.props;
         const deleteButton = (
           <>
             <MinusCircleIcon className="pairs-list__side-btn pairs-list__delete-icon" />
-            <span className="sr-only">Delete</span>
+            <span className="sr-only">{t('details-item~Delete')}</span>
           </>
         );
 
@@ -649,7 +668,7 @@ const EnvFromPairElement = DragSource(
                       className="pairs-list__action-icon"
                       tabIndex="-1"
                       variant="plain"
-                      aria-label="Drag to reorder"
+                      aria-label={t('details-item~Drag to reorder')}
                     >
                       <PficonDragdropIcon className="pairs-list__action-icon--reorder" />
                     </Button>
@@ -670,7 +689,7 @@ const EnvFromPairElement = DragSource(
                   data-test-id="env-prefix"
                   type="text"
                   className="pf-c-form-control"
-                  placeholder={valueString.toLowerCase()}
+                  placeholder={valueKey ? valueKey : valueString.toLowerCase()}
                   value={pair[EnvFromPair.Prefix]}
                   onChange={this._onChangePrefix}
                   disabled={readOnly}
@@ -678,7 +697,7 @@ const EnvFromPairElement = DragSource(
               </div>
               {readOnly ? null : (
                 <div className="col-xs-1 pairs-list__action">
-                  <Tooltip content="Remove">
+                  <Tooltip content={t('details-item~Remove')}>
                     <Button
                       type="button"
                       data-test-id="pairs-list__delete-from-btn"
@@ -698,6 +717,9 @@ const EnvFromPairElement = DragSource(
     },
   ),
 );
+
+const EnvFromPairElement = withTranslation()(EnvFromPairElement_);
+
 EnvFromPairElement.propTypes = {
   valueString: PropTypes.string,
   readOnly: PropTypes.bool,

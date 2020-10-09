@@ -4,6 +4,7 @@ import * as PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Alert, Button, ActionGroup, AlertActionCloseButton } from '@patternfly/react-core';
 import * as classNames from 'classnames';
+import { Trans, withTranslation } from 'react-i18next';
 
 import { k8sPatch, k8sGet, referenceFor, referenceForOwnerRef } from '../module/k8s';
 import {
@@ -285,7 +286,7 @@ const stateToProps = ({ k8s, UI }, { obj }) => ({
   impersonate: UI.get('impersonate'),
 });
 
-export const EnvironmentPage = connect(stateToProps)(
+const EnvironmentPage_ = connect(stateToProps)(
   class EnvironmentPage extends PromiseComponent {
     /**
      * Set initial state and decide which kind of env we are setting up
@@ -311,7 +312,7 @@ export const EnvironmentPage = connect(stateToProps)(
 
     componentDidMount() {
       this._checkEditAccess();
-      const { addConfigMapSecret, readOnly } = this.props;
+      const { addConfigMapSecret, readOnly, t } = this.props;
       if (!addConfigMapSecret || readOnly) {
         const configMaps = {},
           secrets = {};
@@ -323,7 +324,7 @@ export const EnvironmentPage = connect(stateToProps)(
       Promise.all([
         k8sGet(ConfigMapModel, null, envNamespace).catch((err) => {
           if (err.response.status !== 403) {
-            const errorMessage = err.message || 'Could not load config maps.';
+            const errorMessage = err.message || t('details-item~Could not load config maps.');
             this.setState({ errorMessage });
           }
           return {
@@ -332,7 +333,7 @@ export const EnvironmentPage = connect(stateToProps)(
         }),
         k8sGet(SecretModel, null, envNamespace).catch((err) => {
           if (err.response.status !== 403) {
-            const errorMessage = err.message || 'Could not load secrets.';
+            const errorMessage = err.message || t('details-item~Could not load secrets.');
             this.setState({ errorMessage });
           }
           return {
@@ -451,7 +452,7 @@ export const EnvironmentPage = connect(stateToProps)(
      * @param e
      */
     _saveChanges(e) {
-      const { envPath, obj, model } = this.props;
+      const { envPath, obj, model, t } = this.props;
       const { currentEnvVars } = this.state;
 
       e.preventDefault();
@@ -464,7 +465,7 @@ export const EnvironmentPage = connect(stateToProps)(
           dirty: false,
           errorMessage: null,
           stale: false,
-          success: 'Successfully updated the environment variables.',
+          success: t('details-item~Successfully updated the environment variables.'),
         });
       });
     }
@@ -486,7 +487,7 @@ export const EnvironmentPage = connect(stateToProps)(
         containerType,
         allowed,
       } = this.state;
-      const { rawEnvData, obj, addConfigMapSecret, useLoadingInline } = this.props;
+      const { rawEnvData, obj, addConfigMapSecret, useLoadingInline, t } = this.props;
       const readOnly = this.props.readOnly || !allowed;
 
       if (!configMaps || !currentEnvVars || !secrets) {
@@ -525,16 +526,19 @@ export const EnvironmentPage = connect(stateToProps)(
                 isInline
                 className="co-alert col-md-11 col-xs-10"
                 variant="info"
-                title="Environment variables set from parent"
+                title={t('details-item~Environment variables set from parent')}
               >
-                View environment for resource {owners.length > 1 ? <>owners: {owners}</> : owners}
+                {t('details-item~View environment for resource')}{' '}
+                {owners.length > 1 ? <>owners: {owners}</> : owners}
               </Alert>
             </div>
           )}
           {currentEnvVars.isContainerArray && (
             <div className="co-toolbar__group co-toolbar__group--left">
               <div className="co-toolbar__item">
-                {containerType === 'containers' ? 'Container:' : 'Init Container:'}
+                {containerType === 'containers'
+                  ? t('details-item~Container:')
+                  : t('details-item~Init Container:')}
               </div>
               <div className="co-toolbar__item">{containerDropdown}</div>
             </div>
@@ -542,14 +546,16 @@ export const EnvironmentPage = connect(stateToProps)(
           <div className={classNames({ 'co-m-pane__body-group': !currentEnvVars.isCreate })}>
             {!currentEnvVars.isCreate && (
               <h3 className="co-section-heading-tertiary">
-                Single values (env)
+                {t('details-item~Single values (env)')}
                 {!readOnly && (
                   <FieldLevelHelp>
-                    Define environment variables as key-value pairs to store configuration settings.
-                    You can enter text or add values from a ConfigMap or Secret. Drag and drop
-                    environment variables to change the order in which they are run. A variable can
-                    reference any other variables that come before it in the list, for example{' '}
-                    <code>FULLDOMAIN = $(SUBDOMAIN).example.com</code>.
+                    <Trans t={t} ns="details-item">
+                      <strong>test</strong>Define environment variables as key-value pairs to store
+                      configuration settings. You can enter text or add values from a ConfigMap or
+                      Secret. Drag and drop environment variables to change the order in which they
+                      are run. A variable can reference any other variables that come before it in
+                      the list, for example <code>FULLDOMAIN = $(SUBDOMAIN).example.com</code>.
+                    </Trans>
                   </FieldLevelHelp>
                 )}
               </h3>
@@ -558,7 +564,7 @@ export const EnvironmentPage = connect(stateToProps)(
               nameValueId={containerIndex}
               nameValuePairs={envVar[EnvType.ENV]}
               updateParentData={this.updateEnvVars}
-              nameString="Name"
+              nameString={t('details-item~Name')}
               readOnly={readOnly}
               allowSorting={true}
               configMaps={configMaps}
@@ -569,15 +575,19 @@ export const EnvironmentPage = connect(stateToProps)(
           {currentEnvVars.isContainerArray && (
             <div className="co-m-pane__body-group environment-buttons">
               <h3 className="co-section-heading-tertiary">
-                All values from existing config maps or secrets (envFrom)
+                {t('details-item~All values from existing config maps or secrets (envFrom)')}
                 {!readOnly && (
                   <FieldLevelHelp>
-                    Add new values by referencing an existing config map or secret. Drag and drop
-                    environment variables within this section to change the order in which they are
-                    run.
-                    <br />
-                    <strong>Note: </strong>If identical values exist in both lists, the single value
-                    in the list above will take precedence.
+                    <>
+                      {t(
+                        'details-item~Add new values by referencing an existing config map or secret. Drag and drop environment variables within this section to change the order in which they are run.',
+                      )}
+                      <br />
+                      <strong>{t('details-item~Note:')}</strong>{' '}
+                      {t(
+                        'details-item~If identical values exist in both lists, the single value in the list above will take precedence.',
+                      )}
+                    </>
                   </FieldLevelHelp>
                 )}
               </h3>
@@ -608,9 +618,11 @@ export const EnvironmentPage = connect(stateToProps)(
                     isInline
                     className="co-alert"
                     variant="info"
-                    title="The information on this page is no longer current."
+                    title={t('details-item~The information on this page is no longer current.')}
                   >
-                    Click Reload to update and lose edits, or Save Changes to overwrite.
+                    {t(
+                      'details-item~Click Reload to update and lose edits, or Save Changes to overwrite.',
+                    )}
                   </Alert>
                 )}
                 {success && (
@@ -630,7 +642,7 @@ export const EnvironmentPage = connect(stateToProps)(
                       variant="primary"
                       onClick={this.saveChanges}
                     >
-                      Save
+                      {t('details-item~Save')}
                     </Button>
                     <Button
                       isDisabled={inProgress}
@@ -638,7 +650,7 @@ export const EnvironmentPage = connect(stateToProps)(
                       variant="secondary"
                       onClick={this.reload}
                     >
-                      Reload
+                      {t('details-item~Reload')}
                     </Button>
                   </ActionGroup>
                 )}
@@ -650,6 +662,9 @@ export const EnvironmentPage = connect(stateToProps)(
     }
   },
 );
+
+export const EnvironmentPage = withTranslation()(EnvironmentPage_);
+
 EnvironmentPage.propTypes = {
   obj: PropTypes.object,
   rawEnvData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

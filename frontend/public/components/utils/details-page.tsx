@@ -110,7 +110,11 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
         </DetailsItem>
       )}
       {showTolerations && (
-        <DetailsItem label={t('details-item~Tolerations')} obj={resource} path={tolerationsPath}>
+        <DetailsItem
+          label={t('details-item~Toleration_plural')}
+          obj={resource}
+          path={tolerationsPath}
+        >
           {canUpdate ? (
             <Button
               type="button"
@@ -128,7 +132,7 @@ export const ResourceSummary: React.SFC<ResourceSummaryProps> = ({
       )}
       {showAnnotations && (
         <DetailsItem
-          label={t('details-item~Annotations')}
+          label={t('details-item~Annotation_plural')}
           obj={resource}
           path="metadata.annotations"
         >
