@@ -1,0 +1,12 @@
+{
+  "{{resource}} details": "{{resource}} details",
+  "Reclaim Policy": "Reclaim Policy",
+  "Status": "Status",
+  "Capacity": "Capacity",
+  "Access Modes": "Access Modes",
+  "Volume Mode": "Volume Mode",
+  "Name": "Name",
+  "Claim": "Claim",
+  "Labels": "Labels",
+  "Created": "Created"
+}

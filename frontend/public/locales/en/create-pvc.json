@@ -1,0 +1,15 @@
+{
+  "Access mode is set by storage class and cannot be changed": "Access mode is set by storage class and cannot be changed",
+  "Permissions to the mounted drive": "Permissions to the mounted drive",
+  "{{resource}} Name": "{{resource}} Name",
+  "A unique name for the storage claim within the project": "A unique name for the storage claim within the project",
+  "Access Mode": "Access Mode",
+  "Size": "Size",
+  "Desired storage capacity": "Desired storage capacity",
+  "Use label selectors to request storage": "Use label selectors to request storage",
+  "Use label selectors to define how storage is created": "Use label selectors to define how storage is created",
+  "Volume Mode": "Volume Mode",
+  "Create {{resource}}": "Create {{resource}}",
+  "Create": "Create",
+  "Cancel": "Cancel"
+}

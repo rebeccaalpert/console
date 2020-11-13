@@ -1,0 +1,17 @@
+{
+  "Additional Parameters": "Additional Parameters",
+  "Specific fields for the selected provisioner.": "Specific fields for the selected provisioner.",
+  "What should I enter here?": "What should I enter here?",
+  "Edit": "Edit",
+  "Name": "Name",
+  "Description": "Description",
+  "Reclaim Policy": "Reclaim Policy",
+  "Select Reclaim Policy": "Select Reclaim Policy",
+  "storage-class-form~Determines what happens to persistent volumes when the associated persistent volume claim is deleted. Defaults to ": "storage-class-form~Determines what happens to persistent volumes when the associated persistent volume claim is deleted. Defaults to ",
+  "Delete": "Delete",
+  "Provisioner": "Provisioner",
+  "Determines what volume plugin is used for provisioning persistent volumes.": "Determines what volume plugin is used for provisioning persistent volumes.",
+  "Allow persistent volume claims to be expanded": "Allow persistent volume claims to be expanded",
+  "Create": "Create",
+  "Cancel": "Cancel"
+}

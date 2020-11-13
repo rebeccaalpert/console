@@ -1,0 +1,12 @@
+{
+  "{{resource}} details": "{{resource}} details",
+  "Status": "Status",
+  "Size": "Size",
+  "Deletion Policy": "Deletion Policy",
+  "Driver": "Driver",
+  "Volume Handle": "Volume Handle",
+  "Snapshot Handle": "Snapshot Handle",
+  "Name": "Name",
+  "Snapshot Class": "Snapshot Class",
+  "Created At": "Created At"
+}

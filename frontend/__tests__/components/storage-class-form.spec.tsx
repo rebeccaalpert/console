@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ShallowWrapper, shallow } from 'enzyme';
 import Spy = jasmine.Spy;
+import { TFunction } from 'i18next';
 
 import {
   StorageClassProvisioner,
@@ -13,6 +14,8 @@ import {
   StorageClassFormState,
   StorageClassFormExtensionProps,
 } from '../../public/components/storage-class-form';
+
+const i18nNS = 'storage-class-form';
 
 jest.mock('react-i18next', () => {
   const reactI18next = require.requireActual('react-i18next');
@@ -33,9 +36,6 @@ describe(ConnectedStorageClassForm.displayName, () => {
   let watchK8sList: Spy;
   let stopK8sWatch: Spy;
   let k8s: Spy;
-  let t: Spy;
-  let i18n: Spy;
-  let tReady: Spy;
   let params: StorageClassProvisioner[];
   let extensionFunction: ExtensionSCProvisionerProp;
 
@@ -44,9 +44,6 @@ describe(ConnectedStorageClassForm.displayName, () => {
     watchK8sList = jasmine.createSpy('watchK8sList');
     stopK8sWatch = jasmine.createSpy('stopK8sWatch');
     k8s = jasmine.createSpy('k8s');
-    t = jasmine.createSpy('t');
-    i18n = jasmine.createSpy('i18n');
-    tReady = jasmine.createSpy('tReady');
     params = [
       {
         type: 'StorageClass/Provisioner',
@@ -62,16 +59,16 @@ describe(ConnectedStorageClassForm.displayName, () => {
         watchK8sList={watchK8sList}
         stopK8sWatch={stopK8sWatch}
         k8s={k8s}
-        t={t}
-        i18n={i18n}
-        tReady={tReady}
+        t={((key) => key) as TFunction}
+        i18n={null}
+        tReady={true}
         params={params}
       />,
     );
   });
 
   it('renders the proper header', () => {
-    expect(wrapper.find('.co-m-pane__name').text()).toEqual('Create Storage Class');
+    expect(wrapper.find('.co-m-pane__name').text()).toEqual('StorageClass');
   });
 
   it('renders a form', () => {
@@ -79,7 +76,7 @@ describe(ConnectedStorageClassForm.displayName, () => {
   });
 
   it('renders a dropdown for selecting the reclaim policy', () => {
-    expect(wrapper.find({ title: 'Select Reclaim Policy' }).exists()).toBe(true);
+    expect(wrapper.find({ title: `${i18nNS}~Select Reclaim Policy` }).exists()).toBe(true);
   });
 
   it('renders a text box for selecting the storage class name', () => {

@@ -1,0 +1,11 @@
+{
+  "{{resource}} details": "{{resource}} details",
+  "Provisioner": "Provisioner",
+  "Reclaim Policy": "Reclaim Policy",
+  "Default Class": "Default Class",
+  "Volume Binding Mode": "Volume Binding Mode",
+  "Name": "Name",
+  "Reclaim": "Reclaim <1>Policy</1>",
+  "Default": "Default",
+  "Create": "Create"
+}

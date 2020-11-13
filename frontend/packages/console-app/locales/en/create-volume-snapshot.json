@@ -1,0 +1,15 @@
+{
+  "Error fetching info on claim's provisioner": "Error fetching info on claim's provisioner",
+  "Volume Snapshot Class with same provisioner as claim": "Volume Snapshot Class with same provisioner as claim",
+  "{{resource}} Details": "{{resource}} Details",
+  "Name": "Name",
+  "Namespace": "Namespace",
+  "Status": "Status",
+  "Requested Capacity": "Requested Capacity",
+  "Access Mode": "Access Mode",
+  "Volume Mode": "Volume Mode",
+  "Create": "Create",
+  "Edit": "Edit",
+  "Creating snapshot for claim": "Creating snapshot for claim",
+  "Cancel": "Cancel"
+}

@@ -1,0 +1,13 @@
+{
+  "{{resource}} details": "{{resource}} details",
+  "Label Selector": "Label Selector",
+  "Status": "Status",
+  "Requested Capacity": "Requested Capacity",
+  "Capacity": "Capacity",
+  "Used": "Used",
+  "Access Modes": "Access Modes",
+  "Volume Mode": "Volume Mode",
+  "Conditions": "Conditions",
+  "Name": "Name",
+  "Namespace": "Namespace"
+}
